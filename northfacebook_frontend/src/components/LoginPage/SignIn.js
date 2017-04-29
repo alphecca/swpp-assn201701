@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn } from '../actions';
-import './styles.css';
+import { signIn } from '../../actions';
+//import './styles.css';
 
 class SignIn extends React.Component {
     render() {
@@ -18,7 +18,7 @@ class SignIn extends React.Component {
                 >
                 <div>
                     <input type="text" ref={ node => {this.username = node;} } id='username_field' className='field'></input>
-                    <input type="text" ref={ node => {this.password = node;} } id='password_field' className='field'></input>
+                    <input type="password" ref={ node => {this.password = node;} } id='password_field' className='field'></input>
                     <button type="submit" id='sign_in' className='sign_in'>Sign in</button>
                 </div>
             </form>

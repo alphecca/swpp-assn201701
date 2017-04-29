@@ -25,7 +25,7 @@ SECRET_KEY = '=@+mj%w=j0o!o5chur--6c@hb8w+xexces@xvmzu**!@3$fonq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['183.101.189.163']
+ALLOWED_HOSTS = ['183.101.189.163', 'wlxyzlw.iptime.org']
 
 
 # Application definition
