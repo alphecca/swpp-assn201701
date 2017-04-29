@@ -1,4 +1,4 @@
-// When the user inputs username, password and clicks the 'Sign In' button, this action is invoked and Saga requests POST to 'User List' in backend page.
+// When the user inputs username, password and clicks the 'Sign In' button, this action is invoked and Saga requests GET to 'auth' in backend page.
 export const signIn = (username, password) => {
     return {
         type: 'SIGN_IN',
@@ -14,5 +14,14 @@ export const authenticate = (auth) => {
     return {
         type: 'AUTHENTICATE',
         auth
+    }
+}
+
+// When the user enters username, password and pwdverification and clicks the '회원가입', this action is invocked and Saga requests POST to 'User List' in backend page.
+export const postSignUp = (username, password) => {
+    return {
+        type: 'POST_SIGN_UP',
+        username,
+        password
     }
 }
