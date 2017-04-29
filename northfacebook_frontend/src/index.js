@@ -16,8 +16,8 @@ const store = createStore(
 sagaMiddleware.run(saga)
 
 render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
+//    <Provider store={store}>
+        <App store={store} />,
+//    </Provider>,
     document.getElementById('root')
 );
