@@ -100,7 +100,7 @@ user_pairs = create_users(userN)
 unknownname = "unknown_user"
 unknownpwd = "unknown_userpwd"
 
-link = "http://183.101.189.163:8765/auth/"
+link = "http://wlxyzlw.iptime.org:8765/auth/"
 print("1. Getting auth.")
 forbidden_or_error_anon("GET", link)
 forbidden_or_error("GET", link, unknownname, unknownpwd)

@@ -7,10 +7,10 @@ var xhr = require('xhr-promise-redux');
 // url functions
 /*
 const user_url = (uid) => {
-   return 'http://183.101.189.163:8000/users/' + uid + '/' // TODO
+   return 'http://wlxyzlw.iptime.org:8765/users/' + uid + '/' // TODO
 }
 */
-const auth_check_url = 'http://183.101.189.163:8000/auth/';
+const auth_check_url = 'http://wlxyzlw.iptime.org:8765/auth/';
 
 export function* watchSignIn() {
     while (true) {
