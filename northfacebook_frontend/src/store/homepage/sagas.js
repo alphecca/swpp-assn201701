@@ -4,14 +4,10 @@ import * as actions from './../../actions'
 
 var xhr = require('xhr-promise-redux');
 
-// url functions
-/*
-const user_url = (uid) => {
-   return 'http://183.101.189.163:8000/users/' + uid + '/' // TODO
-}
-*/
-const auth_check_url = 'http://183.101.189.163:8000/auth/';
+const auth_check_url = 'http://183.101.189.163:7777/auth/';//TODO change before send pull request
+const fixed_url = "http://183.101.189.163:7777/";
 
+//SIGN IN
 export function* watchSignIn() {
     while (true) {
         const data = yield take(actions.SIGN_IN)
@@ -40,7 +36,41 @@ export function* sign_in(data) {
         }
     }
 }
+//SIGN IN END
+
+//SIGN UP
+export function *watchSignUp() {
+    while(true) {
+        const data = yield take('POST_SIGN_UP');
+        yield call(signUp, data);
+    }
+}
+
+export function *signUp(data) {
+    yield call(console.log, "saga!");
+    yield call(console.log, data.username + " " + data.password);
+    const auth = "Basic " + window.btoa(data.username+":"+data.password);
+    try {
+        yield call(xhr.post, fixed_url+'users/', {
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              Authorization: auth
+            },
+            responseType: 'json'
+        });
+        console.log("Succeed to sign up without exception!");
+        alert("Succeed to sign up! ><");
+        window.self.close();
+    }
+    catch(error) {
+        console.log("버그 잡아라 뉴스프링 깔깔깔");
+        alert("Fail to sign up! Try again ;o;");
+    }
+}
+//SIGN UP END
 
 export default function* saga() {
     yield fork(watchSignIn)
+    yield fork(watchSignUp)
 }

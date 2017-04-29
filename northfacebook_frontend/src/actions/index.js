@@ -16,3 +16,11 @@ export const authenticate = (auth) => {
         auth
     }
 }
+
+export const postSignUp = (username, password) => {
+    return {
+        type: 'POST_SIGN_UP',
+        username,
+        password
+    }
+}
