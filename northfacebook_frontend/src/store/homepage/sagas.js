@@ -4,8 +4,8 @@ import * as actions from './../../actions'
 
 var xhr = require('xhr-promise-redux');
 
-const auth_check_url = 'http://183.101.189.163:7777/auth/';//TODO change before send pull request
-const fixed_url = "http://183.101.189.163:7777/";
+const auth_check_url = 'http://183.101.189.163:8000/auth/';//TODO change before send pull request
+const fixed_url = "http://183.101.189.163:8000/";
 
 //SIGN IN
 export function* watchSignIn() {
@@ -64,8 +64,23 @@ export function *signUp(data) {
         window.self.close();
     }
     catch(error) {
-        console.log("버그 잡아라 뉴스프링 깔깔깔");
-        alert("Fail to sign up! Try again ;o;");
+        if(error.statusCode === 201) {
+            console.log("Succeed to sign up without exception!");
+            alert("Succeed to sign up! ><");
+            window.self.close();
+        }
+        else if(error.statusCode === 400) { //Temporary status code for duplicated username
+            console.log("User already exist!");
+            alert("Username already exist! Try again!");
+        }
+        else if(error.statusCode === 404) {
+            console.log("Backend server not exist!");
+            console.log("Backend server does not exist!");
+        }
+        else {
+            console.log("버그 잡아라 뉴스프링 깔깔깔");
+            alert("Fail to sign up! Try again ;o;");
+        }
     }
 }
 //SIGN UP END

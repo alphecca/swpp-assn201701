@@ -6,13 +6,13 @@ class SignUpPage extends React.Component {
     render() {
         const onCreateSubmit = () => {
             if(this.username.value === "")
-                alert("id null");
+                alert("아이디를 입력하세요");
             else if(this.password.value === "")
-                alert("pwd null");
+                alert("비밀번호를 입력하세요");
             else if(this.pwdverification.value === "")
-                alert("pwdver null");
+                alert("비밀번호 확인란을 입력하세요");
             else if(this.password.value !== this.pwdverification.value)
-                alert("diff");
+                alert("비밀번호가 일치하지 않습니다. 다시 시도해주세요");
             else
                 this.props.onClick(this.username.value, this.password.value)
         }
@@ -24,7 +24,7 @@ class SignUpPage extends React.Component {
                     <br />
                     비밀번호 확인<input type="password" ref={ node => {this.pwdverification = node;}} id="pwdverification_field" className="field" />
                     <br />
-                    <button type="submit" id="sign_up" onClick={onCreateSubmit}>가입하기</button>
+                    <button type="submit" id="sign_up" onClick={onCreateSubmit}>회원가입</button>
                 </div>
         );
     }
