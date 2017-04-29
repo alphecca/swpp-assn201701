@@ -4,8 +4,8 @@ import * as actions from './../../actions'
 
 var xhr = require('xhr-promise-redux');
 
-const auth_check_url = 'http://183.101.189.163:8000/auth/';//TODO change before send pull request
-const fixed_url = "http://183.101.189.163:8000/";
+const auth_check_url = 'http://wlxyzlw.iptime.org:8000/auth/';//TODO change before send pull request
+const fixed_url = "http://wlxyzlw.iptime.org:8000/";
 
 //SIGN IN
 export function* watchSignIn() {
