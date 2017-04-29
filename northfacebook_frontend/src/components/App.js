@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import {Provider} from 'react-redux';
-import {HashRouter, Route } from 'react-router-dom';
+import {BrowserRouter, Route } from 'react-router-dom';
 import Root from './Root';
 import SignUpPage from './SignUpPage';
 import PropTypes from 'prop-types';
 
 const Tmp = () => (
-            <HashRouter>
+            <BrowserRouter>
                 <div>
                 <Route exact path="/main" component={Root} />
                 <Route exact path="/sign_up" component={SignUpPage} />
                 </div>
-            </HashRouter>
+            </BrowserRouter>
         );
 
 const App = ({store}) => (
