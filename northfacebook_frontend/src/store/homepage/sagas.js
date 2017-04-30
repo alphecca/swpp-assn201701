@@ -64,13 +64,13 @@ export function *signUp(data) {
         });
         console.log("Succeed to sign up without exception!");
         alert("Succeed to sign up! ><");
-        window.self.close();
+        window.location = '/main';
     }
     catch(error) {
         if(error.statusCode === 201) {
             console.log("Succeed to sign up without exception!");
             alert("Succeed to sign up! ><");
-            window.self.close();
+            window.location = '/main';
         }
         else if(error.statusCode === 405) { //Temporary status code for duplicated username
             console.log("User already exist!");
@@ -83,6 +83,7 @@ export function *signUp(data) {
         else {
             console.log("버그 잡아라 뉴스프링 깔깔깔");
             alert("Fail to sign up! Try again ;o;");
+//            window.location = '/main';
         }
     }
 }

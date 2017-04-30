@@ -9,7 +9,6 @@ from homepage.serializers import UserSerializer
 # Create your views here.
 class AuthList(APIView):
     permission_classes = (IsAuthenticated,)
-
     def get(self, request, format=None):
         content = {
             'status': 'user is authenticated'
