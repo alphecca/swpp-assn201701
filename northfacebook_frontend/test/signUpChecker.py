@@ -19,7 +19,7 @@ def check(driver, name):
 def alertMessageVerification(driver, text):
     try:
         if Alert(driver).text == text:
-            return
+            Alert(driver).accept()
         else:
             print("Alert message invalid: message should be [%s] but it's [%s]" %(text, Alert(driver).text))
             exit(1)
@@ -38,27 +38,23 @@ def signUpPageVerification(driver):
 def signUpAlertVerification(driver):
     # no username
     driver.find_element_by_id('sign_up').click()
-    alertMessageVerification(driver, "Enter the username")
     time.sleep(1)
-    Alert(driver).accept()
+    alertMessageVerification(driver, "Enter the username")
     # no password
     driver.find_element_by_id('username_field').send_keys('test1')
     driver.find_element_by_id('sign_up').click()
-    alertMessageVerification(driver, "Enter the password")
     time.sleep(1)
-    Alert(driver).accept()
+    alertMessageVerification(driver, "Enter the password")
     # no pwd verification
     driver.find_element_by_id('password_field').send_keys('test1passwd')
     driver.find_element_by_id('sign_up').click()
-    alertMessageVerification(driver, "Enter the password verification")
     time.sleep(1)
-    Alert(driver).accept()
+    alertMessageVerification(driver, "Enter the password verification")
     # password not matching
     driver.find_element_by_id('pwdverification_field').send_keys('test1passwd_diff')
     driver.find_element_by_id('sign_up').click()
-    alertMessageVerification(driver, "Password does not match")
     time.sleep(1)
-    Alert(driver).accept()
+    alertMessageVerification(driver, "Password does not match")
 
 def signUpPostVerification(driver, testNum):
     driver.find_element_by_id('username_field').clear()
