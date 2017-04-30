@@ -108,7 +108,7 @@ export function* watchSignOut() {
 }
 
 export function* sign_out(){
-    console.log("Succeed to sign out!")
+    yield call(console.log, "Succeed to sign out!")
 }
 //SIGN OUT END
 
