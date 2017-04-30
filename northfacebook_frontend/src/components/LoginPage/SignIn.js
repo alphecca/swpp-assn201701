@@ -26,7 +26,7 @@ class SignIn extends React.Component {
                 </div>
             </form>
                 <div>
-                  <button id="sign_out" className='sign_out' onClick={()=>{window.open(url,'_self',false);this.props.onLogOut();}}>Sign out</button>
+                  <button id="sign_out" className='sign_out' onClick={()=>{window.open(home_url,'_self',false);this.props.onLogOut();}}>Sign out</button>
                 </div>
           </div>
         )
