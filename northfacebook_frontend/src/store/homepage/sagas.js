@@ -21,6 +21,7 @@ export function* sign_in(data) {
         yield call(xhr.get, auth_check_url/* TODO I need a backend page that checks if the user is authenticated user when frontend requests GET method to this. */, {headers: {'Content-Type': 'application/json', Accept: 'application/json', Authorization: auth}, responseType: 'json'})
         console.log("Succeed to sign in without exception!")
         alert("Succeed to sign in! :)")
+        window.location = '/main';
         yield put(actions.authenticate(auth));
     }
     catch(error) {
@@ -29,6 +30,8 @@ export function* sign_in(data) {
             console.log("Succeed to sign in!")
             alert("Succeed to sign in! :)")
             yield put(actions.authenticate(auth));
+//            window.open(fixed_url + "/main", "_self", false);
+//            console.log("asdffdsa");
         }
         else {
             console.log("Fail to sign in!")
@@ -85,12 +88,13 @@ export function *signUp(data) {
 }
 //SIGN UP END
 //SIGN OUT
-export function* watchSignOut(){
-    while (true){
+export function* watchSignOut() {
+    while (true) {
       yield take(actions.SIGN_OUT)
       yield call(sign_out)
     }
 }
+
 export function* sign_out(){
     console.log("Succeed to sign out!")
 }

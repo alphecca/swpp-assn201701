@@ -20,6 +20,7 @@ driver.get(sys.argv[1])
 check(driver, 'username_field')
 check(driver, 'password_field')
 check(driver, 'sign_in')
+check(driver, 'sign_up')
 
 driver.quit()
 print("Successful!")

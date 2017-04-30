@@ -12,17 +12,12 @@ class SignUp extends React.Component {
         };
         return (
                 <div>
-                    No account? <button onClick={onNewTab}>Sign Up</button>
+                    No account? <button id="sign_up" onClick={onNewTab}>Sign Up</button>
                 </div>
                 )
     }
 }
 
-let mapDispatchToProps = (dispatch) => {
-    return {
-    }
-}
-
-SignUp = connect(undefined, mapDispatchToProps)(SignUp);
+SignUp = connect()(SignUp);
 
 export default SignUp;
