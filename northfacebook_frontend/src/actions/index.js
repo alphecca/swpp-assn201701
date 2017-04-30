@@ -25,3 +25,10 @@ export const postSignUp = (username, password) => {
         password
     }
 }
+//When the user clicks the 'Sign Out' button, this action is invoked
+export const signOut = () => {
+    return {
+       type: 'SIGN_OUT',
+    }
+}
+export const SIGN_OUT = 'SIGN_OUT'

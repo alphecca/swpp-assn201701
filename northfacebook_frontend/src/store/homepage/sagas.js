@@ -84,8 +84,20 @@ export function *signUp(data) {
     }
 }
 //SIGN UP END
+//SIGN OUT
+export function* watchSignOut(){
+    while (true){
+      yield take(actions.SIGN_OUT)
+      yield call(sign_out)
+    }
+}
+export function* sign_out(){
+    console.log("Succeed to sign out!")
+}
+//SIGN OUT END
 
 export default function* saga() {
     yield fork(watchSignIn)
     yield fork(watchSignUp)
+    yield fork(watchSignOut)
 }

@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn } from '../../actions';
+import { signIn, signOut } from '../../actions';
 //import './styles.css';
+
+var home_url ='http://wlxyzlw.iptime.org:3000'
 
 class SignIn extends React.Component {
     render() {
@@ -11,6 +13,7 @@ class SignIn extends React.Component {
             }
         };
         return (
+           <div>
             <form onSubmit={e => {
                 e.preventDefault()
                 onSubmit()
@@ -22,6 +25,10 @@ class SignIn extends React.Component {
                     <button type="submit" id='sign_in' className='sign_in'>Sign in</button>
                 </div>
             </form>
+                <div>
+                  <button id="sign_out" className='sign_out' onClick={()=>{window.open(url,'_self',false);this.props.onLogOut();}}>Sign out</button>
+                </div>
+          </div>
         )
     }
 }
@@ -30,7 +37,8 @@ let mapDispatchToProps = (dispatch) => {
     return {
         onClick: (username, password) => {
             dispatch(signIn(username, password))
-        }
+        },
+        onLogOut: () => dispatch(signOut())
     }
 }
 
