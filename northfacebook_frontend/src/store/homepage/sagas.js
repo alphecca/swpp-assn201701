@@ -72,7 +72,7 @@ export function *signUp(data) {
             alert("Succeed to sign up! ><");
             window.self.close();
         }
-        else if(error.statusCode === 400) { //Temporary status code for duplicated username
+        else if(error.statusCode === 405) { //Temporary status code for duplicated username
             console.log("User already exist!");
             alert("Username already exist! Try again!");
         }
