@@ -1,8 +1,9 @@
 import React from 'react';
 import {Provider} from 'react-redux';
 import {BrowserRouter, Route } from 'react-router-dom';
-import LoginPage from './LoginPage/LoginPage';
-import SignUpPage from './SignUpPage/SignUpPage';
+import LoginPage from './LoginPage/LoginPage.js';
+import SignUpPage from './SignUpPage/SignUpPage.js';
+import TimeLinePage from './TimeLinePage/TimeLinePage.js';
 import PropTypes from 'prop-types';
 
 
@@ -13,6 +14,7 @@ const App = ({store}) => (
                 <div>
                     <Route exact path="/" component={LoginPage} />
                     <Route exact path="/sign_up" component={SignUpPage} />
+                    <Route exact path="/main" component={TimeLinePage} />
                 </div>
             </BrowserRouter>
         </Provider>
