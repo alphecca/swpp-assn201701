@@ -85,6 +85,8 @@ signUpAlertVerification(driver)
 for i in range(1, 12):
     signUpPostVerification(driver, i)
 
+checker(driver, "sign_out")
+
 #TODO modify the code below after implementing delete account
 backend_url = "wlxyzlw.iptime.org"
 gui_url = "localhost"
