@@ -25,9 +25,6 @@ class SignIn extends React.Component {
                     <button type="submit" id='sign_in' className='sign_in'>Sign in</button>
                 </div>
             </form>
-                <div>
-                  <button id="sign_out" className='sign_out' onClick={()=>{window.open(home_url,'_self',false);this.props.onLogOut();}}>Sign out</button>
-                </div>
           </div>
         )
     }
@@ -37,8 +34,7 @@ let mapDispatchToProps = (dispatch) => {
     return {
         onClick: (username, password) => {
             dispatch(signIn(username, password))
-        },
-        onLogOut: () => dispatch(signOut())
+        }
     }
 }
 
