@@ -18,9 +18,13 @@ driver = webdriver.Chrome('/usr/local/bin/chromedriver')
 driver.get(sys.argv[1])
 
 check(driver, 'username_field')
+time.sleep(1)
 check(driver, 'password_field')
+time.sleep(1)
 check(driver, 'sign_in')
+time.sleep(1)
 check(driver, 'sign_up')
+time.sleep(1)
 
 driver.quit()
 print("Successful!")

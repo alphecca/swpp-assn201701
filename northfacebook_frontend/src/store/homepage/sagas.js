@@ -30,8 +30,6 @@ export function* sign_in(data) {
             console.log("Succeed to sign in!")
             alert("Succeed to sign in! :)")
             yield put(actions.authenticate(auth));
-//            window.open(fixed_url + "/main", "_self", false);
-//            console.log("asdffdsa");
         }
         else {
             console.log("Fail to sign in!")
@@ -63,14 +61,14 @@ export function *signUp(data) {
             responseType: 'json'
         });
         console.log("Succeed to sign up without exception!");
-        alert("Succeed to sign up! ><");
-        window.self.close();
+        alert("Succeed to sign up!");
+        window.location = '/main';
     }
     catch(error) {
         if(error.statusCode === 201) {
             console.log("Succeed to sign up without exception!");
-            alert("Succeed to sign up! ><");
-            window.self.close();
+            alert("Succeed to sign up!");
+            window.location = '/main';
         }
         else if(error.statusCode === 405) { //Temporary status code for duplicated username
             console.log("User already exist!");
@@ -82,7 +80,7 @@ export function *signUp(data) {
         }
         else {
             console.log("버그 잡아라 뉴스프링 깔깔깔");
-            alert("Fail to sign up! Try again ;o;");
+            alert("Fail to sign up! Try again!");
         }
     }
 }

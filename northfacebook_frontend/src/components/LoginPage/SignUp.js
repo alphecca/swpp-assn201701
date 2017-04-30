@@ -7,7 +7,7 @@ const SignUpUrl = window.location.href + 'sign_up'
 class SignUp extends React.Component {
     render() {
         const onNewTab = () => {
-            window.open(SignUpUrl, "SignUp page"); //TODO change url into account create page
+            window.location = '/sign_up';
             console.log("Redirect to signup page...");
         };
         return (
