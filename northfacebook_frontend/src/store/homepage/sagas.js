@@ -31,6 +31,10 @@ export function* sign_in(data) {
             alert("Succeed to sign in! :)")
             yield put(actions.authenticate(auth));
         }
+        else if (error.statusCode === 0) {
+            console.log("Backend server is not available!")
+            alert("Fail to sign in! Server is not available!")
+        }
         else {
             console.log("Fail to sign in!")
             alert("Fail to sign in! Try again. :(")
@@ -50,21 +54,23 @@ export function *watchSignUp() {
 export function *signUp(data) {
     yield call(console.log, "saga!");
     yield call(console.log, data.username + " " + data.password);
-    const auth = "Basic " + window.btoa(data.username+":"+data.password);
+//    const auth = "Basic " + window.btoa(data.username+":"+data.password);
     try {
         yield call(xhr.post, fixed_url+'users/', {
             headers: {
               'Content-Type': 'application/json',
-              Accept: 'application/json',
-              Authorization: auth
+              Accept: 'application/json'
             },
-            responseType: 'json'
+            responseType: 'json',
+            body: '{"username": "'+data.username+'", "password": "'+data.password+'"}'
         });
         console.log("Succeed to sign up without exception!");
         alert("Succeed to sign up!");
         window.location = '/main';
     }
     catch(error) {
+        console.log(error)
+        console.log(error.statusCode)
         if(error.statusCode === 201) {
             console.log("Succeed to sign up without exception!");
             alert("Succeed to sign up!");
@@ -75,8 +81,16 @@ export function *signUp(data) {
             alert("Username already exist! Try again!");
         }
         else if(error.statusCode === 404) {
-            console.log("Backend server not exist!");
             console.log("Backend server does not exist!");
+        }
+        else if(error.statusCode === 0) {
+            console.log("Backend server is not available!");
+            alert("Fail to sign up! Server is not available!");
+        }
+        else if(Object.keys(error).length === 0) {
+            console.log("Succeed to sign up without exception!");
+            alert("Succeed to sign up!");
+            window.location = '/main';
         }
         else {
             console.log("버그 잡아라 뉴스프링 깔깔깔");
