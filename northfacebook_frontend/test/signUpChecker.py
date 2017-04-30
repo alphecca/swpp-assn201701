@@ -1,5 +1,6 @@
 import time
 import sys
+import http, base64
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
@@ -83,6 +84,16 @@ signUpPageVerification(driver)
 signUpAlertVerification(driver)
 for i in range(1, 12):
     signUpPostVerification(driver, i)
+
+#TODO modify the code below after implementing delete account
+backend_url = "wlxyzlw.iptime.org"
+gui_url = "localhost"
+
+newUserAuth = base64.b64encode(b"test11:test11passwd").decode("ascii")
+requestServer = http.client.HTTPConnection(backend_url, 8000)
+requestServer.request('DELETE', "/users/", headers={
+    "Authorization": "Basic " + newUserAuth
+    })
 
 driver.quit()
 print("Successful!")
