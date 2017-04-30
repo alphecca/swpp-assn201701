@@ -6,13 +6,13 @@ class SignUpPage extends React.Component {
     render() {
         const onCreateSubmit = () => {
             if(this.username.value === "")
-                alert("아이디를 입력하세요");
+                alert("Enter the username");
             else if(this.password.value === "")
-                alert("비밀번호를 입력하세요");
+                alert("Enter the password");
             else if(this.pwdverification.value === "")
-                alert("비밀번호 확인란을 입력하세요");
+                alert("Enter the password verification");
             else if(this.password.value !== this.pwdverification.value)
-                alert("비밀번호가 일치하지 않습니다. 다시 시도해주세요");
+                alert("Password does not match");
             else
                 this.props.onClick(this.username.value, this.password.value)
         }
