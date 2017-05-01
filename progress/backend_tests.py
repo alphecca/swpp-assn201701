@@ -182,16 +182,19 @@ except Exception:
     pass
 
 for i in range(1,userN):
-    body = {"username": "test{0}".format(i), "password": "test{0}passwd".format(i)}
+    username = "test{0}".format(i)
+    password = "test{0}passwd".format(i)
+    body = {"username": username.encode("ascii"), "password": password.encode("ascii")} #encoded
     post_or_error_anon(link, body)
     method_not_allowed_or_error_anon_data("POST", link, body)
-body = {"username": "test{0}".format(userN)}
+
+body = {"username": "test{0}".format(userN).encode("ascii")} #encoded
 bad_request_or_error_anon_data("POST", link, body)
-body = {"username": "", "password": "test{0}passwd".format(userN)}
+body = {"username": "".encode("ascii"), "password": "test{0}passwd".format(userN).encode("ascii")} #encoded
 bad_request_or_error_anon_data("POST", link, body)
-body = {"username": "test{0}", "password": "".format(userN)}
+body = {"username": "test{0}".encode("ascii"), "password": "".format(userN).encode("ascii")} #encoded
 bad_request_or_error_anon_data("POST", link, body)
-body = {"password": "test{0}passwd".format(userN)}
+body = {"password": "test{0}passwd".format(userN).encode("ascii")} #encoded
 bad_request_or_error_anon_data("POST", link, body)
 
 
