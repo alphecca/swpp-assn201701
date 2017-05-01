@@ -29,8 +29,8 @@ def user_list(request):
         # requested data should contain username, password attributes.
         auth = request.data
         try: # if request is bad request, return 400
-            username = decode(auth['username'])
-            pwd = decode(auth['password'])
+            username = auth['username']
+            pwd = auth['password']
             if (username == '' or pwd == ''):
                 return Response(status = status.HTTP_400_BAD_REQUEST)
         except KeyError:
@@ -47,7 +47,7 @@ def user_list(request):
         # requested data should contain username attribute.
         request.user.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
-        
+
 """
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()

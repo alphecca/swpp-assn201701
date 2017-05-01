@@ -5,6 +5,7 @@ from homepage import views
 urlpatterns = [
     url(r'^auth/$', views.AuthList.as_view()),
     url(r'^users/$', views.user_list),
+    url(r'^users$', views.user_list),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
