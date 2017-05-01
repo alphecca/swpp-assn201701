@@ -67,8 +67,19 @@ def signUpPostVerification(driver, testNum):
     driver.find_element_by_id('pwdverification_field').send_keys(password)
     driver.find_element_by_id('sign_up').click()
     time.sleep(1)
-    alertMessageVerification(driver, "Username already exist! Try again!" if testNum<= 10 else "Succeed to sign up!")
+    alertMessageVerification(driver, "Username already exist! Try again!" if testNum<= 9 else "Succeed to sign up!")
 
+def deleteUser_test10():
+    backend_url = "wlxyzlw.iptime.org"
+    gui_url = "localhost"
+    
+    newUserAuth = base64.b64encode(b"test10:test10passwd").decode("ascii")
+    requestServer = http.client.HTTPConnection(backend_url, 8000) # TODO if the port number is changed, please change this code.
+    requestServer.request('DELETE', "/users/", headers={
+        "Authorization": "Basic " + newUserAuth
+    })
+
+deleteUser_test10()    
 driver = webdriver.Chrome('/usr/local/bin/chromedriver')
 driver.get(sys.argv[1])
 check(driver, 'sign_up')
@@ -78,20 +89,10 @@ driver.find_element_by_id('sign_up').click()
 time.sleep(1)
 signUpPageVerification(driver)
 signUpAlertVerification(driver)
-for i in range(1, 12):
+for i in range(1, 11):
     signUpPostVerification(driver, i)
 
-checker(driver, "sign_out")
-
-#TODO modify the code below after implementing delete account
-backend_url = "wlxyzlw.iptime.org"
-gui_url = "localhost"
-
-newUserAuth = base64.b64encode(b"test11:test11passwd").decode("ascii")
-requestServer = http.client.HTTPConnection(backend_url, 8000)
-requestServer.request('DELETE', "/users/", headers={
-    "Authorization": "Basic " + newUserAuth
-    })
+check(driver, "sign_out")
 
 driver.quit()
 print("Successful!")
