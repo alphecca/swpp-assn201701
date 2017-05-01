@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 from homepage.serializers import UserSerializer
 from homepage.permissions import IsAuthenticatedOrPOSTOnly
 
+from base64 import b64decode as decode
+
 # Create your views here.
 class AuthList(APIView):
     permission_classes = (IsAuthenticated,)
@@ -27,8 +29,8 @@ def user_list(request):
         # requested data should contain username, password attributes.
         auth = request.data
         try: # if request is bad request, return 400
-            username = auth['username']
-            pwd = auth['password']
+            username = decode(auth['username'])
+            pwd = decode(auth['password'])
             if (username == '' or pwd == ''):
                 return Response(status = status.HTTP_400_BAD_REQUEST)
         except KeyError:

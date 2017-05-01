@@ -34,7 +34,7 @@ except Exception:
     pass
 
 for i in range(1,userN):
-    body = {"username": "test{0}".format(i), "password": "test{0}passwd".format(i)}
+    body = {"username": "test{0}".format(i).encode("ascii"), "password": "test{0}passwd".format(i).encode("ascii")}
     post_or_error_anon(link, body)
 
 print("INITIALIZE SUCCESSFUL")
