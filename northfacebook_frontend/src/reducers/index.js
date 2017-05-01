@@ -7,7 +7,9 @@ const homepage = (state = homepageInitialState, action) => {
         case 'authenticate':
             return Object.assign({}, state, {
                 authorization: action.auth
-            });
+            })
+        case 'SIGN_OUT':
+            return homepageInitialState //go back to initial state when sign out
         default:
             return state
     }

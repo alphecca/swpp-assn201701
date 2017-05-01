@@ -21,6 +21,7 @@ export function* sign_in(data) {
         yield call(xhr.get, auth_check_url/* TODO I need a backend page that checks if the user is authenticated user when frontend requests GET method to this. */, {headers: {'Content-Type': 'application/json', Accept: 'application/json', Authorization: auth}, responseType: 'json'})
         console.log("Succeed to sign in without exception!")
         alert("Succeed to sign in! :)")
+        window.location = '/main';
         yield put(actions.authenticate(auth));
     }
     catch(error) {
@@ -29,6 +30,10 @@ export function* sign_in(data) {
             console.log("Succeed to sign in!")
             alert("Succeed to sign in! :)")
             yield put(actions.authenticate(auth));
+        }
+        else if (error.statusCode === 0) {
+            console.log("Backend server is not available!")
+            alert("Fail to sign in! Server is not available!")
         }
         else {
             console.log("Fail to sign in!")
@@ -49,50 +54,61 @@ export function *watchSignUp() {
 export function *signUp(data) {
     yield call(console.log, "saga!");
     yield call(console.log, data.username + " " + data.password);
-    const auth = "Basic " + window.btoa(data.username+":"+data.password);
+//    const auth = "Basic " + window.btoa(data.username+":"+data.password);
     try {
         yield call(xhr.post, fixed_url+'users/', {
             headers: {
               'Content-Type': 'application/json',
-              Accept: 'application/json',
-              Authorization: auth
+              Accept: 'application/json'
             },
-            responseType: 'json'
+            responseType: 'json',
+            body: '{"username": "'+data.username+'", "password": "'+data.password+'"}'
         });
         console.log("Succeed to sign up without exception!");
-        alert("Succeed to sign up! ><");
-        window.self.close();
+        alert("Succeed to sign up!");
+        window.location = '/main';
     }
     catch(error) {
+        console.log(error)
+        console.log(error.statusCode)
         if(error.statusCode === 201) {
             console.log("Succeed to sign up without exception!");
-            alert("Succeed to sign up! ><");
-            window.self.close();
+            alert("Succeed to sign up!");
+            window.location = '/main';
         }
-        else if(error.statusCode === 400) { //Temporary status code for duplicated username
+        else if(error.statusCode === 405) { //Temporary status code for duplicated username
             console.log("User already exist!");
             alert("Username already exist! Try again!");
         }
         else if(error.statusCode === 404) {
-            console.log("Backend server not exist!");
             console.log("Backend server does not exist!");
+        }
+        else if(error.statusCode === 0) {
+            console.log("Backend server is not available!");
+            alert("Fail to sign up! Server is not available!");
+        }
+        else if(Object.keys(error).length === 0) {
+            console.log("Succeed to sign up without exception!");
+            alert("Succeed to sign up!");
+            window.location = '/main';
         }
         else {
             console.log("버그 잡아라 뉴스프링 깔깔깔");
-            alert("Fail to sign up! Try again ;o;");
+            alert("Fail to sign up! Try again!");
         }
     }
 }
 //SIGN UP END
 //SIGN OUT
-export function* watchSignOut(){
-    while (true){
+export function* watchSignOut() {
+    while (true) {
       yield take(actions.SIGN_OUT)
       yield call(sign_out)
     }
 }
+
 export function* sign_out(){
-    console.log("Succeed to sign out!")
+    yield call(console.log, "Succeed to sign out!")
 }
 //SIGN OUT END
 
