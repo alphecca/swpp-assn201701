@@ -84,7 +84,6 @@ def signInOutPageVerification(driver, testNum):
     driver.find_element_by_id('sign_out').click()
     time.sleep(1)
     #no id, no pw
-    signUpPageVerification(driver)
     driver.find_element_by_id('sign_in').click()
     time.sleep(1)
     alertMessageVerification(driver, "Fail to sign in! Try again. :(")
