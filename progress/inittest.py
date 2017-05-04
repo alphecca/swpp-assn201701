@@ -1,7 +1,13 @@
 import json
 import requests
+import sys
 from time import sleep
 from random import randint
+
+if len(sys.argv) != 2:
+    print("inittest.py <url>")
+    print("Example: initest.py http://wlxyzlw.iptime.org:8000/")
+    exit(1)
 
 def create_users(N):
     ls = []
@@ -23,7 +29,7 @@ def post_or_error_anon(link, data):
 userN = 10
 user_pairs = create_users(userN)
 
-link = "http://wlxyzlw.iptime.org:8000/users/" # TODO If you want to change port of url, revise this.
+link = sys.argv[1] + "users/" # TODO If you want to change port of url, revise this.
 print("1. Creating new users.")
 try:
     for i in range(1,userN+1):
