@@ -1,9 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { signIn } from '../../actions';
-//import './styles.css';
-
-//var home_url ='http://wlxyzlw.iptime.org:3000'
 
 class SignIn extends React.Component {
     render() {
