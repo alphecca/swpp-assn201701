@@ -34,12 +34,10 @@ def article_list(request):
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
-
     elif request.method == 'POST':
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
-
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -105,7 +103,6 @@ def like(request,pk):
         serializer = LikeSerializer(data=request.data)
         if like.filter(owner=request.user.id).count()!=0:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
         if serializer.is_valid():
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)

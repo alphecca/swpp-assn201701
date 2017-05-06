@@ -1,7 +1,8 @@
 
 const homepageInitialState = {
     authorization: "",
-    articles: []
+    articles: [],
+    parent_article: null
 };
 
 const homepage = (state = homepageInitialState, action) => {
@@ -9,7 +10,8 @@ const homepage = (state = homepageInitialState, action) => {
         case 'AUTHENTICATE': {
             return Object.assign({}, state, {
                 authorization: window.atob(action.auth),
-                articles: state.articles
+                articles: state.articles,
+                parent_article: state.parent_article
             })
         }
         case 'SIGN_OUT': {
@@ -22,7 +24,16 @@ const homepage = (state = homepageInitialState, action) => {
         case 'SET_STATE': {
             return Object.assign({}, state, {
                 authorization: action.state.authorization,
-                articles: action.state.articles
+                articles: action.state.articles,
+                parent_article: state.parent_article
+            })
+        }
+        case 'ARTICLE_DETAIL': {
+            alert(action.id)
+            return Object.assign({}, state, {
+                authorization: state.authorization,
+                articles: state.articles,
+                parent_article: action.id
             })
         }
         default: {

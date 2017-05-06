@@ -27,7 +27,7 @@ let mapStateToProps = (state) => {
                               likeButtonId: "a"+article.id+"_like_button_field",
                               editButtonId: "a"+article.id+"_edit_button_field",
                               deleteButtonId: "a"+article.id+"_delete_button_field",
-                              replyButtonId: "a"+article.id+"_reply_button_field",
+                              detailButtonId: "a"+article.id+"_detail_button_field",
                               replyNum: article.children_num
                           })
                           )

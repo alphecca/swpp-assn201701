@@ -63,8 +63,23 @@ export const setState = (state) => {
     }
 }
 
+export const articleDetail = (id) => {
+    return {
+        type: 'ARTICLE_DETAIL',
+        id: id
+    }
+}
+
 export const testState = () => {
     return {
         type: 'TEST_STATE',
+    }
+}
+
+export const postLike = (id, auth) => {
+    return {
+        type: 'POST_LIKE',
+        id: id,
+        auth: auth
     }
 }

@@ -10,7 +10,7 @@ var xhr = require('xhr-promise-redux');
 //TODO change before send pull request
 const fixed_url = "http://wlxyzlw.iptime.org:7777/";
 const auth_check_url = fixed_url+'auth/';
-const article_get_url = fixed_url+'mainpage/';
+//const article_get_url = fixed_url+'mainpage/';
 
 const history = createBrowserHistory();
 // redux-saga-router : sharing state with other pages
@@ -20,27 +20,34 @@ const routes = {
         yield spawn(watchSignIn)
     },
     '/main': function *timeLinePageSaga() {
-        yield spawn(updateState)
+        yield spawn(updateState, 'mainpage/')
         yield spawn(watchSignOut)
-        yield spawn(watchReply)
+        yield spawn(watchWrite)
+        yield spawn(watchLike)
+        yield spawn(watchDetail)
+    },
+    '/article/:id?': function *articleDetailPageSaga() {
+        yield spawn(updateDetailPage)
     },
     '/sign_up': function *signUpPageSaga() {
         yield spawn(watchSignUp)
     },
-    '/write': function *WritingSaga(){
-        yield spawn(updateState)
+    '/write': function *writeArticleSaga(){
+        yield spawn(updateState, 'mainpage/')
         yield spawn(watchSignOut)
     }
 }
 
-function* getNewState(state) {
+function* getNewState(state, path) {
+    console.log(path)
     let data;
     try {
         console.log("hoeee")
-        data = yield call(xhr.get, article_get_url) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
+        data = yield call(xhr.get, fixed_url+path) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
         return Object.assign({}, state, {
             authorization: state.authorization,
-            articles: data.body
+            articles: data.body,
+            parent_article: state.parent_article
         })
     }
     catch(error) {
@@ -49,7 +56,8 @@ function* getNewState(state) {
             console.log("it's okay")
             return Object.assign({}, state, {
                 authorization: state.authorization,
-                articles: data.body
+                articles: data.body,
+                parent_article: state.parent_article
             })
         }
         else if(error.statusCode === 0) {
@@ -62,6 +70,7 @@ function* getNewState(state) {
     }
 }
 
+/////SIGN IN PAGE/////
 //SIGN IN
 function* precheckLogin() {
     const data = yield select();
@@ -104,7 +113,6 @@ export function* sign_in(data) {
             alert("Succeed to sign in! :)")
             yield put(actions.authenticate(encodedData));
             const newState = yield select()
-//            const newState = yield call(getNewState, history.location.state)
             history.push('/main', newState)
             yield put(actions.changeUrl('/main'));
         }
@@ -120,6 +128,7 @@ export function* sign_in(data) {
 }
 //SIGN IN END
 
+/////SIGN UP PAGE/////
 //SIGN UP
 export function *watchSignUp() {
     while(true) {
@@ -190,6 +199,8 @@ export function *signUp(data) {
     }
 }
 //SIGN UP END
+
+/////TIME LINE PAGE/////
 //SIGN OUT
 export function* watchSignOut() {
     while (true) {
@@ -207,8 +218,7 @@ export function* sign_out(){
 //SIGN OUT END
 
 //WATCH REPLY
-
-export function* watchReply(){
+export function* watchWrite(){
     while(true) {
         console.log("댓글을 써라 노딩코예야")
         yield take('WRITE_ARTICLE')
@@ -223,17 +233,66 @@ export function* watchReply(){
 //URL CHANGE
 //TODO change HARD CODING into more beautiful code
 //TODO remove statusCode 0 error
-function *updateState() {
+function *updateState(path) {
     console.log(history.location.state);
     if(history.location.state === undefined || history.location.state.authorization === "")
         yield put(actions.changeUrl('/'))
     else {
-        const newState = yield call(getNewState, history.location.state)
+        const newState = yield call(getNewState, history.location.state, path)
         if(newState !== null) {
             yield put(actions.setState(newState))
             return
         }
     }
+}
+
+//WATCH LIKE
+function *watchLike() {
+    while(true) {
+        const data = yield take('POST_LIKE')
+        console.log(data)
+        try {
+            yield call(xhr.post, fixed_url+'article/'+data.id+'/like/', {
+            headers: {
+              'Authorization': 'Basic '+ window.btoa(data.auth),
+              'Content-Type': 'application/json',
+              Accept: 'application/json'
+            },
+            responseType: 'json',
+        });
+        }
+        catch(error) {
+            console.log(error)
+        }
+    }
+}
+
+//WATCH ARTICLE DETAIL
+function *watchDetail() {
+    while(true) {
+        const data = yield take('ARTICLE_DETAIL')
+        alert('detail button clicked')
+        const state = yield select()
+        alert(JSON.stringify(data))
+        const path = 'article/'+data.id
+        const newState = yield call(getNewState, state, path)
+//        alert(JSON.stringify(newState))
+        history.push(path, newState)
+        alert(JSON.stringify(history.location))
+        yield put(actions.changeUrl(data.id))
+    }
+}
+
+
+/////ARTICLE DETAIL PAGE/////
+function *updateDetailPage() {
+    console.log("welcome to article detail page")
+    console.log(history.location)
+    let data = yield select()
+//    alert(JSON.stringify(history.location.state))
+    yield call(updateState, 'article/'+data.parent_article)
+    data = yield select()
+    alert(JSON.stringify(data))
 }
 
 export default function* saga() {
