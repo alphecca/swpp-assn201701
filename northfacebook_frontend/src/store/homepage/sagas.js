@@ -7,8 +7,9 @@ import {createBrowserHistory} from 'history'
 
 var xhr = require('xhr-promise-redux');
 
-const auth_check_url = 'http://wlxyzlw.iptime.org:8888/auth/';//TODO change before send pull request
-const fixed_url = "http://wlxyzlw.iptime.org:8888/";
+//TODO change before send pull request
+const fixed_url = "http://wlxyzlw.iptime.org:8000/";
+const auth_check_url = fixed_url+'auth/';
 
 const history = createBrowserHistory();
 // redux-saga-router : sharing state with other pages
@@ -24,8 +25,8 @@ const routes = {
         yield spawn(watchSignUp)
     },
     '/write': function *WritingSaga(){
-        yield spawn(enterWriteUrl)
-//        yield spawn(watchWrite)
+//        yield spawn(enterWriteUrl)
+        yield spawn(watchWrite)
     }
 }
 
