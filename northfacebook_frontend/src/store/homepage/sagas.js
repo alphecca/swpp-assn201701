@@ -16,12 +16,10 @@ const history = createBrowserHistory();
 // redux-saga-router : sharing state with other pages
 const routes = {
     '/': function *loginPageSaga() {
+        yield spawn(precheckLogin) //TODO 로그인 후 '/' 접근시 '/main'으로 redirect
         yield spawn(watchSignIn)
     },
     '/main': function *timeLinePageSaga() {
-//        const data = yield call(xhr.get, article_get_url)
-//        console.log("verification: ", JSON.stringify(data))
-//        console.log(data.statusCode)
         yield spawn(updateState)
         yield spawn(watchSignOut)
         yield spawn(watchReply)
@@ -38,11 +36,8 @@ const routes = {
 function* getNewState(state) {
     let data;
     try {
-        data = yield call(xhr.get, article_get_url, {
-            headers: {
-                'Content-Type': 'text/plain'
-            }
-        }) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
+        console.log("hoeee")
+        data = yield call(xhr.get, article_get_url) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
         return Object.assign({}, state, {
             authorization: state.authorization,
             articles: data.body
@@ -51,13 +46,15 @@ function* getNewState(state) {
     catch(error) {
         console.log(error)
         if(error.statusCode === 200) {
+            console.log("it's okay")
             return Object.assign({}, state, {
                 authorization: state.authorization,
                 articles: data.body
             })
         }
         else if(error.statusCode === 0) {
-            alert("Backend server not available!")
+            alert("Temporal Server Error")
+            return null
         }
         else {
             alert("Problem occured when loading the timeline!")
@@ -66,6 +63,13 @@ function* getNewState(state) {
 }
 
 //SIGN IN
+function* precheckLogin() {
+    const data = yield select();
+    console.log(data)
+    if(data.authorization !== "")
+        yield put(actions.changeUrl('/main'))
+}
+
 export function* watchSignIn() {
     while (true) {
         console.log("watch sign in")
@@ -89,19 +93,20 @@ export function* sign_in(data) {
         alert("Succeed to sign in! :)")
         yield put(actions.authenticate(encodedData))
         const state = yield select()
-//        const newState = yield call(getNewState, state)
         history.push('/main', state)
         yield put(actions.changeUrl('/main'))
     }
     catch(error) {
         console.log(error)
+        console.log("asdfasdfasdf")
         if (error.statusCode === 200) { // Success!
             console.log("Succeed to sign in!")
             alert("Succeed to sign in! :)")
-            yield put(actions.authenticate(auth));
-            const state = yield select()
-            history.push('/main', state)
-            yield put({type: 'CHANGE_URL', path: '/main'})
+            yield put(actions.authenticate(encodedData));
+            const newState = yield select()
+//            const newState = yield call(getNewState, history.location.state)
+            history.push('/main', newState)
+            yield put(actions.changeUrl('/main'));
         }
         else if (error.statusCode === 0) {
             console.log("Backend server is not available!")
@@ -217,14 +222,20 @@ export function* watchReply(){
 
 //URL CHANGE
 //TODO change HARD CODING into more beautiful code
+//TODO remove statusCode 0 error
 function *updateState() {
-    console.log(history.location)
+    while(true) {
+    console.log(history.location.state);
+//    alert(JSON.stringify(history.location.state))
     if(history.location.state === undefined || history.location.state.authorization === "")
         yield put(actions.changeUrl('/'))
     else {
-        const state = yield select()
-        const newState = yield call(getNewState, state)
-        yield put(actions.setState(newState))
+        const newState = yield call(getNewState, history.location.state)
+        if(newState !== null) {
+            yield put(actions.setState(newState))
+            return
+        }
+    }
     }
 }
 

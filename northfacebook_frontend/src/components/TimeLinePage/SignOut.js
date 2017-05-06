@@ -6,9 +6,15 @@ class SignOut extends React.Component {
     render() {
         return (
                 <div>
-                    <button id="sign_out" className="sign_out" onClick={this.props.onLogOut}>Sign Out</button>
+                {this.props.username} logged in!<button id="sign_out" className="sign_out" onClick={this.props.onLogOut}>Sign Out</button>
                 </div>
                );
+    }
+}
+
+let mapStateToProps = (state) => {
+    return {
+        username: Object.assign(state.authorization).split(":")[0],
     }
 }
 
@@ -18,6 +24,6 @@ let mapDispatchToProps = (dispatch) => {
     }
 }
 
-SignOut = connect(undefined, mapDispatchToProps)(SignOut);
+SignOut = connect(mapStateToProps, mapDispatchToProps)(SignOut);
 
 export default SignOut
