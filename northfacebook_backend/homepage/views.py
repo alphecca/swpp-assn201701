@@ -15,7 +15,7 @@ from base64 import b64decode as decode
 @api_view(['GET', 'POST'])
 def main_list(request):
     if request.method == 'GET':
-        articles = Article.objects.filter(paren=0)
+        articles = Article.objects.filter(parent=0)
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
 
