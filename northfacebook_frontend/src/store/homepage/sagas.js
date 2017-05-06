@@ -8,8 +8,9 @@ import {createBrowserHistory} from 'history'
 var xhr = require('xhr-promise-redux');
 
 //TODO change before send pull request
-const fixed_url = "http://wlxyzlw.iptime.org:8000/";
+const fixed_url = "http://wlxyzlw.iptime.org:7777/";
 const auth_check_url = fixed_url+'auth/';
+const article_get_url = fixed_url+'mainpage/';
 
 const history = createBrowserHistory();
 // redux-saga-router : sharing state with other pages
@@ -18,15 +19,16 @@ const routes = {
         yield spawn(watchSignIn)
     },
     '/main': function *timeLinePageSaga() {
-        yield spawn(changeUrl)
+        yield spawn(updateState)
         yield spawn(watchSignOut)
+        yield spawn(watchReply)
     },
     '/sign_up': function *signUpPageSaga() {
         yield spawn(watchSignUp)
     },
     '/write': function *WritingSaga(){
-//        yield spawn(enterWriteUrl)
-        yield spawn(watchWrite)
+        yield spawn(updateState)
+        yield spawn(watchSignOut)
     }
 }
 
@@ -43,7 +45,7 @@ export function* watchSignIn() {
 export function* sign_in(data) {
     const preCheck = yield select()
     if(preCheck.authorization !== "") {
-        yield put({type: 'CHANGE_URL', path: '/main'})
+        yield put(actions.changeUrl('/main'))
     }
     const encodedData = window.btoa(data.username+':'+data.password)
     const auth = "Basic " + encodedData
@@ -53,8 +55,9 @@ export function* sign_in(data) {
         console.log("Succeed to sign in without exception!")
         alert("Succeed to sign in! :)")
         yield put(actions.authenticate(encodedData))
-        const state = yield select()
-        history.push('/main', state)
+//        const update = yield call(xhr.get, article_get_url)
+        const newState = yield select()
+        history.push('/main', newState)
         yield put({type: 'CHANGE_URL', path: '/main'})
     }
     catch(error) {
@@ -92,7 +95,7 @@ export function *watchSignUp() {
 export function *signUp(data) {
     const preCheck = yield select()
     if(preCheck.authorization !== "") {
-        yield put({type: 'CHANGE_URL', path: '/main'})
+        yield put(actions.changeUrl('/main'))
     }
     yield call(console.log, "saga!");
     yield call(console.log, data.username + " " + data.password);
@@ -111,8 +114,7 @@ export function *signUp(data) {
         yield put(actions.authenticate(auth))
         const state = yield select()
         history.push('/main', state)
-        yield put({type: 'CHANGE_URL', path: '/main'})
-
+        yield put(actions.changeUrl('/main'))
     }
     catch(error) {
         console.log(error)
@@ -123,7 +125,7 @@ export function *signUp(data) {
             yield put(actions.authenticate(auth));
             const state = yield select()
             history.push('/main', state)
-            yield put({type: 'CHANGE_URL', path: '/main'})
+            yield put(actions.changeUrl('/main'))
         }
         else if(error.statusCode === 405) { //Temporary status code for duplicated username
             console.log("User already exist!");
@@ -139,10 +141,9 @@ export function *signUp(data) {
         else if(Object.keys(error).length === 0) {
             console.log("Succeed to sign up without exception!");
             alert("Succeed to sign up!");
-            yield put(actions.authenticate(auth));
             const state = yield select()
             history.push('/main', state)
-            yield put({type: 'CHANGE_URL', path: '/main'})
+            yield put(actions.changeUrl('/main'))
         }
         else {
             console.log("버그 잡아라 뉴스프링 깔깔깔");
@@ -161,36 +162,47 @@ export function* watchSignOut() {
 }
 
 export function* sign_out(){
-    yield call(console.log, "Succeed to sign out!")
+    const state = yield select()
+    history.push('/', state)
+    yield put(actions.changeUrl('/'))
 }
 //SIGN OUT END
 
+//WATCH REPLY
+
+export function* watchReply(){
+    while(true) {
+        console.log("댓글을 써라 노딩코예야")
+        yield take('WRITE_ARTICLE')
+        console.log("watch reply")
+        const state = yield select()
+        history.push('/write', state)
+        yield put(actions.changeUrl('/write'))
+    }
+}
+
+
 //URL CHANGE
 //TODO change HARD CODING into more beautiful code
-function *changeUrl() {
+function *updateState() {
     console.log(history.location)
     if(history.location.state === undefined || history.location.state.authorization === "")
-        yield put({type: 'CHANGE_URL', path: '/'})
-    else
-        yield put({type: 'SET_STATE', state: history.location})
+        yield put(actions.changeUrl('/'))
+    else {
+/*        const update = yield call(xhr.get, article_get_url)
+        alert(JSON.stringify(update.body))
+        alert(JSON.stringify(history))
+        const state = Object.assign({}, history.location.state, {
+            authorization: history.location.state.authorization,
+            articles: update.body
+        })*/
+        alert("test")
+        alert(JSON.stringify(history.location.state))
+        yield put(actions.setState(history.location.state))
+    }
 }
 
 export default function* saga() {
     yield fork(router, history, routes);
-}
-
-function *enterWriteUrl(){
-     console.log(history.location)
-    if(history.location.state === undefined)
-        yield put({type: 'CHANGE_URL', path: '/'})
-    else
-        yield put({type: 'SET_STATE', state: history.location})
-}
-export function* watchWrite(){
-   while(true){
-     console.log("Enter writing page")
-     yield take(actions.SIGN_OUT)
-     yield fork(sign_out)
-   } 
 }
 
