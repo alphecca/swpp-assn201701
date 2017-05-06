@@ -22,6 +22,10 @@ const routes = {
     },
     '/sign_up': function *signUpPageSaga() {
         yield spawn(watchSignUp)
+    },
+    '/write': function *Saga(){
+        yield put ({type: 'CHANGE_URL', path: '/write'})
+//        yield spawn(watchWrite)
     }
 }
 
@@ -33,7 +37,10 @@ export function* watchSignIn() {
         yield call(sign_in, data)
     }
 }
-
+//TODO
+//export function* watchWrite(){
+// console.log("Enter writing page")
+//}
 //TODO hard-coding into beautiful code: redirect when logged in
 export function* sign_in(data) {
     const preCheck = yield select()
