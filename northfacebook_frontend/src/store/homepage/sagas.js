@@ -19,6 +19,9 @@ const routes = {
         yield spawn(watchSignIn)
     },
     '/main': function *timeLinePageSaga() {
+//        const data = yield call(xhr.get, article_get_url)
+//        console.log("verification: ", JSON.stringify(data))
+//        console.log(data.statusCode)
         yield spawn(updateState)
         yield spawn(watchSignOut)
         yield spawn(watchReply)
@@ -29,6 +32,36 @@ const routes = {
     '/write': function *WritingSaga(){
         yield spawn(updateState)
         yield spawn(watchSignOut)
+    }
+}
+
+function* getNewState(state) {
+    let data;
+    try {
+        data = yield call(xhr.get, article_get_url, {
+            headers: {
+                'Content-Type': 'text/plain'
+            }
+        }) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
+        return Object.assign({}, state, {
+            authorization: state.authorization,
+            articles: data.body
+        })
+    }
+    catch(error) {
+        console.log(error)
+        if(error.statusCode === 200) {
+            return Object.assign({}, state, {
+                authorization: state.authorization,
+                articles: data.body
+            })
+        }
+        else if(error.statusCode === 0) {
+            alert("Backend server not available!")
+        }
+        else {
+            alert("Problem occured when loading the timeline!")
+        }
     }
 }
 
@@ -55,10 +88,10 @@ export function* sign_in(data) {
         console.log("Succeed to sign in without exception!")
         alert("Succeed to sign in! :)")
         yield put(actions.authenticate(encodedData))
-//        const update = yield call(xhr.get, article_get_url)
-        const newState = yield select()
-        history.push('/main', newState)
-        yield put({type: 'CHANGE_URL', path: '/main'})
+        const state = yield select()
+//        const newState = yield call(getNewState, state)
+        history.push('/main', state)
+        yield put(actions.changeUrl('/main'))
     }
     catch(error) {
         console.log(error)
@@ -189,16 +222,9 @@ function *updateState() {
     if(history.location.state === undefined || history.location.state.authorization === "")
         yield put(actions.changeUrl('/'))
     else {
-/*        const update = yield call(xhr.get, article_get_url)
-        alert(JSON.stringify(update.body))
-        alert(JSON.stringify(history))
-        const state = Object.assign({}, history.location.state, {
-            authorization: history.location.state.authorization,
-            articles: update.body
-        })*/
-        alert("test")
-        alert(JSON.stringify(history.location.state))
-        yield put(actions.setState(history.location.state))
+        const state = yield select()
+        const newState = yield call(getNewState, state)
+        yield put(actions.setState(newState))
     }
 }
 

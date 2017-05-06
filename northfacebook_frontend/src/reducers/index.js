@@ -20,15 +20,12 @@ const homepage = (state = homepageInitialState, action) => {
             return state
         }
         case 'SET_STATE': {
-//            alert(JSON.stringify(action.state))
-//            alert(JSON.stringify(action.state.articles))
             return Object.assign({}, state, {
                 authorization: action.state.authorization,
                 articles: action.state.articles
             })
         }
         default: {
-//            alert(JSON.stringify(state))
             return state
         }
    }

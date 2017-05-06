@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {writeArticle} from '../../actions'
 
@@ -18,20 +19,17 @@ class Article extends React.Component {
     }
 }
 
-let mapStateToProps = (state) => {
-    return {
-        writerId: "writer",
-        username: Object.assign(state.authorization).split(":")[0],
-        textId: "text",
-        articleText: "종강하고 싶다",
-        likeNum: "4444",
-        likeButtonId: "like",
-        editButtonId: "edit",
-        deleteButtonId: "delete",
-        replyButtonId: "reply",
-        replyNum: "4444",
-        state: Object.assign(state)
-    }
+Article.propTypes = {
+    writerId: PropTypes.string.isRequired,
+    username: PropTypes.number.isRequired,
+    textId: PropTypes.string.isRequired,
+    articleText: PropTypes.string.isRequired,
+    likeNum: PropTypes.number.isRequired,
+    likeButtonId: PropTypes.string.isRequired,
+    editButtonId: PropTypes.string.isRequired,
+    deleteButtonId: PropTypes.string.isRequired,
+    replyButtonId: PropTypes.string.isRequired,
+    replyNum: PropTypes.number.isRequired
 }
 
 let mapDispatchToProps = (dispatch) => {
@@ -43,6 +41,8 @@ let mapDispatchToProps = (dispatch) => {
     }
 }
 
-Article = connect(mapStateToProps, mapDispatchToProps)(Article)
+Article = connect(undefined, mapDispatchToProps)(Article)
+
+//Article = connect(mapStateToProps, mapDispatchToProps)(Article)
 
 export default Article

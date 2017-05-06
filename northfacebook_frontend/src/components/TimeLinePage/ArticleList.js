@@ -8,9 +8,7 @@ class ArticleList extends React.Component {
         const list = this.props.articles
         return (
                 <div>
-                {list.map(article => <Article key={article} />)}
-                <p>{JSON.stringify(this.props.articles)}</p>
-                <button onClick={() => alert(typeof(this.props.articles))}> tmp </button>
+                {list.map(article => <Article key={article.id} id={"a"+article.id+"_field"}{...article}/>)}
                 </div>
                )
     }
@@ -18,8 +16,22 @@ class ArticleList extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
-        articles: [1, 2, 3]
-//        articles: Object.assign(state.articles)
+        articles: Object.assign(state.articles).slice(0, 5).map(article => JSON.parse(JSON.stringify(
+                          {
+                              id: Number(article.id),
+                              writerId: "a"+article.id+"_writer_field",
+                              username: article.owner,
+                              textId: "a"+article.id+"_text_field",
+                              articleText: article.text,
+                              likeNum: article.like_num,
+                              likeButtonId: "a"+article.id+"_like_button_field",
+                              editButtonId: "a"+article.id+"_edit_button_field",
+                              deleteButtonId: "a"+article.id+"_delete_button_field",
+                              replyButtonId: "a"+article.id+"_reply_button_field",
+                              replyNum: article.children_num
+                          })
+                          )
+                          )
     }
 }
 

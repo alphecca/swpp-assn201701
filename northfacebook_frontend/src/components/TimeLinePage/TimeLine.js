@@ -8,7 +8,6 @@ class TimeLine extends React.Component {
         return (
                 <div>
                     <ArticleList />
-                    <button onClick={this.props.onClick}>check state</button>
                 </div>
                );
     }
