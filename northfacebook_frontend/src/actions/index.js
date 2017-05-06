@@ -33,9 +33,38 @@ export const signOut = () => {
 }
 export const SIGN_OUT = 'SIGN_OUT'
 export function addArticle (text){
+    alert(text)
     return {
       type: 'ADD_ARTICLE',
       text,
     }
 }
 export const ADD_ARTICLE = 'ADD_ARTICLE'
+
+// Move to another page
+export const changeUrl = (pathname) => {
+    return {
+        type: 'CHANGE_URL',
+        path: pathname
+    }
+}
+
+// Send redirection request to /write
+export const writeArticle = () => {
+    return {
+        type: 'WRITE_ARTICLE'
+    }
+}
+
+export const setState = (state) => {
+    return {
+        type: 'SET_STATE',
+        state: state
+    }
+}
+
+export const testState = () => {
+    return {
+        type: 'TEST_STATE',
+    }
+}

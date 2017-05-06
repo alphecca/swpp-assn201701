@@ -1,13 +1,15 @@
 
 const homepageInitialState = {
-    authorization: ""
+    authorization: "",
+    articles: []
 };
 
 const homepage = (state = homepageInitialState, action) => {
     switch (action.type) {
         case 'AUTHENTICATE': {
             return Object.assign({}, state, {
-                authorization: window.atob(action.auth)
+                authorization: window.atob(action.auth),
+                articles: state.articles
             })
         }
         case 'SIGN_OUT': {
@@ -18,10 +20,17 @@ const homepage = (state = homepageInitialState, action) => {
             return state
         }
         case 'SET_STATE': {
-            return history.state.state
+//            alert(JSON.stringify(action.state))
+//            alert(JSON.stringify(action.state.articles))
+            return Object.assign({}, state, {
+                authorization: action.state.authorization,
+                articles: action.state.articles
+            })
         }
-        default:
+        default: {
+//            alert(JSON.stringify(state))
             return state
+        }
    }
 }
 

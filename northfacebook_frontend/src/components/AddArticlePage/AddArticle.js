@@ -4,11 +4,15 @@ import {addArticle} from '../../actions'
 
 class AddArticle extends React.Component{
   render(){
-    let textid = this.props.textId+1//new artice's id(lastid+1)
+//    let textid = this.props.textId+1//new artice's id(lastid+1)
+    let text = "asdf"
+    const onPostClick = () => {
+        this.props.onClick(text)
+    }
     return(
       <div>
-        <textarea id={'post'+textid+'text_field'} cols="40" rows="5" >Enter text!</textarea>
-        <button id={'post'+textid+'field'}>POST</button>
+        <textarea id={this.props.textId} cols="40" rows="5" placeholder={text}/>
+        <button id={this.props.buttonId} onClick={onPostClick}>POST</button>
       </div>
     );
   }
@@ -16,7 +20,8 @@ class AddArticle extends React.Component{
 
 let mapStateToProps = (state) => {
   return {
-     textId: "1",
+     textId: "post_text_field",
+     buttonId: "post_button_field"
   }
 } 
 
