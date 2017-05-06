@@ -22,7 +22,7 @@ const homepage = (state = homepageInitialState, action) => {
         }
         default:
             return state
-    }
+   }
 }
 
 const homepageApp = homepage // If there are at least two reducers, use 'combineReducers' instead of this code.

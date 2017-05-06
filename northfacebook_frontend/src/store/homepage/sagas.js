@@ -7,8 +7,8 @@ import {createBrowserHistory} from 'history'
 
 var xhr = require('xhr-promise-redux');
 
-const auth_check_url = 'http://wlxyzlw.iptime.org:8000/auth/';//TODO change before send pull request
-const fixed_url = "http://wlxyzlw.iptime.org:8000/";
+const auth_check_url = 'http://wlxyzlw.iptime.org:8888/auth/';//TODO change before send pull request
+const fixed_url = "http://wlxyzlw.iptime.org:8888/";
 
 const history = createBrowserHistory();
 // redux-saga-router : sharing state with other pages
@@ -23,8 +23,8 @@ const routes = {
     '/sign_up': function *signUpPageSaga() {
         yield spawn(watchSignUp)
     },
-    '/write': function *Saga(){
-        yield put ({type: 'CHANGE_URL', path: '/write'})
+    '/write': function *WritingSaga(){
+        yield spawn(enterWriteUrl)
 //        yield spawn(watchWrite)
     }
 }
@@ -37,10 +37,7 @@ export function* watchSignIn() {
         yield call(sign_in, data)
     }
 }
-//TODO
-//export function* watchWrite(){
-// console.log("Enter writing page")
-//}
+
 //TODO hard-coding into beautiful code: redirect when logged in
 export function* sign_in(data) {
     const preCheck = yield select()
@@ -180,3 +177,19 @@ function *changeUrl() {
 export default function* saga() {
     yield fork(router, history, routes);
 }
+
+function *enterWriteUrl(){
+     console.log(history.location)
+    if(history.location.state === undefined)
+        yield put({type: 'CHANGE_URL', path: '/'})
+    else
+        yield put({type: 'SET_STATE', state: history.location})
+}
+export function* watchWrite(){
+   while(true){
+     console.log("Enter writing page")
+     yield take(actions.SIGN_OUT)
+     yield fork(sign_out)
+   } 
+}
+
