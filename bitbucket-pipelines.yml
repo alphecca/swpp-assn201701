@@ -12,5 +12,7 @@ pipelines:
           - cd progress
           - pip install -r requirements.txt
           - rm -f tmp.db ../northfacebook_backend/db.sqlite3
+          - rm -r ../northfacebook_backend/homepage/migrations
+          - python3 ../northfacebook_backend/manage.py makemigrations homepage
           - python3 ../northfacebook_backend/manage.py migrate
           - ./init.sh
