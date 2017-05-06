@@ -224,9 +224,7 @@ export function* watchReply(){
 //TODO change HARD CODING into more beautiful code
 //TODO remove statusCode 0 error
 function *updateState() {
-    while(true) {
     console.log(history.location.state);
-//    alert(JSON.stringify(history.location.state))
     if(history.location.state === undefined || history.location.state.authorization === "")
         yield put(actions.changeUrl('/'))
     else {
@@ -235,7 +233,6 @@ function *updateState() {
             yield put(actions.setState(newState))
             return
         }
-    }
     }
 }
 
