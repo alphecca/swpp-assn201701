@@ -1,6 +1,6 @@
 import React from 'react'
 import TimeLine from './TimeLine.js'
-import Article from './Article.js'
+//import ArticleBox from './ArticleBox.js'
 import SignOut from './SignOut.js'
 
 class TimeLinePage extends React.Component {
@@ -9,7 +9,6 @@ class TimeLinePage extends React.Component {
                 <div>
                     <SignOut />
                     <TimeLine />
-                    <Article />
                 </div>
                )
     }
