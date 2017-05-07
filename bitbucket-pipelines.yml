@@ -10,12 +10,12 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - cd progress
-#- apt-get update && apt-get install tmux
-          - git clone git://git.code.sf.net/p/tmux/tmux-code tmux
-          - cd tmux
-          - sh autogen.sh
-          - ./configure && make
-          - cd ..
+          - apt-get update && apt-get install tmux
+#- git clone git://git.code.sf.net/p/tmux/tmux-code tmux
+#- cd tmux
+#- sh autogen.sh
+#- ./configure && make
+#- cd ..
           - pip install -r requirements.txt
           - rm -f tmp.db ../northfacebook_backend/db.sqlite3
           - rm -r ../northfacebook_backend/homepage/migrations
