@@ -79,6 +79,7 @@ export const testState = () => {
 }
 
 export const postLike = (id, auth) => {
+    alert("like click")
     return {
         type: 'POST_LIKE',
         id: id,

@@ -26,7 +26,7 @@ const routes = {
         yield spawn(watchLike)
         yield spawn(watchDetail)
     },
-    '/article/:id': function *articleDetailPageSaga() {
+    '/article/*': function *articleDetailPageSaga() {
         yield spawn(updateDetailPage)
         yield spawn(watchSignOut)
         yield spawn(watchLike)
@@ -285,34 +285,27 @@ function *watchLike() {
         console.log(data)
         try {
             yield call(xhr.post, fixed_url+'/article/'+data.id+'/like/', {
-            headers: {
-              'Authorization': 'Basic '+ window.btoa(data.auth),
-              'Content-Type': 'application/json',
-              Accept: 'application/json'
-            },
-            responseType: 'json',
-        });
+                headers: {
+                  'Authorization': 'Basic '+ window.btoa(data.auth),
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json'
+                },
+                responseType: 'json',
+            });
         }
         catch(error) {
-        if(error.statusCode === 201) {
-            console.log("Succeed2");
-//            const state = yield select()
-//            history.push('/main', state)
-//            console.log(history.location.pathname)
-        }
-        else if(error.statusCode === 404) {
-            console.log("Backend server does not exist!");
-        }
-        else if(error.statusCode === 0) {
-            console.log("Backend server is not available!");
-        }
-        else if(Object.keys(error).length === 0) {
-            console.log("Succeed3");
-//            const state = yield select()
-//            history.push('/main', state)
-//            console.log(history.location.pathname)
-        }
-
+            if(error.statusCode === 201) {
+                console.log("Succeed2");
+            }
+            else if(error.statusCode === 404) {
+                console.log("Backend server does not exist!");
+            }
+            else if(error.statusCode === 0) {
+                console.log("Backend server is not available!");
+            }
+            else if(Object.keys(error).length === 0) {
+                console.log("Succeed3");
+            }
         }
     }
 }
@@ -334,8 +327,8 @@ function *watchDetail() {
 function *updateDetailPage() {
     console.log("welcome to article detail page")
 //    console.log(history.location)
-    yield call(updateState, history.location.pathname+'/article/')
-    console.log(yield select())
+    yield spawn(updateState, history.location.pathname+'/article/')
+//    console.log(yield select())
 }
 
 /////WRITE PAGE/////
