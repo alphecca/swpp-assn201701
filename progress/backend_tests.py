@@ -82,8 +82,10 @@ def forbidden_or_error(method, link, uname, upwd):
             res = requests.get(link, auth=(uname, upwd))
         elif method == "DELETE":
             res = requests.delete(link, auth=(uname, upwd))
-        elif mehtod == "POST":
+        elif method == "POST":
             res = requests.post(link, auth=(uname, upwd))
+        elif method == "PUT":
+            res = requests.put(link, auth=(uname, upwd))
 # If you want to test with other methods like POST, add elif code here.
 
         if res.status_code != 403:
@@ -102,13 +104,15 @@ def forbidden_or_error_anon(method, link):
             res = requests.delete(link)
         elif method == "POST":
             res = requests.post(link)
+        elif method == "PUT":
+            res = requests.put(link)
 # If you want to test with other methods like POST, add elif code here.
 
         if res.status_code != 403:
             print("ERROR: Should not be allowed to {0} {1} with no auth : code {2}".format(method, link, res.status_code))
             exit(1)
     except Exception:
-        print("ERROR: Cannot get {0}".format(link))
+        print("ERROR: Cannot {0} {1}".format(method, link))
         exit(1)
 
 def forbidden_or_error_anon_data(method, link, data):
@@ -120,13 +124,15 @@ def forbidden_or_error_anon_data(method, link, data):
             res = requests.delete(link, data=data)
         elif method == "POST":
             res = requests.post(link, data=data)
+        elif method == "PUT":
+            res = requests.put(link, data=data)
 # If you want to test with other methods like POST, add elif code here.
 
         if res.status_code != 403:
             print("ERROR: Should not be allowed to {0} {1} with no auth : code {2}".format(method, link, res.status_code))
             exit(1)
     except Exception:
-        print("ERROR: Cannot get {0}".format(link))
+        print("ERROR: Cannot {0} {1}".format(method, link))
         exit(1)
 
 def method_not_allowed_or_error_anon_data(method, link, data):
@@ -138,13 +144,34 @@ def method_not_allowed_or_error_anon_data(method, link, data):
             res = requests.delete(link, data=data)
         elif method == "POST":
             res = requests.post(link, data=data)
+        elif method == "PUT":
+            res = requests.put(link, data=data)
 # If you want to test with other methods like POST, add elif code here.
 
         if res.status_code != 405:
             print("ERROR: Should not be allowed to {0} {1} with duplicated username : code {2}".format(method, link, res.status_code))
             exit(1)
     except Exception:
-        print("ERROR: Cannot get {0}".format(link))
+        print("ERROR: Cannot {0} {1}".format(method, link))
+        exit(1)
+
+def bad_request_or_error_data(method, link, data, uname, upwd): 
+    sleep(0.05)
+    try:
+        if method == "GET":
+            res = requests.get(link, data=data)
+        elif method == "DELETE":
+            res = requests.delete(link, data=data)
+        elif method == "POST":
+            res = requests.post(link, data=data)
+        elif method == "PUT":
+            res = requests.put(link, data=data)
+
+        if res.status_code != 400:
+            print("ERROR: Should not be allowed to {0} {1} with bad request : code {2}".format(method, link, res.status_code))
+            exit(1)
+    except Exception:
+        print("ERROR: Cannot {0} {1}".format(method, link))
         exit(1)
 
 def bad_request_or_error_anon_data(method, link, data):
@@ -156,13 +183,15 @@ def bad_request_or_error_anon_data(method, link, data):
             res = requests.delete(link, data=data)
         elif method == "POST":
             res = requests.post(link, data=data)
+        elif method == "PUT":
+            res = requests.put(link, data=data)
 # If you want to test with other methods like POST, add elif code here.
 
         if res.status_code != 400:
             print("ERROR: Should not be allowed to {0} {1} with bad request : code {2}".format(method, link, res.status_code))
             exit(1)
     except Exception:
-        print("ERROR: Cannot get {0}".format(link))
+        print("ERROR: Cannot {0} {1}".format(method, link))
         exit(1)
 
 
@@ -226,6 +255,25 @@ print("4. Deleting users.")
 forbidden_or_error_anon("DELETE", link)
 forbidden_or_error("DELETE", link, unknownname, unknownpwd)
 for (uname, upwd) in user_pairs:
+    if uname == "test1" or uname == "test2":
+        continue
     delete_or_error(link, uname, upwd)
+
+test1 = "test1"
+test2 = "test2"
+test1pw = "test1passwd"
+test2pw = "test2passwd"
+
+link = sys.argv[1] + "article/"
+print("5. GET & POST article list.")
+forbidden_or_error_anon("GET", link)
+get_json_or_error(link, test1, test1pw)
+forbidden_or_error_anon_data("POST", link, {"text": "anonymous user"})
+bad_request_or_error_data("POST", link, {}, test1, test1pw)
+post_or_error(link, {"text": "test text1"}, test1, test1pw) # how to get id?
+post_or_error(link, {"text": "test text2"}, test2, test2pw) # how to get id?
+
+link = sys.argv[1] + "article/"
+
 
 print("TEST SUCCESSFUL")
