@@ -20,14 +20,18 @@ const routes = {
         yield spawn(watchSignIn)
     },
     '/main': function *timeLinePageSaga() {
-        yield spawn(updateState, '/mainpage/')
+        yield call(updateState, '/mainpage/')
         yield spawn(watchSignOut)
         yield spawn(watchWrite)
         yield spawn(watchLike)
         yield spawn(watchDetail)
     },
     '/article/*': function *articleDetailPageSaga() {
-        yield spawn(updateDetailPage)
+        window.onerror = function(msg, url, line) {
+            console.log("Uncaught: "+ msg+" from "+url+":"+line)
+            return true;
+        }
+        yield call(updateDetailPage)
         yield spawn(watchSignOut)
         yield spawn(watchLike)
         yield spawn(watchWrite)
@@ -38,7 +42,7 @@ const routes = {
         yield spawn(watchSignUp)
     },
     '/write/:id?': function *writeArticleSaga(){
-        yield spawn(updateWritePage)
+        yield call(updateWritePage)
         yield spawn(watchSignOut)
         yield spawn(watchPost)
     }
@@ -328,9 +332,7 @@ function *watchDetail() {
 /////ARTICLE DETAIL PAGE/////
 function *updateDetailPage() {
     console.log("welcome to article detail page")
-//    console.log(history.location)
-    yield spawn(updateState, history.location.pathname+'/article/')
-//    console.log(yield select())
+    yield call(updateState, history.location.pathname+'/article/')
 }
 
 function *watchBack() {
@@ -356,7 +358,6 @@ function *updateWritePage() {
 
 function *watchPost() {
     const data = yield take('ADD_ARTICLE')
-//    alert(JSON.stringify(data))
     const url = data.id === null? '/article/': '/article/'+data.id.id + '/article/'
 //    alert(url)
     try {
