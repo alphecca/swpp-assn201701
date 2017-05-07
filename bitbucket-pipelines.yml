@@ -18,17 +18,17 @@ pipelines:
           - python3 ../northfacebook_backend/manage.py migrate
 #- tmux new-session -s new-session -n backend "python3 ../northfacebook_backend/manage.py runserver 0.0.0.0:8000" \; new-window -n frontend "cd ../northfacebook_frontend; npm start" \; new-window -n testWindow "echo 'Wait 5 seconds for running server...'; sleep 5; python3 backend_tests.py http://127.0.0.1:8000/; sleep 3; tmux kill-session -t new-session"
           - python3 backend_tests.py http://wlxyzlw.iptime.org:8000/
-        services:
-          - backend
-          - frontend
-definitions:
-  services:
-    backend:
-      - step:
-          script:
-            - python3 northfacebook_backend/manage.py runserver 0.0.0.0:8000
-    frontend:
-      - step:
-          script:
-            - cd northfacebook_frontend
-            - npm start
+#        services:
+#          - backend
+#          - frontend
+#definitions:
+#  services:
+#    backend:
+#      - step:
+#          script:
+#            - python3 northfacebook_backend/manage.py runserver 0.0.0.0:8000
+#    frontend:
+#      - step:
+#          script:
+#            - cd northfacebook_frontend
+#            - npm start
