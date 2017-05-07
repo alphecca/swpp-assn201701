@@ -18,17 +18,8 @@ let mapStateToProps = (state) => {
     return {
         articles: Object.assign(state.articles).slice(0, 5).map(article => JSON.parse(JSON.stringify(
                           {
-                              id: Number(article.id),
-                              writerId: "a"+article.id+"_writer_field",
-                              username: article.owner,
-                              textId: "a"+article.id+"_text_field",
-                              articleText: article.text,
-                              likeNum: article.like_num,
-                              likeButtonId: "a"+article.id+"_like_button_field",
-                              editButtonId: "a"+article.id+"_edit_button_field",
-                              deleteButtonId: "a"+article.id+"_delete_button_field",
-                              detailButtonId: "a"+article.id+"_detail_button_field",
-                              replyNum: article.children_num
+                              article: article,
+                              id: article.id
                           })
                           )
                           )

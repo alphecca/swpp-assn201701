@@ -6,7 +6,7 @@ import SignUpPage from './SignUpPage/SignUpPage.js';
 import TimeLinePage from './TimeLinePage/TimeLinePage.js';
 import AddArticlePage from './AddArticlePage/AddArticlePage.js';
 import ArticleDetailPage from './ArticleDetailPage/ArticleDetailPage.js';
-import NoMatchPage from './NoMatchPage/NoMatchPage.js';
+//import NoMatchPage from './NoMatchPage/NoMatchPage.js';
 import PropTypes from 'prop-types';
 
 
@@ -22,7 +22,7 @@ const App = ({store}) => {
                     <Route exact path="/sign_up" component={SignUpPage} />
                     <Route exact path="/main" component={TimeLinePage} />
                     <Route path="/article/:id" component={ArticleDetailPage} />
-                    <Route exact path="/write" component={AddArticlePage} /> 
+                    <Route exact path="/write/:id?" component={AddArticlePage} /> 
                 </div>
             </BrowserRouter>
         </Provider>

@@ -25,11 +25,11 @@ const homepage = (state = homepageInitialState, action) => {
             return Object.assign({}, state, {
                 authorization: action.state.authorization,
                 articles: action.state.articles,
-                parent_article: state.parent_article
+                parent_article: action.state.parent_article
             })
         }
         case 'ARTICLE_DETAIL': {
-            alert(action.id)
+//            alert(action.id)
             return Object.assign({}, state, {
                 authorization: state.authorization,
                 articles: state.articles,

@@ -32,11 +32,12 @@ export const signOut = () => {
     }
 }
 export const SIGN_OUT = 'SIGN_OUT'
-export function addArticle (text){
+export function addArticle (id, text){
     alert(text)
     return {
       type: 'ADD_ARTICLE',
       text,
+      id
     }
 }
 export const ADD_ARTICLE = 'ADD_ARTICLE'
@@ -50,9 +51,10 @@ export const changeUrl = (pathname) => {
 }
 
 // Send redirection request to /write
-export const writeArticle = () => {
+export const writeArticle = (id) => {
     return {
-        type: 'WRITE_ARTICLE'
+        type: 'WRITE_ARTICLE',
+        id
     }
 }
 
