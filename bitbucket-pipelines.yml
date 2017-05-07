@@ -21,4 +21,4 @@ pipelines:
           - rm -r ../northfacebook_backend/homepage/migrations
           - python3 ../northfacebook_backend/manage.py makemigrations homepage
           - python3 ../northfacebook_backend/manage.py migrate
-          - ./init.sh
+          - sh init.sh
