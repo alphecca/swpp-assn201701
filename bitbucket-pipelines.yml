@@ -16,7 +16,7 @@ pipelines:
 #            - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 #            - dpkg -i google-chrome*.deb
 #            - apt-get install -f < yes.txt
-            - wget -q -0 - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+            - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
             - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb stable main" >> /etc/apt/sources.list.d/google-chrome.list
             - apt-get install google-chrome-stable
             - apt-get install unzip < yes.txt
