@@ -27,7 +27,7 @@ const routes = {
         yield spawn(watchDetail)
     },
     '/article/:id': function *articleDetailPageSaga() {
-        yield call(updateDetailPage)
+        yield spawn(updateDetailPage)
         yield spawn(watchSignOut)
         yield spawn(watchLike)
         yield spawn(watchWrite)
@@ -46,13 +46,17 @@ const routes = {
 function* getNewState(state, path) {
 //    console.log(path)
     let data;
+    let parent_data = null;
     try {
         console.log("hoeee")
         data = yield call(xhr.get, fixed_url+path) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
+        if(state.parent_article !== null) {
+            parent_data = yield call(xhr.get, fixed_url + '/article/' + state.parent_article.id+'/')
+        }
         return Object.assign({}, state, {
             authorization: state.authorization,
             articles: data.body,
-            parent_article: state.parent_article
+            parent_article: parent_data === null ? state.parent_article : parent_data.body
         })
     }
     catch(error) {
@@ -62,7 +66,7 @@ function* getNewState(state, path) {
             return Object.assign({}, state, {
                 authorization: state.authorization,
                 articles: data.body,
-                parent_article: state.parent_article
+
             })
         }
         else if(error.statusCode === 0) {
@@ -269,7 +273,6 @@ function *updateState(path) {
             if(JSON.stringify(tmp) !== JSON.stringify(history.location.state)) {
                 history.push(history.location.pathname, newState)
                 console.log('NUGABA')
-//                window.location.reload()
             }
         }
     }
