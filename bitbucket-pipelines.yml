@@ -6,29 +6,26 @@
 image: python:3.5.1
 
 pipelines:
-  custom:
-    frontend:
-      - step:
-          script:
-            - cd progress
-            - apt-get update
-            - apt-get install libxss1 libgconf2-4 libappindicator1 libindicator7 < yes.txt
-            - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-            - apt-get install -f
-            - dpkg -i google-chrome*.deb
-#            - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-#            - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb stable main" >> /etc/apt/sources.list.d/google-chrome.list
-#            - apt-get install google-chrome-stable
-            - apt-get install unzip < yes.txt
-            - wget -N http://chromedriver.storage.googleapis.com/2.26/chromedriver_linux64.zip
-            - unzip chromedriver_linux64.zip
-            - chmod +x chromedriver
-            - mv -f chromedriver /usr/local/share/chromedriver
-            - ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-            - ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
-            - pip install -r requirements.txt
-            - python3 inittest.py http://wlxyzlw.iptime.org:8000/
-            - python3 signUpChecker.py http://wlxyzlw.iptime.org:3000/
+#  custom:
+#    frontend:
+#      - step:
+#          script:
+#            - cd progress
+#            - apt-get update
+#            - apt-get install libxss1 libgconf2-4 libappindicator1 libindicator7 < yes.txt
+#            - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+#            - apt-get install -f
+#            - dpkg -i google-chrome*.deb
+#            - apt-get install unzip < yes.txt
+#            - wget -N http://chromedriver.storage.googleapis.com/2.26/chromedriver_linux64.zip
+#            - unzip chromedriver_linux64.zip
+#            - chmod +x chromedriver
+#            - mv -f chromedriver /usr/local/share/chromedriver
+#            - ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+#            - ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
+#            - pip install -r requirements.txt
+#            - python3 inittest.py http://wlxyzlw.iptime.org:8000/
+#            - python3 signUpChecker.py http://wlxyzlw.iptime.org:3000/
   default:
     - step:
         script: # Modify the commands below to build your repository.
@@ -41,17 +38,3 @@ pipelines:
 #          - python3 ../northfacebook_backend/manage.py migrate
 #- tmux new-session -s new-session -n backend "python3 ../northfacebook_backend/manage.py runserver 0.0.0.0:8000" \; new-window -n frontend "cd ../northfacebook_frontend; npm start" \; new-window -n testWindow "echo 'Wait 5 seconds for running server...'; sleep 5; python3 backend_tests.py http://127.0.0.1:8000/; sleep 3; tmux kill-session -t new-session"
           - python3 backend_tests.py http://wlxyzlw.iptime.org:8000/
-#        services:
-#          - backend
-#          - frontend
-#definitions:
-#  services:
-#    backend:
-#      - step:
-#          script:
-#            - python3 northfacebook_backend/manage.py runserver 0.0.0.0:8000
-#    frontend:
-#      - step:
-#          script:
-#            - cd northfacebook_frontend
-#            - npm start
