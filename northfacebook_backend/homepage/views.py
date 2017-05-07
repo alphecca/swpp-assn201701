@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from django.db.models import Q
 from homepage.models import *
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
@@ -25,6 +26,21 @@ def main_list(request):
             serializer.save(owner=request.user)
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST'])
+def sub_main_list(request):
+    if request.method == 'GET':
+        articles = Article.objects.filter(gparent=0)
+        serializer = ArticleSerializer(articles, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = ArticleSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -55,7 +71,7 @@ def article_detail(request, pk):
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
     elif request.method == 'PUT':
-        if article.owner.id==request.user.id:
+        if article.owner==request.user:
             serializer = ArticleSerializer(article,data=request.data)
 #same user check
             if serializer.is_valid():
@@ -64,7 +80,7 @@ def article_detail(request, pk):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        if article.owner.id==request.user.id:
+        if article.owner==request.user:
             article.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -87,7 +103,7 @@ def like_detail(request, pk):
         serializer = LikeSerializer(like)
         return Response(serializer.data)
     elif request.method == 'DELETE':
-        if like.owner.id==request.user.id:
+        if like.owner==request.user:
             like.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)

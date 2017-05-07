@@ -11,7 +11,6 @@ class Article(models.Model):
     updated_time = models.DateTimeField(auto_now=True)
     text = models.TextField()
     parent = models.ForeignKey('Article',
-        related_name='articledfs',
         on_delete=models.CASCADE,default=0)
     owner = models.ForeignKey('auth.User',
         on_delete=models.CASCADE)
