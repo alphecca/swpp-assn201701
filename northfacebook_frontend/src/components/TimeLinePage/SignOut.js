@@ -5,9 +5,12 @@ import {signOut} from '../../actions'
 class SignOut extends React.Component {
     render() {
         return (
-                <div>
-                {this.props.username} logged in!<button id="sign_out" className="sign_out" onClick={this.props.onLogOut}>Sign Out</button>
+                <div className="ToolBar" >
+                   <div className="sign_out">
+                   {this.props.username} 동무 어서오시오! <button id="sign_out" onClick={this.props.onLogOut}>Sign Out</button>
+                   </div>
                 </div>
+
                );
     }
 }
