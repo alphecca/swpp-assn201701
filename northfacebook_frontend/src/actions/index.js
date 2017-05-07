@@ -32,11 +32,12 @@ export const signOut = () => {
     }
 }
 export const SIGN_OUT = 'SIGN_OUT'
-export function addArticle (text){
+export function addArticle (id, text){
     alert(text)
     return {
       type: 'ADD_ARTICLE',
       text,
+      id
     }
 }
 export const ADD_ARTICLE = 'ADD_ARTICLE'
@@ -50,9 +51,10 @@ export const changeUrl = (pathname) => {
 }
 
 // Send redirection request to /write
-export const writeArticle = () => {
+export const writeArticle = (id) => {
     return {
-        type: 'WRITE_ARTICLE'
+        type: 'WRITE_ARTICLE',
+        id
     }
 }
 
@@ -63,8 +65,30 @@ export const setState = (state) => {
     }
 }
 
+export const articleDetail = (id) => {
+    return {
+        type: 'ARTICLE_DETAIL',
+        id: id
+    }
+}
+
 export const testState = () => {
     return {
         type: 'TEST_STATE',
+    }
+}
+
+export const postLike = (id, auth) => {
+    alert("like click")
+    return {
+        type: 'POST_LIKE',
+        id: id,
+        auth: auth
+    }
+}
+
+export const postBack = () => {
+    return {
+        type: 'POST_BACK'
     }
 }
