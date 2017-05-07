@@ -6,7 +6,8 @@ class SignOut extends React.Component {
     render() {
         return (
                 <div>
-                {this.props.username} logged in!<button id="sign_out" className="sign_out" onClick={this.props.onLogOut}>Sign Out</button>
+                <span id="user_data_field">{this.props.username} logged in!</span>
+                <button id="sign_out" className="sign_out" onClick={this.props.onLogOut}>Sign Out</button>
                 </div>
                );
     }

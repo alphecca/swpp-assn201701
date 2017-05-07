@@ -33,7 +33,6 @@ export const signOut = () => {
 }
 export const SIGN_OUT = 'SIGN_OUT'
 export function addArticle (id, text){
-    alert(text)
     return {
       type: 'ADD_ARTICLE',
       text,
@@ -79,7 +78,6 @@ export const testState = () => {
 }
 
 export const postLike = (id, auth) => {
-    alert("like click")
     return {
         type: 'POST_LIKE',
         id: id,
