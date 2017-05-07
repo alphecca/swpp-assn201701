@@ -7,13 +7,13 @@ image: python:3.5.1
 
 pipelines:
   custom:
-    sonar:
+    frontend:
       - step:
-        script:
-          - cd progress
-          - pip install -r requirements.txt
-          - python3 inittest.py http://wlxyzlw.iptime.org:8000/
-          - python3 signUpChecker.py http://wlxyzlw.iptime.org:3000/
+          script:
+            - cd progress
+            - pip install -r requirements.txt
+            - python3 inittest.py http://wlxyzlw.iptime.org:8000/
+            - python3 signUpChecker.py http://wlxyzlw.iptime.org:3000/
   default:
     - step:
         script: # Modify the commands below to build your repository.
