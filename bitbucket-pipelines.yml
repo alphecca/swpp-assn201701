@@ -12,7 +12,7 @@ pipelines:
           script:
             - cd progress
             - apt-get update
-            - apt-get install libxss1 libappindicator1 libindicator7 < yes.txt
+            - apt-get install libxss1 libgconf2-4 libappindicator1 libindicator7 < yes.txt
             - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
             - apt-get install -f
             - dpkg -i google-chrome*.deb
