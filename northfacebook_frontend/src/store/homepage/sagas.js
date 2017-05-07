@@ -31,6 +31,7 @@ const routes = {
         yield spawn(watchSignOut)
         yield spawn(watchLike)
         yield spawn(watchWrite)
+        yield spawn(watchDetail)
     },
     '/sign_up': function *signUpPageSaga() {
         yield spawn(watchSignUp)
