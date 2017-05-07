@@ -57,7 +57,7 @@ function* getNewState(state, path) {
         return Object.assign({}, state, {
             authorization: state.authorization,
             articles: data.body,
-            parent_article: parent_data === null ? state.parent_article : parent_data.body
+            parent_article: path === '/mainpage/' ? null : parent_data === null ? state.parent_article : parent_data.body
         })
     }
     catch(error) {
@@ -67,6 +67,7 @@ function* getNewState(state, path) {
             return Object.assign({}, state, {
                 authorization: state.authorization,
                 articles: data.body,
+                parent_article: path === '/mainpage/' ? null : parent_data === null ? state.parent_article : parent_data.body
 
             })
         }
