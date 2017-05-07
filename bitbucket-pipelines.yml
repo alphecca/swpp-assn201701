@@ -10,6 +10,7 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - cd progress
+          - apt-get install tmux
           - pip install -r requirements.txt
           - rm -f tmp.db ../northfacebook_backend/db.sqlite3
           - rm -r ../northfacebook_backend/homepage/migrations
