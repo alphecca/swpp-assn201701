@@ -32,6 +32,7 @@ const routes = {
         yield spawn(watchLike)
         yield spawn(watchWrite)
         yield spawn(watchDetail)
+        yield spawn(watchBack)
     },
     '/sign_up': function *signUpPageSaga() {
         yield spawn(watchSignUp)
@@ -329,6 +330,11 @@ function *updateDetailPage() {
 //    console.log(history.location)
     yield spawn(updateState, history.location.pathname+'/article/')
 //    console.log(yield select())
+}
+
+function *watchBack() {
+    yield take('POST_BACK')
+    history.push('/main', yield select())
 }
 
 /////WRITE PAGE/////

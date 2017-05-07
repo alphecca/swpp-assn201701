@@ -86,3 +86,9 @@ export const postLike = (id, auth) => {
         auth: auth
     }
 }
+
+export const postBack = () => {
+    return {
+        type: 'POST_BACK'
+    }
+}
