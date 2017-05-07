@@ -11,6 +11,18 @@ pipelines:
       - step:
           script:
             - cd progress
+            - apt-get update
+            - apt-get install libxss1 libappindicator1 libindicator7
+            - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            - dpkg -i google-chrome*.deb
+            - apt-get install -f
+            - apt-get install unzip
+            - wget -N http://chromedriver.storage.googleapis.com/2.26/chromedriver_linux64.zip
+            - unzip chromedriver_linux64.zip
+            - chmod +x chromedriver
+            - mv -f chromedriver /usr/local/share/chromedriver
+            - ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+            - ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
             - pip install -r requirements.txt
             - python3 inittest.py http://wlxyzlw.iptime.org:8000/
             - python3 signUpChecker.py http://wlxyzlw.iptime.org:3000/
