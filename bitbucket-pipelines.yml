@@ -16,6 +16,7 @@ pipelines:
 #            - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 #            - dpkg -i google-chrome*.deb
 #            - apt-get install -f < yes.txt
+            - apt-get install google-chrome-stable
             - apt-get install unzip < yes.txt
             - wget -N http://chromedriver.storage.googleapis.com/2.26/chromedriver_linux64.zip
             - unzip chromedriver_linux64.zip
