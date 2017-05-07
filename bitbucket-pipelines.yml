@@ -11,10 +11,10 @@ pipelines:
       - step:
           script:
             - cd progress
-            - apt-get update
-            - apt-get install libxss1 libappindicator1 libindicator7 < yes.txt
+            - sudo apt-get update
+            - sudo apt-get install libxss1 libappindicator1 libindicator7 < yes.txt
             - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-            - dpkg -i google-chrome*.deb
+            - sudo dpkg -i google-chrome*.deb
             - apt-get install -f < yes.txt
             - apt-get install unzip < yes.txt
             - wget -N http://chromedriver.storage.googleapis.com/2.26/chromedriver_linux64.zip
