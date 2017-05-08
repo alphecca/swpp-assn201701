@@ -5,8 +5,7 @@ import './styles.css'
 
 class AddArticle extends React.Component{
   render(){
-//    let textid = this.props.textId+1//new artice's id(lastid+1)
-    let text = "asdf"
+    let text = "Enter the text"
     const onPostClick = () => {
         this.props.onClick(this.props.id, text)
     }
@@ -14,9 +13,14 @@ class AddArticle extends React.Component{
         text = e.target.value
     }
     return(
+<<<<<<< HEAD
       <div className="AddArticle">
         <textarea id={this.props.textId} cols="50" rows="10" placeholder={text} onChange={handleChange}/>
         <br />
+=======
+      <div id="add_article_field">
+        <textarea id={this.props.textId} cols="40" rows="5" placeholder={text} onChange={handleChange}/>
+>>>>>>> upstream/master
         <button id={this.props.buttonId} onClick={onPostClick}>POST</button>
       </div>
     );

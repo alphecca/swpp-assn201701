@@ -5,6 +5,10 @@ import Article from '../TimeLinePage/Article.js'
 import SignOut from '../TimeLinePage/SignOut.js'
 import ReplyList from './ReplyList.js'
 import {connect} from 'react-redux'
+<<<<<<< HEAD
+=======
+import {postBack} from '../../actions'
+>>>>>>> upstream/master
 
 class ArticleDetailPage extends React.Component {
     render() {
@@ -12,6 +16,10 @@ class ArticleDetailPage extends React.Component {
                 this.props.article.parent_article === null ? <p>"Now loading..."</p> : (
                     <div>
                     <SignOut />
+<<<<<<< HEAD
+=======
+                    <button id="to_main_page_field" onClick={this.props.onBackClick}>Back to main</button>
+>>>>>>> upstream/master
                     <Article article={this.props.article.parent_article} />
                     <hr />
                     <ReplyList articles={this.props.article.articles}/>
@@ -27,6 +35,16 @@ let mapStateToProps = (state) => {
      }
 }
 
+<<<<<<< HEAD
 ArticleDetailPage = connect(mapStateToProps)(ArticleDetailPage)
+=======
+let mapDispatchToProps = (dispatch) => {
+    return {
+        onBackClick: () => dispatch(postBack())
+    }
+}
+
+ArticleDetailPage = connect(mapStateToProps, mapDispatchToProps)(ArticleDetailPage)
+>>>>>>> upstream/master
 
 export default ArticleDetailPage

@@ -7,9 +7,15 @@ class ReplyList extends React.Component {
     render() {
         const list = this.props.articles
         return (
+<<<<<<< HEAD
                 <div>
                 <p>Reply List</p>
                 {list.map(article => <Article key={article.id} id={"r"+article.id+"_field"} {...article}/>)}
+=======
+                <div id="reply_list_field">
+                <p>Reply List</p>
+                {list.map(article => <Article key={article.id} {...article}/>)}
+>>>>>>> upstream/master
                 </div>
                )
     }

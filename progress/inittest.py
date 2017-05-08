@@ -30,7 +30,11 @@ userN = 10
 user_pairs = create_users(userN)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 link = "http://wlxyzlw.iptime.org:7777/users/" # TODO If you want to change port of url, revise this.
+=======
+link = sys.argv[1] + "users/" # TODO If you want to change port of url, revise this.
+>>>>>>> upstream/master
 =======
 link = sys.argv[1] + "users/" # TODO If you want to change port of url, revise this.
 >>>>>>> upstream/master
