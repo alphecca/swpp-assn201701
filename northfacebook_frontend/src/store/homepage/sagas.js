@@ -49,6 +49,8 @@ function* getNewState(state, path) {
     let data;
     let parent_data = null;
     try {
+        console.log(state.authorization)
+        console.log(path)
 //        console.log("hoeee")
         data = yield call(xhr.get, fixed_url+path, {
             headers: {
@@ -57,7 +59,13 @@ function* getNewState(state, path) {
             }
         }) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
         if(state.parent_article !== null) {
-            parent_data = yield call(xhr.get, fixed_url + '/article/' + state.parent_article.id+'/')
+            parent_data = yield call(xhr.get, fixed_url + '/article/' + state.parent_article.id+'/', {
+            headers: {
+                "Authorization": "Basic " + window.btoa(state.authorization),
+                "Content-Type": "application/json"
+            }
+
+            })
         }
         return Object.assign({}, state, {
             authorization: state.authorization,
@@ -181,7 +189,7 @@ export function *signUp(data) {
         yield put(actions.authenticate(auth))
         const state = yield select()
         const newState = yield call(getNewState, state, '/mainpage/')
-        alert(JSON.stringify(newState))
+//        alert(JSON.stringify(newState))
         history.push('/main', newState)
     }
     catch(error) {
@@ -273,6 +281,7 @@ function *updateState(path) {
     if(history.location.state === undefined || history.location.state.authorization === "")
         yield put(actions.changeUrl('/'))
     else {
+//        alert(JSON.stringify(history.location.state))
         const newState = yield call(getNewState, history.location.state, path)
 //        console.log(newState)
 //        console.log(history.location.state)
@@ -328,6 +337,7 @@ function *watchDetail() {
         alert('detail button clicked')
         const state = yield select()
         const path = '/article/'+data.id.id
+//        alert(JSON.stringify(state))
         const newState = yield call(getNewState, state, path+'/article/')
         history.push(path, newState)
     }
