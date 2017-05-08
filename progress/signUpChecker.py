@@ -7,6 +7,7 @@ from selenium.webdriver.common.alert import Alert
 
 if len(sys.argv) != 2:
     print("signUpChecker.py <url>")
+    print("Example: signUpChecker.py http://wlxyzlw.iptime.org:3000/")
     exit(1)
 
 def check(driver, name):
