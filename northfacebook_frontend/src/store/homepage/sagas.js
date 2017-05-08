@@ -49,10 +49,23 @@ function* getNewState(state, path) {
     let data;
     let parent_data = null;
     try {
+        console.log(state.authorization)
+        console.log(path)
 //        console.log("hoeee")
-        data = yield call(xhr.get, fixed_url+path) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
+        data = yield call(xhr.get, fixed_url+path, {
+            headers: {
+                "Authorization": "Basic " + window.btoa(state.authorization),
+                "Content-Type": "application/json"
+            }
+        }) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
         if(state.parent_article !== null) {
-            parent_data = yield call(xhr.get, fixed_url + '/article/' + state.parent_article.id+'/')
+            parent_data = yield call(xhr.get, fixed_url + '/article/' + state.parent_article.id+'/', {
+            headers: {
+                "Authorization": "Basic " + window.btoa(state.authorization),
+                "Content-Type": "application/json"
+            }
+
+            })
         }
         return Object.assign({}, state, {
             authorization: state.authorization,
@@ -108,7 +121,7 @@ export function* sign_in(data) {
     const auth = "Basic " + encodedData
     console.log(history)
     try {
-        yield call(xhr.get, auth_check_url/* TODO I need a backend page that checks if the user is authenticated user when frontend requests GET method to this. */, {headers: {'Content-Type': 'application/json', Accept: 'application/json', Authorization: auth}, responseType: 'json'})
+        yield call(xhr.get, auth_check_url, {headers: {'Content-Type': 'application/json', Accept: 'application/json', "Authorization": auth}, responseType: 'json'})
         console.log("Succeed to sign in without exception!")
         alert("Succeed to sign in! :)")
         yield put(actions.authenticate(encodedData))
@@ -176,7 +189,7 @@ export function *signUp(data) {
         yield put(actions.authenticate(auth))
         const state = yield select()
         const newState = yield call(getNewState, state, '/mainpage/')
-        alert(JSON.stringify(newState))
+//        alert(JSON.stringify(newState))
         history.push('/main', newState)
     }
     catch(error) {
@@ -268,6 +281,7 @@ function *updateState(path) {
     if(history.location.state === undefined || history.location.state.authorization === "")
         yield put(actions.changeUrl('/'))
     else {
+//        alert(JSON.stringify(history.location.state))
         const newState = yield call(getNewState, history.location.state, path)
 //        console.log(newState)
 //        console.log(history.location.state)
@@ -323,6 +337,7 @@ function *watchDetail() {
         alert('detail button clicked')
         const state = yield select()
         const path = '/article/'+data.id.id
+//        alert(JSON.stringify(state))
         const newState = yield call(getNewState, state, path+'/article/')
         history.push(path, newState)
     }
