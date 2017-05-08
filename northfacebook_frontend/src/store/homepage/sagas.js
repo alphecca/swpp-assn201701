@@ -8,7 +8,7 @@ import {createBrowserHistory} from 'history'
 var xhr = require('xhr-promise-redux');
 
 //TODO change before send pull request
-const fixed_url = "http://wlxyzlw.iptime.org:8000";
+const fixed_url = "http://localhost:8000";//"http://wlxyzlw.iptime.org:8000";
 const auth_check_url = fixed_url+'/auth/';
 //const article_get_url = fixed_url+'mainpage/';
 
