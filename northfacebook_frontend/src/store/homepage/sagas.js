@@ -8,7 +8,7 @@ import {createBrowserHistory} from 'history'
 var xhr = require('xhr-promise-redux');
 
 //TODO change before send pull request
-const fixed_url = "http://wlxyzlw.iptime.org:8000";
+const fixed_url = "http://wlxyzlw.iptime.org:5555";
 const auth_check_url = fixed_url+'/auth/';
 //const article_get_url = fixed_url+'mainpage/';
 
@@ -50,7 +50,12 @@ function* getNewState(state, path) {
     let parent_data = null;
     try {
 //        console.log("hoeee")
-        data = yield call(xhr.get, fixed_url+path) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
+        data = yield call(xhr.get, fixed_url+path, {
+            headers: {
+                "Authorization": "Basic " + window.btoa(state.authorization),
+                "Content-Type": "application/json"
+            }
+        }) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
         if(state.parent_article !== null) {
             parent_data = yield call(xhr.get, fixed_url + '/article/' + state.parent_article.id+'/')
         }
@@ -108,7 +113,7 @@ export function* sign_in(data) {
     const auth = "Basic " + encodedData
     console.log(history)
     try {
-        yield call(xhr.get, auth_check_url/* TODO I need a backend page that checks if the user is authenticated user when frontend requests GET method to this. */, {headers: {'Content-Type': 'application/json', Accept: 'application/json', Authorization: auth}, responseType: 'json'})
+        yield call(xhr.get, auth_check_url, {headers: {'Content-Type': 'application/json', Accept: 'application/json', "Authorization": auth}, responseType: 'json'})
         console.log("Succeed to sign in without exception!")
         alert("Succeed to sign in! :)")
         yield put(actions.authenticate(encodedData))
