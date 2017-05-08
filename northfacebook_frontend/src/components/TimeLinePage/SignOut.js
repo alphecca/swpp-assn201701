@@ -8,7 +8,7 @@ class SignOut extends React.Component {
                 <div className="ToolBar" >
                    <div className="Notif">
                    <span id="user_data_field">{this.props.username} 동무 어서오시오!</span>
-                   <button id="sign_out" className="sign_out" onClick={this.props.onLogOut}>Sign Out</button>
+                   <button id="sign_out" className="SIGNOUT" onClick={this.props.onLogOut}>Sign Out</button>
                    </div>
                 </div>
 

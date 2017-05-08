@@ -20,17 +20,20 @@ body{
   color: white;
   z-index:100;
 }
-#sign_out{
+.Notif{
+  position: fixed;
+  left:8em;
+  top: 1em;
+}
+.SIGNOUT{
+  float: right;
   width: 6em;
   height: 2em;
-  left: 20em;
-  font-size: 25px;
-  font-family: 궁서;
-}
-.sign_out{
   position: fixed;
   top:20px;
-  left: 7em;
+  left: 30em;
+  font-size: 25px;
+  font-family: 궁서;
   background-color: rgb(237,30,39);
 }
 .TimeLine{

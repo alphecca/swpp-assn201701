@@ -8,9 +8,10 @@ body{
 }
 
 #sign_out{
+  float:right;
   width: 6em;
   height: 2em;
-  left: 20em;
+  left: 30em;
   font-size: 25px;
   font-family: 궁서;
 }

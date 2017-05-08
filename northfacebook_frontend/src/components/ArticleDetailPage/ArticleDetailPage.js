@@ -5,16 +5,20 @@ import Article from '../TimeLinePage/Article.js'
 import SignOut from '../TimeLinePage/SignOut.js'
 import ReplyList from './ReplyList.js'
 import {connect} from 'react-redux'
+import {postBack} from '../../actions'
+import './styles.css'
 
 class ArticleDetailPage extends React.Component {
     render() {
         return (
                 this.props.article.parent_article === null ? <p>"Now loading..."</p> : (
-                    <div>
+                    <div >
                     <SignOut />
+                    <div className="ArticleDetail">
                     <Article article={this.props.article.parent_article} />
                     <hr />
                     <ReplyList articles={this.props.article.articles}/>
+                    </div>
                     </div>
                     )
                )

@@ -13,6 +13,7 @@ body{
   background-repeat: no-repeat;
   background-size: 6em 3em;
   position: fixed;
+  left: 50px;
   font-family: 궁서;
   font-size: 32px;
   font-style: bold;
@@ -23,15 +24,21 @@ body{
 #sign_out{
   width: 6em;
   height: 2em;
-  left: 20em;
+  left: 30em;
   font-size: 25px;
   font-family: 궁서;
 }
 .sign_out{
+  float:right;
   position: fixed;
   top:20px;
   left: 7em;
   background-color: rgb(237,30,39);
+}
+.ArticleDetail{
+  position: absolute;
+  top: 100px;
+  left:23em;
 }
 .TimeLine{
   position: absolute;
