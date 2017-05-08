@@ -61,6 +61,7 @@ def article_detail(request, pk):
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_403_FORBIDDEN)
     elif request.method == 'DELETE':
         if article.owner==request.user:
