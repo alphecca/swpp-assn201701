@@ -27,10 +27,6 @@ const routes = {
         yield spawn(watchDetail)
     },
     '/article/*': function *articleDetailPageSaga() {
-        window.onerror = function(msg, url, line) {
-            console.log("Uncaught: "+ msg+" from "+url+":"+line)
-            return true;
-        }
         yield call(updateDetailPage)
         yield spawn(watchSignOut)
         yield spawn(watchLike)
@@ -53,7 +49,7 @@ function* getNewState(state, path) {
     let data;
     let parent_data = null;
     try {
-        console.log("hoeee")
+//        console.log("hoeee")
         data = yield call(xhr.get, fixed_url+path) //TODO ADD header for authentication after backend authentication for /mainpage/ is implemented
         if(state.parent_article !== null) {
             parent_data = yield call(xhr.get, fixed_url + '/article/' + state.parent_article.id+'/')
@@ -118,7 +114,11 @@ export function* sign_in(data) {
         yield put(actions.authenticate(encodedData))
         const state = yield select()
         const newState = yield call(getNewState, state, '/mainpage/')
+//        window.history.pushState(newState, '/', '/main')
         history.push('/main', newState)
+//        yield put(actions.changeUrl('/main'))
+//        console.log(history)
+//        window.history.pushState(newState, '/main', '/main')
     }
     catch(error) {
         console.log(error)
@@ -238,7 +238,7 @@ export function* sign_out(){
 //WATCH REPLY
 export function* watchWrite(){
     while(true) {
-        console.log("댓글을 써라 노딩코예야")
+//        console.log("댓글을 써라 노딩코예야")
         const data = yield take('WRITE_ARTICLE')
         console.log("watch reply")
         const state = yield select()
@@ -274,11 +274,11 @@ function *updateState(path) {
         if(newState !== null) {
             yield put(actions.setState(newState))
             const tmp = yield select()
-            console.log(tmp)
-            console.log("웅앵웅 초키포키")
+//            console.log(tmp)
+//            console.log("웅앵웅 초키포키")
             if(JSON.stringify(tmp) !== JSON.stringify(history.location.state)) {
                 history.push(history.location.pathname, newState)
-                console.log('NUGABA')
+                console.log('status updated')
             }
         }
     }
@@ -332,6 +332,7 @@ function *watchDetail() {
 /////ARTICLE DETAIL PAGE/////
 function *updateDetailPage() {
     console.log("welcome to article detail page")
+//    console.log(history)
     yield call(updateState, history.location.pathname+'/article/')
 }
 
@@ -352,8 +353,7 @@ function *updateWritePage() {
         url = url+history.location.pathname.split("/")[2]+'/article/'
         yield call(updateState, url)
     }
-    console.log(yield select())
-
+//    console.log(yield select())
 }
 
 function *watchPost() {
@@ -368,18 +368,18 @@ function *watchPost() {
                Accept: 'application/json'
             },
             responseType: 'json',
-            body: JSON.stringify({"text": data.text})//'{"text":'+data.text+'}'
+            body: JSON.stringify({"text": data.text})
         })
         const state = yield select()
         history.push('/main', state)
-        console.log(history.location.pathname)
+//        console.log(history.location.pathname)
     }
     catch(error) {
         if(error.statusCode === 201) {
             console.log("Succeed2");
             const state = yield select()
             history.push('/main', state)
-            console.log(history.location.pathname)
+//            console.log(history.location.pathname)
         }
         else if(error.statusCode === 404) {
             console.log("Backend server does not exist!");
@@ -391,7 +391,7 @@ function *watchPost() {
             console.log("Succeed3");
             const state = yield select()
             history.push('/main', state)
-            console.log(history.location.pathname)
+//            console.log(history.location.pathname)
         }
 
     }
