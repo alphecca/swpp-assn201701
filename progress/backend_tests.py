@@ -1,7 +1,13 @@
 import json
 import requests
+import sys
 from time import sleep
 from random import randint
+
+if len(sys.argv) != 2:
+    print("backend_tests.py <url>")
+    print("Example: backend_tests.py http://wlxyzlw.iptime.org:8000/")
+    exit(1)
 
 def create_users(N):
     ls = []
@@ -171,7 +177,10 @@ unknownname = "unknown_user"
 unknownpwd = "unknown_userpwd"
 
 
-link = "http://wlxyzlw.iptime.org:8000/users/" # TODO If you want to change port of url, revise this.
+link = sys.argv[1] + "users/" # TODO If you want to change port of url, revise this.
+print("0. Checking url. (If the program stops, quit with CONTROL-C.)")
+forbidden_or_error_anon("GET", link) # Check if the url is valid.
+
 print("1. Creating new users.")
 try:
     for i in range(1,userN+1):
@@ -198,21 +207,21 @@ body = {"password": "test{0}passwd".format(userN).encode("ascii")} #encoded
 bad_request_or_error_anon_data("POST", link, body)
 
 
-link = "http://wlxyzlw.iptime.org:8000/auth/" # TODO If you want to change port of url, revise this.
+link = sys.argv[1] + "auth/" # TODO If you want to change port of url, revise this.
 print("2. Getting auth.")
 forbidden_or_error_anon("GET", link)
 forbidden_or_error("GET", link, unknownname, unknownpwd)
 for (uname, upwd) in user_pairs:
     auth_json = get_json_or_error(link, uname, upwd)
 
-link = "http://wlxyzlw.iptime.org:8000/users/" # TODO If you want to change port of url, revise this.
+link = sys.argv[1] + "users/" # TODO If you want to change port of url, revise this.
 print("3. Getting users list.")
 forbidden_or_error_anon("GET", link)
 forbidden_or_error("GET", link, unknownname, unknownpwd)
 for (uname, upwd) in user_pairs:
     auth_json = get_json_or_error(link, uname, upwd)
 
-link = "http://wlxyzlw.iptime.org:8000/users/" # TODO If you want to change port of url, revise this.
+link = sys.argv[1] + "users/" # TODO If you want to change port of url, revise this.
 print("4. Deleting users.")
 forbidden_or_error_anon("DELETE", link)
 forbidden_or_error("DELETE", link, unknownname, unknownpwd)
