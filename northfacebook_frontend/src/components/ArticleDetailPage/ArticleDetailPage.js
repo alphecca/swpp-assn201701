@@ -27,6 +27,12 @@ let mapStateToProps = (state) => {
      }
 }
 
-ArticleDetailPage = connect(mapStateToProps)(ArticleDetailPage)
+let mapDispatchToProps = (dispatch) => {
+    return {
+        onBackClick: () => dispatch(postBack())
+    }
+}
+
+ArticleDetailPage = connect(mapStateToProps, mapDispatchToProps)(ArticleDetailPage)
 
 export default ArticleDetailPage

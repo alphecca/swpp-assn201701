@@ -11,10 +11,12 @@ class Article extends React.Component {
         const textId = "a"+this.props.article.id+"_text_field"
         const articleText = this.props.article.text
         const likeNum = this.props.article.like_num
+        const likeNumId = "a"+this.props.article.id+"_like_field"
         const likeButtonId = "a"+this.props.article.id+"_like_button_field"
         const editButtonId = "a"+this.props.article.id+"_edit_button_field"
         const deleteButtonId = "a"+this.props.article.id+"_delete_button_field"
         const replyNum = this.props.article.children_num
+        const replyNumId = "a"+this.props.article.id+"_reply_field"
         const replyButtonId = "a"+this.props.article.id+"_reply_button_field"
         const detailButtonId = "a"+this.props.article.id+"_detail_button_field"
         const componentId = "a"+this.props.article.id+"_field"
@@ -27,10 +29,10 @@ class Article extends React.Component {
                     <hr />
                     <div id={textId} className="article_text">{articleText}</div>
                     <hr />
-                    <p>Created: {this.props.article.created_time}</p>
-                    <p>Last update: {this.props.article.updated_time}</p>
+                    <p id={createdId}>Created: {this.props.article.created_time}</p>
+                    <p id={updatedId}>Last update: {this.props.article.updated_time}</p>
                     <div className="Tags">
-                    좋아요: {likeNum}
+                    좋아요: <span id={likeNumId}>{likeNum}</span>
                     <div className="divider"/>
                     <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>Like</button>
                     <div className="divider"/>
@@ -38,7 +40,7 @@ class Article extends React.Component {
                     <div className="divider"/>
                     <button id={deleteButtonId} onClick={this.props.onDeleteClick}>Delete</button>
                     <br />
-                    댓글: {replyNum}
+                    댓글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
                     <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>Detail</button>
                     <div className="divider"/>
