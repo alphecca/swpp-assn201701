@@ -15,47 +15,31 @@ from base64 import b64decode as decode
 # Create your views here.
 @api_view(['GET', 'POST'])
 def main_list(request):
+    if request.user.id==None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         articles = Article.objects.filter(parent=0)
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
-
     elif request.method == 'POST':
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET', 'POST'])
-def sub_main_list(request):
-    if request.method == 'GET':
-        articles = Article.objects.filter(gparent=0)
-        serializer = ArticleSerializer(articles, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = ArticleSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
-
 
 @api_view(['GET', 'POST'])
 def article_list(request):
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
-
     elif request.method == 'POST':
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
-
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -66,27 +50,29 @@ def article_detail(request, pk):
         article = Article.objects.get(pk=pk)
     except Article.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
     elif request.method == 'PUT':
         if article.owner==request.user:
             serializer = ArticleSerializer(article,data=request.data)
-#same user check
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_403_FORBIDDEN)
     elif request.method == 'DELETE':
         if article.owner==request.user:
             article.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
 @api_view(['GET'])
 def like_list(request):
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         likes = Like.objects.all()
         serializer = LikeSerializer(likes, many=True)
@@ -98,7 +84,8 @@ def like_detail(request, pk):
         like = Like.objects.get(pk=pk)
     except Like.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         serializer = LikeSerializer(like)
         return Response(serializer.data)
@@ -113,6 +100,8 @@ def like(request,pk):
         article = Article.objects.get(pk=pk)
     except Article.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
     like = Like.objects.filter(parent=article.id)
     if request.method == 'GET':
         serializer = LikeSerializer(like,many=True)
@@ -121,7 +110,6 @@ def like(request,pk):
         serializer = LikeSerializer(data=request.data)
         if like.filter(owner=request.user.id).count()!=0:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
         if serializer.is_valid():
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)
@@ -133,6 +121,8 @@ def article_article(request,pk):
         article = Article.objects.get(pk=pk)
     except Article.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
     articlearticle = Article.objects.filter(parent=article.id)
     if request.method == 'GET':
         serializer = ArticleSerializer(articlearticle,many=True)

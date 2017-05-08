@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import  './styles1.css';
 //import { } from '../actions';
-
 //const SignUpUrl = window.location.href + 'sign_up'
 
 class SignUp extends React.Component {
@@ -11,8 +11,8 @@ class SignUp extends React.Component {
             console.log("Redirect to signup page...");
         };
         return (
-                <div>
-                    No account? <button id="sign_up" onClick={onNewTab}>Sign Up</button>
+                <div className="Button-Field">
+                     No account? <button id="sign_up" onClick={onNewTab}>Sign Up</button>
                 </div>
                 )
     }
