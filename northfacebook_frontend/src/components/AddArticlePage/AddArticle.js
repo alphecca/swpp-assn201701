@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {addArticle} from '../../actions'
+import './styles.css'
 
 class AddArticle extends React.Component{
   render(){
@@ -12,8 +13,9 @@ class AddArticle extends React.Component{
         text = e.target.value
     }
     return(
-      <div id="add_article_field">
-        <textarea id={this.props.textId} cols="40" rows="5" placeholder={text} onChange={handleChange}/>
+      <div id="add_article_field" className="AddArticle">
+        <textarea id={this.props.textId} cols="50" rows="10" placeholder={text} onChange={handleChange}/>
+        <br />
         <button id={this.props.buttonId} onClick={onPostClick}>POST</button>
       </div>
     );

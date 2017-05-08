@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import {postSignUp} from '../../actions';
+import './styles2.css';
 
 class SignUpPage extends React.Component {
     render() {
@@ -17,15 +18,20 @@ class SignUpPage extends React.Component {
                 this.props.onClick(this.username.value, this.password.value)
         }
         return (
-                <div style={{textAlign:'center'}}>
+              <div>
+                <div>
+                   <img alt="" />
+                </div>
+                <div className="box">
                     아이디<input type="text" ref={ node => {this.username = node;}} id="username_field" className="field" />
                     <br />
                     비밀번호<input type="password" ref={ node => {this.password = node;}} id="password_field" className="field" />
                     <br />
                     비밀번호 확인<input type="password" ref={ node => {this.pwdverification = node;}} id="pwdverification_field" className="field" />
                     <br />
-                    <button type="submit" id="sign_up" onClick={onCreateSubmit}>회원가입</button>
+                    <button type="submit" id="sign_up"  onClick={onCreateSubmit} >반갑소 동무!</button>
                 </div>
+              </div>
         );
     }
 }
