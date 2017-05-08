@@ -7,11 +7,7 @@ import './styles.css'
 class TimeLine extends React.Component {
     render() {
         return (
-<<<<<<< HEAD
                 <div className="TimeLine">
-=======
-                <div>
->>>>>>> upstream/master
                     <button id="write_button_field" onClick={this.props.onClick}>Write</button>
                     <hr />
                     <ArticleList />

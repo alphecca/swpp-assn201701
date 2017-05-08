@@ -7,13 +7,8 @@ class ArticleList extends React.Component {
     render() {
         const list = this.props.articles
         return (
-<<<<<<< HEAD
                 <div className="ArticleList">
                 {list.map(article => <Article key={article.id} id={"a"+article.id+"_field"}{...article}/>)}
-=======
-                <div id="article_list_field">
-                {list.map(article => <Article key={article.id} {...article}/>)}
->>>>>>> upstream/master
                 </div>
                )
     }

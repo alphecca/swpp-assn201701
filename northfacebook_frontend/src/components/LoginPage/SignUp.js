@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import  './styles1.css';
+//import { } from '../actions';
 //const SignUpUrl = window.location.href + 'sign_up'
 
 class SignUp extends React.Component {

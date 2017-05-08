@@ -5,16 +5,10 @@ import {signOut} from '../../actions'
 class SignOut extends React.Component {
     render() {
         return (
-<<<<<<< HEAD
                 <div className="ToolBar" >
                    <div className="sign_out">
                    {this.props.username} 동무 어서오시오! <button id="sign_out" onClick={this.props.onLogOut}>Sign Out</button>
                    </div>
-=======
-                <div>
-                <span id="user_data_field">{this.props.username} logged in!</span>
-                <button id="sign_out" className="sign_out" onClick={this.props.onLogOut}>Sign Out</button>
->>>>>>> upstream/master
                 </div>
 
                );
