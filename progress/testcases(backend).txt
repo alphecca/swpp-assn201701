@@ -75,7 +75,7 @@ GET like/3/ test1 200: check if "owner" is test2, "article" is 5(failed)
 DELETE like/2/ anon 403: failed(400)
 DELETE like/2/ test1 403: failed(400)
 DELETE like/2/ test2 204
-GET article/2/ test2 200: check if "children_num" is 2, "like_num" is 1
+GET article/2/ test2 200: check if "children_num" is 3, "like_num" is 1
 // GET & POST mainpage
 GET mainpage/ anon 403: failed(200)
 GET mainpage/ test1 200
@@ -86,7 +86,7 @@ POST mainpage/ test1 {"text": "mainpage"} 201
 DELETE article/3/ test1 204
 GET article/3/ test1 404
 GET article/5/ test1 404
-GET article/2/ test1 200: check if "children_num" is 0, "like_num" is 1
+GET article/2/ test1 200: check if "children_num" is 1, "like_num" is 1
 POST article/2/article/ test1 {"text": "!@#$"} 201: remember id=7
 POST article/7/article/ test1 {"text": "%^&*"} 201: remember id=8
 DELETE article/2/ test2 204
