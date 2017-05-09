@@ -109,9 +109,10 @@ function *writePageSaga() {
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
 // watchLoginState: 브라우저에서의 로그인 여부 확인 및 state 업데이트
 // 이 코드는 안 봐도 상관은 없을 듯... 애초에 에러 체크때문에 넘나 긴 것
+// <<주의>>새로운 Page를 추가할 경우 PageSaga함수에 반드시 추가할 것
 function *watchLoginState() {
-    console.log("Prev Auth: "+localStorage.getItem("auth"));
-    console.log("Prev Parent: "+localStorage.getItem("parent"))
+    //console.log("Prev Auth: "+localStorage.getItem("auth"));
+    //console.log("Prev Parent: "+localStorage.getItem("parent"))
     if(window.location.pathname === '/' || window.location.pathname === '/sign_up') {
         if(localStorage.getItem("auth") !== null) {
             localStorage.removeItem('parent');
@@ -127,7 +128,6 @@ function *watchLoginState() {
             const path = window.location.pathname;
             let data, parent_data;
             if(path === '/main' || path === '/write') {
-                //TODO GET the mainpage & update state
                 localStorage.removeItem('parent');
                 try {
                     data = yield call(xhr.get, fixed_url+'/mainpage/', {
@@ -285,8 +285,8 @@ function *watchLoginState() {
             }
         }
     }
-    console.log('Curr Auth: '+localStorage['auth']);
-    console.log('Curr Parent: '+localStorage['parent']);
+    //console.log('Curr Auth: '+localStorage['auth']);
+    //console.log('Curr Parent: '+localStorage['parent']);
 }
 
 function *watchSignIn() {
@@ -356,7 +356,6 @@ function *watchGoToMain() {
 function *watchPostArticle() {
     while(true) {
         const data = yield take('ADD_ARTICLE');
-//        alert(localStorage['parent']);
         yield call(postArticle, data.text);
     }
 }
@@ -375,6 +374,7 @@ function *watchEdit() {
 }
 
 ///// Page별 saga함수에서 쓸 saga함수 (그 외)
+// signIn: 백엔드에 get을 날리는 함수
 function *signIn(data) {
     const encodedData = window.btoa(data.username + ":" + data.password);
     try {
@@ -413,8 +413,8 @@ function *signIn(data) {
     }
 }
 
+// signUp: 백엔드 users에 POST를 날리는 함수
 function *signUp(data) {
-    //TODO post the user data to /user/
     try {
         yield call(xhr.post, fixed_url + '/users/', {
             headers: {
@@ -457,8 +457,8 @@ function *signUp(data) {
 
 }
 
+// postLike: article_id가 id인 아티클에 Like를 날리는 함수
 function *postLike(id) {
-    //TODO post like to /article/{some_id}/like/
     const path = '/article/'+id+'/like/';
     try {
         yield call(xhr.post, fixed_url + path, {
@@ -485,6 +485,10 @@ function *postLike(id) {
             alert("Parent Article Does Not Exist");
             console.log("parent article removed");
         }
+        else if(error.statusCode === 405) {
+            alert("You already like this post!");
+            console.log("double like");
+        }
         else if(Object.keys(error).length === 0) {
             console.log("post article succeed 3");
             yield put(actions.changeUrl(window.location.pathname));
@@ -497,6 +501,7 @@ function *postLike(id) {
     }
 }
 
+// postArticle:  새로운 글/댓글을 쓰는 함수
 function *postArticle(text) {
     const path = localStorage['parent'] === null || localStorage['parent'] === undefined ? '/mainpage/' : '/article/'+localStorage['parent']+'/article/';
     try {
@@ -510,12 +515,12 @@ function *postArticle(text) {
             body: JSON.stringify({"text": text})
         });
         console.log("post article succeed 1");
-        yield put(actions.changeUrl('/main'));
+        yield put(actions.changeUrl(path === '/mainpage/' ? '/main' : '/article/'+localStorage['parent']));
     }
     catch(error) {
         if(error.statusCode === 201) {
             console.log("post article succeed 2");
-            yield put(actions.changeUrl('/main'));
+            yield put(actions.changeUrl(path === '/mainpage/' ? '/main' : '/article/'+localStorage['parent']));
         }
         else if(error.statusCode === 0) {
             alert("Backend server not available");
@@ -527,7 +532,7 @@ function *postArticle(text) {
         }
         else if(Object.keys(error).length === 0) {
             console.log("post article succeed 3");
-            yield put(actions.changeUrl('/main'));
+            yield put(actions.changeUrl(path === '/mainpage/' ? '/main' : '/article/'+localStorage['parent']));
         }
         else {
             alert("Unknown Error Occurred");
