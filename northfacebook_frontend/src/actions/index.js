@@ -71,9 +71,9 @@ export const articleDetail = (id) => {
     }
 }
 
-export const testState = () => {
+export const gotoSignUpPage = () => {
     return {
-        type: 'TEST_STATE',
+        type: 'GOTO_SIGN_UP',
     }
 }
 
