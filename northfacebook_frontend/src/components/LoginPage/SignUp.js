@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import {gotoSignUpPage} from '../../actions'
 import  './styles1.css';
-//import { } from '../actions';
-//const SignUpUrl = window.location.href + 'sign_up'
 
 class SignUp extends React.Component {
     render() {
         const onNewTab = () => {
-            window.location = '/sign_up';
+//            window.location = '/sign_up';
             console.log("Redirect to signup page...");
+            this.props.onClick();
         };
         return (
                 <div className="Button-Field">
@@ -18,6 +18,12 @@ class SignUp extends React.Component {
     }
 }
 
-SignUp = connect()(SignUp);
+let mapDispatchToProps = (dispatch) => {
+    return {
+        onClick: () => dispatch(gotoSignUpPage())
+    }
+}
+
+SignUp = connect(undefined, mapDispatchToProps)(SignUp);
 
 export default SignUp;

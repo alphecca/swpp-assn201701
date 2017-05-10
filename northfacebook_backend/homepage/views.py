@@ -93,7 +93,7 @@ def like_detail(request, pk):
         if like.owner==request.user:
             like.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_403_FORBIDDEN)
 @api_view(['GET', 'POST'])
 def like(request,pk):
     try:
@@ -109,7 +109,7 @@ def like(request,pk):
     elif request.method == 'POST':
         serializer = LikeSerializer(data=request.data)
         if like.filter(owner=request.user.id).count()!=0:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         if serializer.is_valid():
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)
