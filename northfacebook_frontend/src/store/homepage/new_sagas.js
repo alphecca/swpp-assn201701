@@ -1,5 +1,4 @@
 import { put, take, call, /*fork, select, */spawn } from 'redux-saga/effects'
-//import { delay } from 'redux-saga'
 import * as actions from './../../actions'
 
 var xhr = require('xhr-promise-redux');
@@ -10,11 +9,16 @@ const auth_check_url = fixed_url+'/auth/';
 
 // localStorage: 현재 사용하고 있는 브라우저 상에 스테이트를 저장하는데 사용.
 // 무려 크롬을 종료했다 시작해도 정보가 저장되어 있어요! (컴퓨터를 완전히 껐다 켜면 날라가지만...)
+// state의 경우 현재 페이지에서만 유지됩니다. (다른 페이지로 이동 시 리셋되기 때문에 새로 스테이트를 세팅해줘야 합니다. - 이 기능을 하는게 watchLoginState)
 const localStorage = window.localStorage;
 // localStorage에 들어갈 정보
 //   1. "auth" - 아이디 및 비밀번호 (Base64로 encoding된 버전)
 //   2. "parent" - articleDetailPage에서 원글 확인 & writePage에서 댓글 / 일반 포스팅 구분을 위한 parent article의 id
-
+// localStorage의 정보를 넣기/가져오기/삭제하기
+//      (1) 가져오기: localStorage.getItem('data_name') / localStorage['data_name']
+//      (2) 넣기: localStorage.setItem('data_name', data) / localStorage['data_name] = data
+//      (3) 삭제하기: localStorage.removeItem('data_name')
+// 
 // saga: 미들웨어에서 돌아갈 함수
 export default function *saga() {
     const path = window.location.pathname;
@@ -37,6 +41,7 @@ export default function *saga() {
                 case 'write':
                     yield spawn(writePageSaga);
                     break;
+                //TODO 이후 채팅 추가 시 case 'chatting'같은거 추가
                 default:
                     console.log("default state");
             }
@@ -75,9 +80,8 @@ function *mainPageSaga() {
     yield spawn(watchDetail);
     yield spawn(watchLike);
     yield spawn(watchSignOut);
-    //TODO 메인페이지에도 메인으로 돌아가는 버튼 만들어주세요
+    //TODO 메인페이지에도 메인으로 돌아가는 버튼 만들어주세요 와와
     yield spawn(watchGoToMain);
-
     //TODO 이 부분부터는 함수 구현해야해용
     yield spawn(watchEdit);
     yield spawn(watchDelete);
@@ -105,11 +109,13 @@ function *writePageSaga() {
     yield spawn(watchGoToMain);
 }
 
+//TODO 이후 채팅 추가 시 채팅용 사가함수 제작할 것
+
 
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
 // watchLoginState: 브라우저에서의 로그인 여부 확인 및 state 업데이트
-// 이 코드는 안 봐도 상관은 없을 듯... 애초에 에러 체크때문에 넘나 긴 것
-// <<주의>>새로운 Page를 추가할 경우 PageSaga함수에 반드시 추가할 것
+// <<주의>> 새로운 Page를 추가할 경우 PageSaga함수에 반드시 추가할 것
+// <<주의>> 새로운 state를 추가할 경우 try-catch문을 이용해 정보를 받아온 후 스테이트에 업데이트 해야 함
 function *watchLoginState() {
     //console.log("Prev Auth: "+localStorage.getItem("auth"));
     //console.log("Prev Parent: "+localStorage.getItem("parent"))
@@ -159,11 +165,13 @@ function *watchLoginState() {
                         alert("Unknown Error Occurred");
                     }
                 }
+                //TODO 이후 chatting 추가 시 여기에도 try-catch문을 추가해야 할 듯
                 //alert(JSON.stringify(data.body));
                 yield put(actions.setState({
                     authorization: window.atob(localStorage['auth']),
                     articles: data.body,
                     parent_article: null
+                    //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                 }));
             }
             else { // id를 기준으로 backend에 겟을 날리는 경우
@@ -236,6 +244,7 @@ function *watchLoginState() {
                     authorization: window.atob(localStorage['auth']),
                     articles: data.body,
                     parent_article: parent_data.body
+                    //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                 }));
             }
         }
@@ -244,6 +253,7 @@ function *watchLoginState() {
     //console.log('Curr Parent: '+localStorage['parent']);
 }
 
+// watchSignIn: 로그인 버튼 클릭 관찰
 function *watchSignIn() {
     while(true) {
         const data = yield take(actions.SIGN_IN);
@@ -251,6 +261,7 @@ function *watchSignIn() {
     }
 }
 
+// watchSignUp: 회원가입 버튼 클릭 관찰
 function *watchSignUp() {
     while(true) {
         yield take('GOTO_SIGN_UP');
@@ -258,6 +269,7 @@ function *watchSignUp() {
     }
 }
 
+// watchSignOut: 로그아웃 버튼 클릭 관찰
 function *watchSignOut() {
     while(true) {
         yield take('SIGN_OUT');
@@ -267,6 +279,7 @@ function *watchSignOut() {
     }
 }
 
+// watchPostSignUp: 회원가입 페이지에서 가입 버튼 클릭 관찰
 function *watchPostSignUp() {
     while(true) {
         const data = yield take('POST_SIGN_UP');
@@ -274,6 +287,7 @@ function *watchPostSignUp() {
     }
 }
 
+// watchWrite: 글쓰기/답글쓰기 버튼 클릭 관찰 및 리다이렉트
 function *watchWrite() {
     while(true) {
         const data = yield take('WRITE_ARTICLE');
@@ -285,6 +299,7 @@ function *watchWrite() {
 
 }
 
+// watchDetail: 디테일 버튼 클릭 관찰 및 리다이렉트
 function *watchDetail() {
     while(true) {
         const data = yield take('ARTICLE_DETAIL');
@@ -292,6 +307,7 @@ function *watchDetail() {
     }
 }
 
+// watchLike: 좋아요 버튼 클릭 관찰
 function *watchLike() {
     while(true) {
         const data = yield take('POST_LIKE');
@@ -300,6 +316,7 @@ function *watchLike() {
 
 }
 
+// watchGoToMain: 메인으로 돌아가기 버튼 클릭 관찰 및 리다이렉트
 function *watchGoToMain() {
     while(true) {
         yield take('POST_BACK');
@@ -308,6 +325,7 @@ function *watchGoToMain() {
 
 }
 
+// watchPostArticle: 글쓰기 페이지에서 포스트 버튼 클릭 관찰
 function *watchPostArticle() {
     while(true) {
         const data = yield take('ADD_ARTICLE');
@@ -327,6 +345,7 @@ function *watchEdit() {
         yield take('EDIT_ARTICLE');
     }
 }
+
 
 ///// Page별 saga함수에서 쓸 saga함수 (그 외)
 // signIn: 백엔드에 get을 날리는 함수
