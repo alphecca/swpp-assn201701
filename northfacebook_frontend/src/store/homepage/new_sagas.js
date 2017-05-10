@@ -139,22 +139,12 @@ function *watchLoginState() {
                         responseType: 'json'
                     })
                     console.log('Get data without exception');
-                    yield put(actions.setState({
-                        authorization: window.atob(localStorage['auth']),
-                        articles: data.body,
-                        parent_article: localStorage['parent']
-                    }));
                 }
                 catch(error) {
                     console.log(error);
                     if(error.statusCode === 200) {
-                        //TODO 이거 제대로 작동하는지 확인해야 함 (error로 굴러왔을 때도 data를 쓸 수 있는지 확인)
                         console.log('Succeed to get data');
-                        yield put(actions.setState({
-                            authorization: localStorage['auth'],
-                            articles: data.body,
-                            parent_article: localStorage['parent']
-                        }));
+                        data = error;
                     }
                     else if(error.statusCode === 403) {
                         alert("Unauthorized user tried to access mainpage");
@@ -169,10 +159,16 @@ function *watchLoginState() {
                         alert("Unknown Error Occurred");
                     }
                 }
+                //alert(JSON.stringify(data.body));
+                yield put(actions.setState({
+                    authorization: window.atob(localStorage['auth']),
+                    articles: data.body,
+                    parent_article: null
+                }));
             }
-            else {
+            else { // id를 기준으로 backend에 겟을 날리는 경우
                 const id = path.split("/")[2];
-                //TODO GET /article/{some_id}/article/ & update state & localStorage
+                // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
                 try {
                     localStorage.setItem('parent', id);
                     data = yield call(xhr.get, fixed_url+'/article/'+id+'/article/', {
@@ -183,91 +179,11 @@ function *watchLoginState() {
                         },
                         responseType: 'json'
                     });
-                    try {
-                        parent_data = yield call(xhr.get, fixed_url+'/article/'+id+'/', {
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': 'Basic '+ localStorage['auth'],
-                            Accept: 'application/json'
-                            },
-                            responseType: 'application/json'
-                        });
-                        console.log('Get data without exception');
-                        yield put(actions.setState({
-                            authorization: window.atob(localStorage['auth']),
-                            articles: data.body,
-                            parent_article: parent_data.body
-                        }));
-                    }
-                    catch(error) {
-                        console.log(error);
-                        if(error.statusCode === 200) {
-                            //TODO 이거 제대로 작동하는지 확인해야 함 (error로 굴러왔을 때도 data를 쓸 수 있는지 확인)
-                            console.log('Succeed to get data');
-                            yield put(actions.setState({
-                                authorization: localStorage['auth'],
-                                articles: data.body,
-                                parent_article: parent_data.body
-                            }));
-                        }
-                        else if(error.statusCode === 403) {
-                            alert("Unauthorized user tried to access mainpage");
-                            console.log('whyyyyyyyy');
-                        }
-                        else if(error.statusCode === 0) {
-                            console.log("Backend is not accessible");
-                            alert("Temporal Server Error");
-                        }
-                        else {
-                            console.log("Whyyyyyyyyyyy");
-                            alert("Unknown Error Occurred");
-                        }
-                    }
                 }
                 catch(error) {
                     console.log(error);
                     if(error.statusCode === 200) {
-                        //TODO 이거 제대로 작동하는지 확인해야 함 (error로 굴러왔을 때도 data를 쓸 수 있는지 확인)
-                        try {
-                            parent_data = yield call(xhr.get, fixed_url+'/article/'+id+'/', {
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Basic '+ localStorage['auth'],
-                                Accept: 'application/json'
-                                },
-                                responseType: 'application/json'
-                            });
-                            console.log('Get data without exception');
-                            yield put(actions.setState({
-                                authorization: window.atob(localStorage['auth']),
-                                articles: data.body,
-                                parent_article: parent_data.body
-                            }));
-                        }
-                        catch(error) {
-                            console.log(error);
-                            if(error.statusCode === 200) {
-                                //TODO 이거 제대로 작동하는지 확인해야 함 (error로 굴러왔을 때도 data를 쓸 수 있는지 확인)
-                                console.log('Succeed to get data');
-                                yield put(actions.setState({
-                                    authorization: localStorage['auth'],
-                                    articles: data.body,
-                                    parent_article: parent_data.body
-                                }));
-                            }
-                            else if(error.statusCode === 403) {
-                                alert("Unauthorized user tried to access mainpage");
-                                console.log('whyyyyyyyy');
-                            }
-                            else if(error.statusCode === 0) {
-                                console.log("Backend is not accessible");
-                                alert("Temporal Server Error");
-                            }
-                            else {
-                                console.log("Whyyyyyyyyyyy");
-                                alert("Unknown Error Occurred");
-                            }
-                        }
+                        data = error;
                     }
                     else if(error.statusCode === 403) {
                         alert("Unauthorized user tried to access mainpage");
@@ -282,6 +198,45 @@ function *watchLoginState() {
                         alert("Unknown Error Occurred");
                     }
                 }
+                // 스테이트의 parent_article에 들어갈 내용을 받는 try-catch 문
+                try {
+                    parent_data = yield call(xhr.get, fixed_url+'/article/'+id+'/', {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Basic '+ localStorage['auth'],
+                        Accept: 'application/json'
+                        },
+                        responseType: 'application/json'
+                    });
+                    console.log('Get data without exception');
+                }
+                catch(error) {
+                    console.log(error);
+                    if(error.statusCode === 200) {
+                        console.log('Succeed to get data');
+                        parent_data = error;
+                    }
+                    else if(error.statusCode === 403) {
+                        alert("Unauthorized user tried to access mainpage");
+                        console.log('whyyyyyyyy');
+                    }
+                    else if(error.statusCode === 0) {
+                        console.log("Backend is not accessible");
+                        alert("Temporal Server Error");
+                    }
+                    else {
+                        console.log("Whyyyyyyyyyyy");
+                        alert("Unknown Error Occurred");
+                    }
+                }
+                //TODO 이후 state에 새로운 element를 추가할 경우 이 부분에 try-catch를 추가하면 됩니다
+//                console.log(JSON.stringify(data.body));
+//                console.log(parent_data.body);
+                yield put(actions.setState({
+                    authorization: window.atob(localStorage['auth']),
+                    articles: data.body,
+                    parent_article: parent_data.body
+                }));
             }
         }
     }
@@ -473,6 +428,7 @@ function *postLike(id) {
         yield put(actions.changeUrl(window.location.pathname));
     }
     catch(error) {
+        console.log(error);
         if(error.statusCode === 201) {
             console.log("post article succeed 2");
             yield put(actions.changeUrl(window.location.pathname));
