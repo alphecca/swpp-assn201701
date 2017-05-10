@@ -3,14 +3,13 @@ import * as actions from './../../actions'
 
 var xhr = require('xhr-promise-redux');
 
-//TODO 개인적으로 테스트시 포트번호를 바꾸자. 풀리퀘를 날릴 때는 포트번호를 확인할 것
-const fixed_url = "http://wlxyzlw.iptime.org:7777"; //포오오오트으으으버어어어언호오오오 확이이이인
+//TODO 개인적으로 테스트할 때는 포트번호를 바꾸자. 풀리퀘를 날릴 때는 URL을 확인할 것
+const fixed_url = "http://wlxyzlw.iptime.org:8000"; //포오오오트으으으버어어어언호오오오 확이이이인
 const auth_check_url = fixed_url+'/auth/';
 
 // localStorage: 현재 사용하고 있는 브라우저 상에 스테이트를 저장하는데 사용.
-// 무려 크롬을 종료했다 시작해도 정보가 저장되어 있어요! (컴퓨터를 완전히 껐다 켜면 날라가지만...)
+// 무려 크롬을 종료했다 시작해도 정보가 저장되어 있어요!
 // state의 경우 현재 페이지에서만 유지됩니다. (다른 페이지로 이동 시 리셋되기 때문에 새로 스테이트를 세팅해줘야 합니다. - 이 기능을 하는게 watchLoginState)
-const localStorage = window.localStorage;
 // localStorage에 들어갈 정보
 //   1. "auth" - 아이디 및 비밀번호 (Base64로 encoding된 버전)
 //   2. "parent" - articleDetailPage에서 원글 확인 & writePage에서 댓글 / 일반 포스팅 구분을 위한 parent article의 id
@@ -18,7 +17,9 @@ const localStorage = window.localStorage;
 //      (1) 가져오기: localStorage.getItem('data_name') / localStorage['data_name']
 //      (2) 넣기: localStorage.setItem('data_name', data) / localStorage['data_name] = data
 //      (3) 삭제하기: localStorage.removeItem('data_name')
-// 
+const localStorage = window.localStorage;
+
+
 // saga: 미들웨어에서 돌아갈 함수
 export default function *saga() {
     const path = window.location.pathname;
@@ -59,6 +60,7 @@ export default function *saga() {
 //   (좋은 예: 메인 페이지의 url - '/main', 나쁜 예: 메인 페이지의 url - '/sogaewonsil_geukhyum')
 // 3. switch문의 케이스에 추가한다.
 //   (ex. 메인페이지 추가 - case '/main': yield spawn(timeLinePageSaga); break;)
+// 4. 페이지 이동은 yield put(actions.changeUrl('/target_path'))를 이용하시면 됩니다.
 //////////////////////////////////////////////////
 function *loginPageSaga() {
     console.log("Login Page");
@@ -85,6 +87,7 @@ function *mainPageSaga() {
     //TODO 이 부분부터는 함수 구현해야해용
     yield spawn(watchEdit);
     yield spawn(watchDelete);
+    //TODO 시간 남으면 더 보기 기능 부탁해요
 }
 
 function *articleDetailPageSaga() {
@@ -109,7 +112,7 @@ function *writePageSaga() {
     yield spawn(watchGoToMain);
 }
 
-//TODO 이후 채팅 추가 시 채팅용 사가함수 제작할 것
+//TODO 이후 채팅 추가 시 채팅용 사가함수를 구현할 것
 
 
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
@@ -153,16 +156,21 @@ function *watchLoginState() {
                         data = error;
                     }
                     else if(error.statusCode === 403) {
-                        alert("Unauthorized user tried to access mainpage");
+                        alert("Unauthorized user tried to access mainpage. Please login again!");
                         console.log('whyyyyyyyy');
+                        localStorage.removeItem('auth');
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
                     }
                     else if(error.statusCode === 0) {
                         console.log("Backend is not accessible");
                         alert("Temporal Server Error");
+                        return;
                     }
                     else {
                         console.log("Whyyyyyyyyyyy");
                         alert("Unknown Error Occurred");
+                        return;
                     }
                 }
                 //TODO 이후 chatting 추가 시 여기에도 try-catch문을 추가해야 할 듯
@@ -194,16 +202,20 @@ function *watchLoginState() {
                         data = error;
                     }
                     else if(error.statusCode === 403) {
-                        alert("Unauthorized user tried to access mainpage");
+                        alert("Unauthorized user tried to access mainpage. Please login again!");
                         console.log('whyyyyyyyy');
+                        localStorage.removeItem('auth');
+                        localStorage.removeItem('parent');
                     }
                     else if(error.statusCode === 0) {
                         console.log("Backend is not accessible");
-                        alert("Temporal Server Error");
+                        alert("Temporal Server Error. Try reloading!");
+                        return;
                     }
                     else {
                         console.log("Whyyyyyyyyyyy");
                         alert("Unknown Error Occurred");
+                        return;
                     }
                 }
                 // 스테이트의 parent_article에 들어갈 내용을 받는 try-catch 문
@@ -225,16 +237,18 @@ function *watchLoginState() {
                         parent_data = error;
                     }
                     else if(error.statusCode === 403) {
-                        alert("Unauthorized user tried to access mainpage");
+                        alert("Unauthorized user tried to access mainpage. Please login again!");
                         console.log('whyyyyyyyy');
                     }
                     else if(error.statusCode === 0) {
                         console.log("Backend is not accessible");
-                        alert("Temporal Server Error");
+                        alert("Temporal Server Error. Try reloading");
+                        return;
                     }
                     else {
                         console.log("Whyyyyyyyyyyy");
                         alert("Unknown Error Occurred");
+                        return;
                     }
                 }
                 //TODO 이후 state에 새로운 element를 추가할 경우 이 부분에 try-catch를 추가하면 됩니다
@@ -358,7 +372,7 @@ function *signIn(data) {
                 'Authorization': 'Basic '+ encodedData,
                 Accept: 'application/json'
             },
-            responseType: 'application/json'
+            responseType: 'json'
         })
         console.log("Login Success without exception");
         alert("Succeed to sign in! :)");
