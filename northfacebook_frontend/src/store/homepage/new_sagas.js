@@ -84,7 +84,6 @@ function *mainPageSaga() {
     yield spawn(watchSignOut);
     //TODO 메인페이지에도 메인으로 돌아가는 버튼 만들어주세요 와와
     yield spawn(watchGoToMain);
-    //TODO 이 부분부터는 함수 구현해야해용
     yield spawn(watchEdit);
     yield spawn(watchDelete);
     //TODO 시간 남으면 더 보기 기능 부탁해요
@@ -347,17 +346,19 @@ function *watchPostArticle() {
     }
 }
 
-// TODO 이후에 구현할 것들
+// watchDelete: 메인페이지또는 세부페이지에서 삭제 버튼 클릭 관찰
 function *watchDelete() {
     while(true) {
-        yield take('POST_DELETE');
+        console.log("in watchDelete");
+        const data = yield take('DELETE_ARTICLE');
+        yield call(deleteArticle, data.id);
     }
 }
 
-function *watchEdit() {
-    while(true) {
-        yield take('EDIT_ARTICLE');
-    }
+function *watchEdit(){
+   while(true){
+     yield take('EDIT_ARTICLE');
+   } 
 }
 
 
@@ -529,4 +530,29 @@ function *postArticle(text) {
         }
     }
 }
-
+function *deleteArticle(id){
+  const path = '/article/'+id+'/';
+  console.log("in deleteArticle");
+  try{
+    yield call(xhr.send, fixed_url+path,{
+                method: 'DELETE',
+                headers:{
+                        'Authorization': 'Basic '+localStorage['auth'],
+                         Accept: 'application/json'
+                        },
+                responseType:'json'
+               });
+    console.log("delete article succeed!!!");
+    yield put(actions.changeUrl('/main'));
+  }catch(error){
+       console.log(error);
+       if(error.statusCode ===204){
+          console.log("delete article succeedd!!");
+          yield put(actions.changeUrl('/main'));
+       }
+       else if(error.statusCode === 403){
+          alert("This is not your article");
+       }  
+       else yield put(actions.changeUrl('/main'));
+  }
+}

@@ -57,6 +57,13 @@ export const writeArticle = (id) => {
     }
 }
 
+export const deleteArticle = (id) => {
+    return {
+        type: 'DELETE_ARTICLE',
+        id: id
+    }
+}
+
 export const setState = (state) => {
     return {
         type: 'SET_STATE',

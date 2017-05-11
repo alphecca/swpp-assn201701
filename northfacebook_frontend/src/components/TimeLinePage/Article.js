@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {writeArticle, postLike, articleDetail} from '../../actions'
+import {deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
 import  './styles.css'
 
 class Article extends React.Component {
@@ -36,9 +36,9 @@ class Article extends React.Component {
                     <div className="divider"/>
                     <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>Like</button>
                     <div className="divider"/>
-                    <button id={editButtonId} onClick={this.props.onEditClick}>Edit</button>
+                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick}>Edit</button>
                     <div className="divider"/>
-                    <button id={deleteButtonId} onClick={this.props.onDeleteClick}>Delete</button>
+                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>Delete</button>
                     <br />
                     댓글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
@@ -64,7 +64,7 @@ Article.propTypes = {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        onDeleteClick: () => alert("Delete button cliked"),
+        onDeleteClick: (id) => dispatch(deleteArticle(id)), 
         onEditClick: () => alert("Edit button clicked"),
         onReplyClick: (id) => dispatch(writeArticle(id)),
         onLikeClick: (id, auth) => dispatch(postLike(id, auth)),
