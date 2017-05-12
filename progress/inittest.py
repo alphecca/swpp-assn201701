@@ -29,15 +29,8 @@ def post_or_error_anon(link, data):
 userN = 10
 user_pairs = create_users(userN)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-link = "http://wlxyzlw.iptime.org:7777/users/" # TODO If you want to change port of url, revise this.
-=======
+#link = "http://wlxyzlw.iptime.org:7777/users/" # TODO If you want to change port of url, revise this.
 link = sys.argv[1] + "users/" # TODO If you want to change port of url, revise this.
->>>>>>> upstream/master
-=======
-link = sys.argv[1] + "users/" # TODO If you want to change port of url, revise this.
->>>>>>> upstream/master
 print("1. Creating new users.")
 try:
     for i in range(1,userN+1):
