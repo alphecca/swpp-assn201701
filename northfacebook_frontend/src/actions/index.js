@@ -56,7 +56,18 @@ export const writeArticle = (id) => {
         id
     }
 }
-
+export const editArticle = (id) => {
+    return {
+        type: 'EDIT_ARTICLE',
+        id: id,
+    }
+}
+export const putArticle = (text) =>{
+    return {
+        type: 'PUT_ARTICLE',
+        text: text//after edit
+    }
+}
 export const deleteArticle = (id) => {
     return {
         type: 'DELETE_ARTICLE',
