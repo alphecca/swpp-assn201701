@@ -219,7 +219,7 @@ def chatuser_list(request):
     serializer = ChatUserSerializer(chatuser, many=True)
     return Response(serializer.data)
     
-@api_view(['GET','POST'])
+@api_view(['GET','POST','DELETE'])
 def chatuser(request,pk):
   try: chatroom = Chat.objects.get(pk=pk)
   except Chat.DoesNotExist:
@@ -236,22 +236,12 @@ def chatuser(request,pk):
       serializer.save(chatroom=chatroom, chatuser=request.user)
       return Response(status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_400_BAD_REQUEST) 
-
-@api_view(['GET','DELETE'])
-def chatuser_detail(request,pk):
-  try: chatuser = User.objects.get(pk=pk)
-  except User.DoesNotExist:
-    return Response(status=status.HTTP_404_NOT_FOUND)
-  if request.user.id == None:
-    return Response(status=status.HTTP_403_FORBIDDEN)
-  if request.method == 'GET':
-    serializer = ChatUserSerializer(chatuser)
-    return Response(serializer.data)
   elif request.method == 'DELETE':
-    if request.user==chatuser.user:
-      chatuser.delete()
-      return Response(status=status.HTTP_204_NO_CONTENT)
-    return Response(status=status.HTTP_403_FORBIDDEN)
+    exituser=ChatUser.objects.filter(chatroom=chatroom.id,chatuser=request.user)
+    if exituser.exists():
+      exituser.delete()
+      return Response(ChatUserSerializer(chatuser,many=True).data)
+    return Response(ChatUserSerializer(chatuser, many=True).data)
 
 
 @api_view(['GET'])
