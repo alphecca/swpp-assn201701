@@ -42,6 +42,9 @@ export default function *saga() {
                 case 'write':
                     yield spawn(writePageSaga);
                     break;
+                case 'edit':
+                    yield spawn(editPageSaga, url[2]);
+                    break;
                 //TODO 이후 채팅 추가 시 case 'chatting'같은거 추가
                 default:
                     console.log("default state");
@@ -84,7 +87,6 @@ function *mainPageSaga() {
     yield spawn(watchSignOut);
     //TODO 메인페이지에도 메인으로 돌아가는 버튼 만들어주세요 와와
     yield spawn(watchGoToMain);
-    //TODO 이 부분부터는 함수 구현해야해용
     yield spawn(watchEdit);
     yield spawn(watchDelete);
     //TODO 시간 남으면 더 보기 기능 부탁해요
@@ -108,6 +110,15 @@ function *writePageSaga() {
     yield spawn(watchLoginState);
     yield spawn(watchSignOut);
     yield spawn(watchPostArticle);
+    //TODO 글쓰기 페이지에도 메인페이지로 돌아가는 버튼 추가해주세오 와와
+    yield spawn(watchGoToMain);
+}
+
+function *editPageSaga(id){
+    console.log("Edit Page: "+id);
+    yield spawn(watchLoginState);
+    yield spawn(watchSignOut);
+    yield spawn(watchPutArticle, id);
     //TODO 글쓰기 페이지에도 메인페이지로 돌아가는 버튼 추가해주세오 와와
     yield spawn(watchGoToMain);
 }
@@ -347,19 +358,30 @@ function *watchPostArticle() {
     }
 }
 
-// TODO 이후에 구현할 것들
+// watchDelete: 메인페이지또는 세부페이지에서 삭제 버튼 클릭 관찰
 function *watchDelete() {
     while(true) {
-        yield take('POST_DELETE');
+        const data = yield take('DELETE_ARTICLE');
+        yield call(deleteArticle, data.id);
     }
 }
 
-function *watchEdit() {
-    while(true) {
-        yield take('EDIT_ARTICLE');
-    }
+function *watchEdit(){
+   while(true){
+     console.log("in edit article");
+     const data = yield take('EDIT_ARTICLE');
+     //TODO user data GET해서 forbidden or not
+    yield put(actions.changeUrl('/edit/'+data.id));     
+   } 
 }
-
+function *watchPutArticle(id){
+   while(true){
+       console.log("in watchPutArticle...");
+       const data = yield take('PUT_ARTICLE');
+       console.log("text: "+data.text);
+       yield call(putArticle, id, data.text);
+   }
+}
 
 ///// Page별 saga함수에서 쓸 saga함수 (그 외)
 // signIn: 백엔드에 get을 날리는 함수
@@ -529,4 +551,57 @@ function *postArticle(text) {
         }
     }
 }
-
+function *deleteArticle(id){
+  const path = '/article/'+id+'/';
+  try{
+    yield call(xhr.send, fixed_url+path,{
+                method: 'DELETE',
+                headers:{
+                        'Authorization': 'Basic '+localStorage['auth'],
+                         Accept: 'application/json'
+                        },
+                responseType:'json'
+               });
+    console.log("delete article succeed!!!");
+    yield put(actions.changeUrl('/main'));
+   //TODO parent article여부 확인해서 main 똔s detailpage로
+  }catch(error){
+       console.log(error);
+       if(error.statusCode ===204){
+          console.log("delete article succeedd!!");
+          yield put(actions.changeUrl('/main'));
+       }
+       else if(error.statusCode === 403){
+          alert("This is not your article");
+       }  
+       else yield put(actions.changeUrl('/main'));
+  }
+}
+function *putArticle(id, text){
+  const  path =  '/article/'+id+'/';
+  console.log("in editArticle[path]: "+path);
+  try{
+    yield call(xhr.send, fixed_url+path, {
+               method: 'PUT',
+               headers: { 
+                  "Authorization": "Basic "+localStorage['auth'],
+                  "Content-Type": 'application/json',
+                  Accept: 'application/json'
+               },
+               contentType:'json',
+               body: JSON.stringify({"text": text}),
+               responseType:'json'
+           });
+     console.log("edit article succeeeeed!!!!!!!!!");
+     yield put(actions.changeUrl('/main')); //TODO
+  }catch(error){
+     console.log(error);
+     if(error.statusCode === 403){
+        alert("This article is not yours");
+     }
+//     else if(error.statusCode ===202 );//page자체가 없을때?
+//      alert("No article exists");
+//     else
+//       yield put(actions.changeUrl('/main'));
+  }
+}
