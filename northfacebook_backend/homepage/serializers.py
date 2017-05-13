@@ -34,3 +34,26 @@ class ArticleSerializer(serializers.ModelSerializer):
                 'created_time','updated_time','text',
                 'children_num','like_num')
 
+# for CHATTING
+class ChatRoomSerializer(serializers.ModelSerializer):
+    user_num = serializers.SerializerMethodField()
+    def get_user_num(self, obj):
+        return ChatUser.objects.filter(chatroom=obj.id).count()
+
+    class Meta:
+        model = Chat
+        fields = ('id','user_num', 'room_name')
+
+class ChatUserSerializer(serializers.ModelSerializer):
+    chatuser = serializers.ReadOnlyField(source='chatuser.username')
+    chatroom=serializers.ReadOnlyField(source='chatroom.id')
+    class Meta:
+        model = ChatUser
+        fields = ('id', 'chatroom', 'chatuser')
+
+class TextSerializer(serializers.ModelSerializer):
+    writer=serializers.ReadOnlyField(source='writer.username')
+    room = serializers.ReadOnlyField(source='room.id')
+    class Meta:
+       model = Text
+       fields = ('room', 'text', 'writer', 'created_time')

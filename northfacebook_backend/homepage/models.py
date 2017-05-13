@@ -18,3 +18,19 @@ class Article(models.Model):
     like_num = models.IntegerField(default=0)
     class Meta:
         ordering = ['-created_time']
+
+class Chat(models.Model):
+    room_name = models.TextField()
+    chatuser_num = models.IntegerField(default=0)
+
+class ChatUser(models.Model):
+   chatroom = models.ForeignKey('Chat', related_name='chatroom', on_delete=models.CASCADE)
+   chatuser = models.ForeignKey('auth.User', related_name='chatuser', on_delete=models.CASCADE)
+
+class Text(models.Model):
+    text = models.TextField()
+    room = models.ForeignKey('Chat', related_name='room',on_delete=models.CASCADE)
+    writer = models.ForeignKey('auth.User', related_name='writer', on_delete=models.CASCADE)
+    created_time = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-created_time']

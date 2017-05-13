@@ -94,6 +94,7 @@ def like_detail(request, pk):
             like.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
+
 @api_view(['GET', 'POST'])
 def like(request,pk):
     try:
@@ -178,3 +179,105 @@ class UserList(generics.ListCreateAPIView):
     serializer_class = UserSerializer
 # permission_classes = ()
 """
+# for CHATTING
+@api_view(['GET', 'POST'])
+def chatroom_list(request):
+   if request.user.id == None:
+      return Response(status=status.HTTP_403_FORBIDDEN)
+   if request.method == 'GET':
+      chat = Chat.objects.all()
+      serializer = ChatRoomSerializer(chat, many=True)
+      return Response(serializer.data)
+   elif request.method == 'POST':
+      serializer = ChatRoomSerializer(data = request.data)
+      if serializer.is_valid():
+         serializer.save()
+         return Response(status=status.HTTP_201_CREATED)
+      return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'DELETE'])
+def chatroom_detail(request,pk):
+    try:
+       chatroom = Chat.objects.get(pk=pk)
+    except Chat.DoesNotExist:
+       return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.user.id == None:
+       return Response(status=status.HTTP_403_FORBIDDEN)
+    if request.method == 'GET':
+       serializer = ChatRoomSerializer(chatroom)
+       return Response(serializer.data)
+    elif request.method == 'DELETE':
+       chatroom.delete()
+       return Response(status=status.HTTP_204_NO_CONTENT) 
+
+@api_view(['GET'])
+def chatuser_list(request):
+  if request.user.id == None:
+    return Response(status=status.HTTP_403_FORBIDDEN)
+  if request.method == 'GET':
+    chatuser=ChatUser.objects.all()
+    serializer = ChatUserSerializer(chatuser, many=True)
+    return Response(serializer.data)
+    
+@api_view(['GET','POST'])
+def chatuser(request,pk):
+  try: chatroom = Chat.objects.get(pk=pk)
+  except Chat.DoesNotExist:
+    return Response(status = status.HTTP_404_NOT_FOUND)
+  if request.user.id == None:
+    return Response(status= status.HTTP_403_FORBIDDEN)
+  chatuser = ChatUser.objects.filter(chatroom=chatroom.id)
+  if request.method == 'GET':
+    serializer = ChatUserSerializer(chatuser, many=True)
+    return Response(serializer.data)
+  elif request.method == 'POST':
+    serializer = ChatUserSerializer(data=request.data)
+    if serializer.is_valid():
+      serializer.save(chatroom=chatroom, chatuser=request.user)
+      return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST) 
+
+@api_view(['GET','DELETE'])
+def chatuser_detail(request,pk):
+  try: chatuser = User.objects.get(pk=pk)
+  except User.DoesNotExist:
+    return Response(status=status.HTTP_404_NOT_FOUND)
+  if request.user.id == None:
+    return Response(status=status.HTTP_403_FORBIDDEN)
+  if request.method == 'GET':
+    serializer = ChatUserSerializer(chatuser)
+    return Response(serializer.data)
+  elif request.method == 'DELETE':
+    if request.user==chatuser.user:
+      chatuser.delete()
+      return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['GET'])
+def text_list(request):
+  if request.user.id == None:
+     return Response(status=status.HTTP_403_FORBIDDEN)
+  if request.method == 'GET':
+     text = Text.objects.all()
+     serializer = TextSerializer(text, many=True)
+     return Response(serializer.data)
+
+@api_view(['GET','POST']) 
+def text(request, pk):
+  try: chatroom = Chat.objects.get(pk=pk)
+  except Chat.DoesNotExist:
+    return Response(status=status.HTTP_404_NOT_FOUND)
+  if request.user.id == None:
+    return Response(status=status.HTTP_403_FORBIDDEN)
+  text = Text.objects.filter(room=chatroom.id) 
+  if request.method == 'GET':
+    serializer = TextSerializer(text, many=True)
+    return Response(serializer.data)
+  elif request.method == 'POST':
+    serializer = TextSerializer(data=request.data)
+    if serializer.is_valid():
+      serializer.save(writer=request.user, room=chatroom)
+      return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
