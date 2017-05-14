@@ -56,4 +56,4 @@ class TextSerializer(serializers.ModelSerializer):
     room = serializers.ReadOnlyField(source='room.id')
     class Meta:
        model = Text
-       fields = ('id','room', 'text', 'writer', 'created_time')
+       fields = ('room', 'text', 'writer', 'created_time')

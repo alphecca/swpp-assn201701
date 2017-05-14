@@ -208,7 +208,7 @@ def chatroom_detail(request,pk):
        return Response(serializer.data)
     elif request.method == 'DELETE':
        chatroom.delete()
-       return Response(status=status.HTTP_204_NO_CONTENT)
+       return Response(status=status.HTTP_204_NO_CONTENT) 
 
 @api_view(['GET'])
 def chatuser_list(request):
@@ -218,7 +218,7 @@ def chatuser_list(request):
     chatuser=ChatUser.objects.all()
     serializer = ChatUserSerializer(chatuser, many=True)
     return Response(serializer.data)
-
+    
 @api_view(['GET','POST','DELETE'])
 def chatuser(request,pk):
   try: chatroom = Chat.objects.get(pk=pk)
@@ -233,12 +233,12 @@ def chatuser(request,pk):
   elif request.method == 'POST':
     for t in chatuser:
       if t.chatuser == request.user:
-         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)  
     serializer = ChatUserSerializer(data=request.data)
     if serializer.is_valid():
       serializer.save(chatroom=chatroom, chatuser=request.user)
       return Response(status=status.HTTP_201_CREATED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_400_BAD_REQUEST) 
   elif request.method == 'DELETE':
     exituser=ChatUser.objects.filter(chatroom=chatroom.id,chatuser=request.user)
     if exituser.exists():
@@ -256,14 +256,14 @@ def text_list(request):
      serializer = TextSerializer(text, many=True)
      return Response(serializer.data)
 
-@api_view(['GET','POST'])
+@api_view(['GET','POST']) 
 def text(request, pk):
   try: chatroom = Chat.objects.get(pk=pk)
   except Chat.DoesNotExist:
     return Response(status=status.HTTP_404_NOT_FOUND)
   if request.user.id == None:
     return Response(status=status.HTTP_403_FORBIDDEN)
-  text = Text.objects.filter(room=chatroom.id)
+  text = Text.objects.filter(room=chatroom.id) 
   if request.method == 'GET':
     serializer = TextSerializer(text, many=True)
     return Response(serializer.data)
