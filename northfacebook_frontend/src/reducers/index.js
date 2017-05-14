@@ -29,7 +29,6 @@ const homepage = (state = homepageInitialState, action) => {
             })
         }
         case 'ARTICLE_DETAIL': {
-//            alert(action.id)
             return Object.assign({}, state, {
                 authorization: state.authorization,
                 articles: state.articles,
