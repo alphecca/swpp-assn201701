@@ -150,3 +150,10 @@ export const postRoom = (room_name) => {
 	room_name: room_name
     }
 }
+
+export const updateChatting = (room_id) => {
+    return {
+	type: 'UPDATE_CHATTING',
+	room_id: room_id
+    }
+}

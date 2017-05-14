@@ -1,4 +1,5 @@
-import { put, take, call, /*fork, select, */spawn } from 'redux-saga/effects'
+import { put, take, call, /*fork, */select, spawn } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 import * as actions from './../../actions'
 
 var xhr = require('xhr-promise-redux');
@@ -154,6 +155,7 @@ function *chattingPageSaga(id){
     yield spawn(watchGoToMain);
     yield spawn(watchChattingRoom);
     yield spawn(watchSendText);
+    yield spawn(watchUpdateChatting);
 //  yield spawn(watchLoadMoreText); // 더 보기 기능
 }
 
@@ -186,14 +188,14 @@ function *watchLoginState() {
             const path = window.location.pathname;
 	        console.log(path);
             let data, parent_data;
-            if(path === '/main/' || path === '/write/' || path === '/room/' || path === '/create_room/') { // TODO 여기 하드코딩된 부분인데 왜 알려주지 않은 거죠? 찾느라 고생함.
+            if(path === '/main/' || path === '/write/') { // 여기가 바로 하드코딩된 부분입니다 여러분!
                 localStorage.removeItem('parent');
                 try {
                     data = yield call(xhr.get, fixed_url+'mainpage/', {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': 'Basic '+ localStorage['auth'],
-                        Accept: 'application/json'
+                            Accept: 'application/json'
                         },
                         responseType: 'json'
                     })
@@ -206,7 +208,7 @@ function *watchLoginState() {
                         data = error;
                     }
                     else if(error.statusCode === 403) {
-                        alert("Unauthorized user tried to access mainpage. Please login again!");
+                        alert("Unauthorized user tried to access mainpage. Please sign in first!");
                         console.log('whyyyyyyyy');
                         localStorage.removeItem('auth');
                         localStorage.removeItem('parent');
@@ -214,7 +216,7 @@ function *watchLoginState() {
                     }
                     else if(error.statusCode === 0) {
                         console.log("Backend is not accessible");
-                        alert("Temporal Server Error");
+                        alert("Temporary Server Error");
                         return;
                     }
                     else {
@@ -223,93 +225,166 @@ function *watchLoginState() {
                         return;
                     }
                 }
-                //TODO 이후 chatting 추가 시 여기에도 try-catch문을 추가해야 할 듯
                 //alert(JSON.stringify(data.body));
                 yield put(actions.setState({
                     authorization: window.atob(localStorage['auth']),
                     articles: data.body,
-                    parent_article: null
+                    parent_article: null,
+                    rooms: [],
+                    texts: [],
+                    chatting_users: []
                     //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                 }));
             }
-            else { // id를 기준으로 backend에 겟을 날리는 경우
-                const id = path.split("/")[2];
-                // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
+            else if (path === '/room/' || path === '/create_room/') { // 여기도 하드코딩된 부분이지
+                localStorage.removeItem('parent');
                 try {
-                    localStorage.setItem('parent', id);
-                    data = yield call(xhr.get, fixed_url+'article/'+id+'/article/', {
+                    data = yield call(xhr.get, fixed_url+'chatroom/', {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': 'Basic '+ localStorage['auth'],
-                        Accept: 'application/json'
+                            Accept: 'application/json'
                         },
                         responseType: 'json'
-                    });
-                }
-                catch(error) {
-                    console.log(error);
-                    if(error.statusCode === 200) {
-                        data = error;
-                    }
-                    else if(error.statusCode === 403) {
-                        alert("Unauthorized user tried to access mainpage. Please login again!");
-                        console.log('whyyyyyyyy');
-                        localStorage.removeItem('auth');
-                        localStorage.removeItem('parent');
-                    }
-                    else if(error.statusCode === 0) {
-                        console.log("Backend is not accessible");
-                        alert("Temporary Server Error. Try reloading!");
-                        return;
-                    }
-                    else {
-                        console.log("Whyyyyyyyyyyy");
-                        alert("Unknown Error Occurred");
-                        return;
-                    }
-                }
-                // 스테이트의 parent_article에 들어갈 내용을 받는 try-catch 문
-                try {
-                    parent_data = yield call(xhr.get, fixed_url+'article/'+id+'/', {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Basic '+ localStorage['auth'],
-                        Accept: 'application/json'
-                        },
-                        responseType: 'application/json'
-                    });
+                    })
                     console.log('Get data without exception');
                 }
                 catch(error) {
                     console.log(error);
                     if(error.statusCode === 200) {
                         console.log('Succeed to get data');
-                        parent_data = error;
+                        data = error;
                     }
                     else if(error.statusCode === 403) {
-                        alert("Unauthorized user tried to access mainpage. Please login again!");
-                        console.log('whyyyyyyyy');
+                        alert("Unauthorized user tried to access chatting room page. Please sign in first!");
+                        console.log('permission denied');
+                        localStorage.removeItem('auth');
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
                     }
                     else if(error.statusCode === 0) {
-                        console.log("Backend is not accessible");
-                        alert("Temporal Server Error. Try reloading");
+                        console.log("Backend is not available");
+                        alert("Temporary Server Error");
                         return;
                     }
                     else {
-                        console.log("Whyyyyyyyyyyy");
-                        alert("Unknown Error Occurred");
+                        console.log("Unknown error");
+                        alert("Unknown error occurred");
                         return;
                     }
                 }
-                //TODO 이후 state에 새로운 element를 추가할 경우 이 부분에 try-catch를 추가하면 됩니다
-//                console.log(JSON.stringify(data.body));
-//                console.log(parent_data.body);
                 yield put(actions.setState({
                     authorization: window.atob(localStorage['auth']),
-                    articles: data.body,
-                    parent_article: parent_data.body
-                    //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
+                    articles: [],
+                    parent_article: null,
+                    rooms: data.body,
+                    texts: [],
+                    chatting_users: []
+                    // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
                 }));
+            }
+            else { // id를 기준으로 backend에 겟을 날리는 경우
+                const id = path.split("/")[2];
+                if (id === undefined) {
+                    console.log("404 not found");
+                    return;
+                }
+                if (path.split("/")[1] === 'chatting') {
+                    localStorage.removeItem('parent');
+                    yield put(actions.updateChatting(id));
+                    // watchUpdateChatting이 뒤를 맡게 되니 여기선 신경쓰지 않아도 됨
+                }
+                else {
+                    // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
+                    try {
+                        localStorage.setItem('parent', id);
+                        data = yield call(xhr.get, fixed_url+'article/'+id+'/article/', {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+ localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json'
+                        });
+                    }
+                    catch(error) {
+                        console.log(error);
+                        if(error.statusCode === 200) {
+                            data = error;
+                        }
+                        else if(error.statusCode === 403) {
+                            alert("Unauthorized user tried to access article detail page. Please sign in first!");
+                            console.log('whyyyyyyyy');
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                        }
+                        else if(error.statusCode === 404) {
+                            alert("404 Not Found");
+                            console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            return;
+                        }
+                        else if(error.statusCode === 0) {
+                            console.log("Backend is not accessible");
+                            alert("Temporary Server Error. Try reloading!");
+                            return;
+                        }
+                        else {
+                            console.log("Whyyyyyyyyyyy");
+                            alert("Unknown Error Occurred");
+                            return;
+                        }
+                    }
+                    // 스테이트의 parent_article에 들어갈 내용을 받는 try-catch 문
+                    try {
+                        parent_data = yield call(xhr.get, fixed_url+'article/'+id+'/', {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+ localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'application/json'
+                        });
+                        console.log('Get data without exception');
+                    }
+                    catch(error) {
+                        console.log(error);
+                        if(error.statusCode === 200) {
+                            console.log('Succeed to get data');
+                            parent_data = error;
+                        }
+                        else if(error.statusCode === 403) {
+                            alert("Unauthorized user tried to access article detail page. Please sign in first!");
+                            console.log('whyyyyyyyy');
+                        }
+                        else if(error.statusCode === 404) {
+                            alert("404 Not Found");
+                            console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            return;
+                        }
+                        else if(error.statusCode === 0) {
+                            console.log("Backend is not accessible");
+                            alert("Temporary Server Error. Try reloading");
+                            return;
+                        }
+                        else {
+                            console.log("Whyyyyyyyyyyy");
+                            alert("Unknown Error Occurred");
+                            return;
+                        }
+                    }
+                    //TODO 이후 state에 새로운 element를 추가할 경우 이 부분에 try-catch를 추가하면 됩니다
+//                  console.log(JSON.stringify(data.body));
+//                  console.log(parent_data.body);
+                    yield put(actions.setState({
+                        authorization: window.atob(localStorage['auth']),
+                        articles: data.body,
+                        parent_article: parent_data.body,
+                        rooms: [],
+                        texts: [],
+                        chatting_users: []
+                        //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
+                    }));
+                }
             }
         }
     }
@@ -471,6 +546,14 @@ function *watchPostRoom(){
     while(true){
         const data = yield take('POST_ROOM');
         yield call(postRoom, data.room_name); // TODO 채팅방 관련 추가구현 시 방 정보(방 공개 여부 등)에 관한 사항을 여기에 추가해야 함.
+    }
+}
+
+// watchUpdateChatting: 채팅 페이지에서 0.5초마다 자동으로 실행
+function *watchUpdateChatting(){
+    while(true){
+        const data = yield take('UPDATE_CHATTING');
+        yield call(updateChatting, data.room_id)
     }
 }
 
@@ -793,7 +876,7 @@ function *postText(room_id, text) {
     }
 }
 
-// postRoom: 새 채팅방을 생성하는 함수 TODO 채팅방 관련 추가구현 시 수정바람.
+// postRoom: 새 채팅방을 생성하는 함수 // TODO 채팅방 관련 추가구현 시 수정바람.
 function *postRoom(room_name) {
     const path = 'chatroom/';
     try{
@@ -807,7 +890,7 @@ function *postRoom(room_name) {
             body: JSON.stringify({"room_name": room_name})
         });
         console.log("post room succeed.");
-        yield put(window.location.pathname);
+        yield put(actions.changeUrl(window.location.pathname));
     }catch(error){
         if(error.statusCode === 201){
             console.log("post room succeed 2.");
@@ -833,3 +916,109 @@ function *postRoom(room_name) {
     }
 }
 
+// updateChatting: 채팅 유저 목록과 메시지들을 새로고침 없이 불러오는 함수
+function *updateChatting(room_id) {
+    const userPath = 'chatroom/'+room_id+'/user/';
+    const textPath = 'chatroom/'+room_id+'/text/';
+    let userRes, textRes;
+    try{
+        userRes = yield call(xhr.get, fixed_url+userPath, {
+            headers: {
+                "Authorization": "Basic "+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            responseType: 'application/json'
+        });
+    }catch(error){
+        console.log(error);
+        if(error.statusCode === 200) {
+            console.log('Succeed to get data');
+            userRes = error;
+        }
+        else if(error.statusCode === 403) {
+            alert("Unauthorized user tried to access chatting page. Please sign in first!");
+            console.log('permission denied');
+            localStorage.removeItem('auth');
+            localStorage.removeItem('parent');
+            yield put(actions.changeUrl('/'));
+        }
+        else if(error.statusCode === 404) {
+            alert("404 Not Found");
+            console.log("안심하세요! 이 에러는 Unknown Error가 아닙니다.");
+            return;
+        }
+        else if(error.statusCode === 0) {
+            console.log("Backend is not available");
+            alert("Temporary Server Error");
+            return;
+        }
+        else {
+            console.log("Unknown error");
+            alert("Unknown error occurred");
+            return;
+        }
+    }
+    try{
+        textRes = yield call(xhr.get, fixed_url+textPath, {
+            headers: {
+                "Authorization": "Basic "+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            responseType: 'application/json'
+        });
+    }catch(error){
+        console.log(error);
+        if(error.statusCode === 200) {
+            console.log('Succeed to get data');
+            textRes = error;
+        }
+        else if(error.statusCode === 403) {
+            alert("Unauthorized user tried to access chatting page. Please sign in first!");
+            console.log('permission denied');
+            localStorage.removeItem('auth');
+            localStorage.removeItem('parent');
+            yield put(actions.changeUrl('/'));
+        }
+        else if(error.statusCode === 404) {
+            alert("404 Not Found");
+            console.log("안심하세요! 이 에러는 Unknown Error가 아닙니다.");
+            return;
+        }
+        else if(error.statusCode === 0) {
+            console.log("Backend is not available");
+            alert("Temporary Server Error");
+            return;
+        }
+        else {
+            console.log("Unknown error");
+            alert("Unknown error occurred");
+            return;
+        }
+    }
+    let getArticles = yield select((state) => state.articles);
+    let getParentArticle = yield select((state) => state.parent_article);
+    let getRooms = yield select((state) => state.rooms);
+    yield put(actions.setState({
+        authorization: window.atob(localStorage['auth']),
+        articles: getArticles,
+        parent_article: getParentArticle,
+        rooms: getRooms,
+        texts: textRes.body,
+        chatting_users: userRes.body
+        // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
+    }));
+    const path = window.location.pathname;
+    const url = path.split("/");
+    if(url[1] === 'chatting' && url[2] !== undefined) {
+        room_id = url[2];
+        yield spawn(createUpdateChatting, room_id);
+    }
+}
+
+// createUpdateChatting: 매 0.5초마다 채팅 메시지들을 불러오게 하는 함수
+function *createUpdateChatting(room_id){
+    yield delay(500);
+    yield put(actions.updateChatting(room_id))
+}
