@@ -5,7 +5,7 @@ import createSagaMiddleware from 'redux-saga'
 
 import homepageApp from './reducers'
 import App from './components/App';
-import saga from './store/homepage/sagas'
+import saga from './store/homepage/new_sagas.js'
 import './index.css';
 
 const sagaMiddleware = createSagaMiddleware();

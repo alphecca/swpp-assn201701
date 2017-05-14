@@ -14,6 +14,7 @@ const auth_check_url = fixed_url+'/auth/';
 
 const history = createBrowserHistory();
 // redux-saga-router : sharing state with other pages
+/*
 const routes = {
     '/': function *loginPageSaga() {
         yield spawn(precheckLogin) //TODO 로그인 후 '/' 접근시 '/main'으로 redirect
@@ -43,6 +44,35 @@ const routes = {
         yield spawn(watchPost)
     }
 }
+*/
+function *loginPageSaga() {
+        yield spawn(precheckLogin) //TODO 로그인 후 '/' 접근시 '/main'으로 redirect
+        yield spawn(watchSignIn)
+    }
+function *timeLinePageSaga() {
+        yield call(updateState, '/mainpage/')
+        yield spawn(watchSignOut)
+        yield spawn(watchWrite)
+        yield spawn(watchLike)
+        yield spawn(watchDetail)
+    }
+function *articleDetailPageSaga() {
+        yield call(updateDetailPage)
+        yield spawn(watchSignOut)
+        yield spawn(watchLike)
+        yield spawn(watchWrite)
+        yield spawn(watchDetail)
+        yield spawn(watchBack)
+    }
+function *signUpPageSaga() {
+        yield spawn(watchSignUp)
+    }
+function *writeArticleSaga(){
+        yield call(updateWritePage)
+        yield spawn(watchSignOut)
+        yield spawn(watchPost)
+    }
+
 
 function* getNewState(state, path) {
 //    console.log(path)
@@ -105,6 +135,9 @@ function* precheckLogin() {
 
 export function* watchSignIn() {
     while (true) {
+        console.log(JSON.stringify(window.localStorage.getItem("test")))
+//        if(window.localStorage.getItem("test") !== null)
+//            window.location.pathname = '/main'
         console.log("watch sign in")
         const data = yield take(actions.SIGN_IN)
         yield call(sign_in, data)
@@ -129,6 +162,7 @@ export function* sign_in(data) {
         const newState = yield call(getNewState, state, '/mainpage/')
 //        window.history.pushState(newState, '/', '/main')
         history.push('/main', newState)
+        window.localStorage.setItem("test", JSON.stringify(newState.articles))
 //        yield put(actions.changeUrl('/main'))
 //        console.log(history)
 //        window.history.pushState(newState, '/main', '/main')
@@ -243,7 +277,9 @@ export function* watchSignOut() {
 
 export function* sign_out(){
     const state = yield select()
+    window.localStorage.removeItem("test")
     history.push('/', state)
+//    window.localStorage.removeItem("test")
     yield put(actions.changeUrl('/'))
 }
 //SIGN OUT END
@@ -278,8 +314,11 @@ export function* watchWrite(){
 //TODO change HARD CODING into more beautiful code
 //TODO remove statusCode 0 error
 function *updateState(path) {
-    if(history.location.state === undefined || history.location.state.authorization === "")
+    console.log(JSON.stringify(window.localStorage.getItem("test")))
+    if(history.location.state === undefined || history.location.state.authorization === "") {
+        alert("move to login page")
         yield put(actions.changeUrl('/'))
+    }
     else {
 //        alert(JSON.stringify(history.location.state))
         const newState = yield call(getNewState, history.location.state, path)
@@ -413,6 +452,27 @@ function *watchPost() {
 }
 
 export default function* saga() {
-    yield fork(router, history, routes);
+    const path = window.location.pathname
+    switch(path) {
+        case '/':
+            yield spawn(loginPageSaga)
+            break;
+        case '/main':
+            yield spawn(timeLinePageSaga);
+            break;
+        default:
+            const urlElem = path.split("/");
+            switch(urlElem[1]) {
+                case 'article':
+                    yield spawn(articleDetailPageSaga);
+                    break;
+                case 'write':
+                    yield spawn(writeArticleSaga);
+                    break;
+                default:
+                    console.log("default")
+            }
+    }
+//    yield fork(router, history, routes);
 }
 
