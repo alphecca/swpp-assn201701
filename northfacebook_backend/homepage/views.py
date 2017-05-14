@@ -231,6 +231,9 @@ def chatuser(request,pk):
     serializer = ChatUserSerializer(chatuser, many=True)
     return Response(serializer.data)
   elif request.method == 'POST':
+    for t in chatuser:
+      if t.chatuser == request.user:
+         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)  
     serializer = ChatUserSerializer(data=request.data)
     if serializer.is_valid():
       serializer.save(chatroom=chatroom, chatuser=request.user)
