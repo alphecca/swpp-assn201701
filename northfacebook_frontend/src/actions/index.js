@@ -108,3 +108,10 @@ export const postBack = () => {
         type: 'POST_BACK'
     }
 }
+
+// for chatting
+export const showChattingRoom = () => {
+    return {
+        type: 'SHOW_CHATTING_ROOM'
+    }
+}

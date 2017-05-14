@@ -4,8 +4,8 @@ import * as actions from './../../actions'
 var xhr = require('xhr-promise-redux');
 
 //TODO 개인적으로 테스트할 때는 포트번호를 바꾸자. 풀리퀘를 날릴 때는 URL을 확인할 것
-const fixed_url = "http://wlxyzlw.iptime.org:8000"; //포오오오트으으으버어어어언호오오오 확이이이인
-const auth_check_url = fixed_url+'/auth/';
+const fixed_url = "http://localhost:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
+const auth_check_url = fixed_url+'auth/';
 
 // localStorage: 현재 사용하고 있는 브라우저 상에 스테이트를 저장하는데 사용.
 // 무려 크롬을 종료했다 시작해도 정보가 저장되어 있어요!
@@ -15,7 +15,7 @@ const auth_check_url = fixed_url+'/auth/';
 //   2. "parent" - articleDetailPage에서 원글 확인 & writePage에서 댓글 / 일반 포스팅 구분을 위한 parent article의 id
 // localStorage의 정보를 넣기/가져오기/삭제하기
 //      (1) 가져오기: localStorage.getItem('data_name') / localStorage['data_name']
-//      (2) 넣기: localStorage.setItem('data_name', data) / localStorage['data_name] = data
+//      (2) 넣기: localStorage.setItem('data_name', data) / localStorage['data_name'] = data
 //      (3) 삭제하기: localStorage.removeItem('data_name')
 const localStorage = window.localStorage;
 
@@ -27,10 +27,10 @@ export default function *saga() {
         case '/':
             yield spawn(loginPageSaga);
             break;
-        case '/main':
+        case '/main/':
             yield spawn(mainPageSaga);
             break;
-        case '/sign_up':
+        case '/sign_up/':
             yield spawn(signUpPageSaga);
             break;
         default:
@@ -46,6 +46,9 @@ export default function *saga() {
                     yield spawn(editPageSaga, url[2]);
                     break;
                 //TODO 이후 채팅 추가 시 case 'chatting'같은거 추가
+		case 'chatting':
+		    yield spawn(roomPageSaga);
+		    break;
                 default:
                     console.log("default state");
             }
@@ -60,10 +63,10 @@ export default function *saga() {
 // 1. 페이지명을 포함하는 직관적인 이름의 함수를 정의한다.
 //   (ex. 로그인 페이지를 작성할 경우 loginPageSaga)
 // 2. 페이지의 url을 예쁘게(<<<<<중요>>>>>) 정의한다.
-//   (좋은 예: 메인 페이지의 url - '/main', 나쁜 예: 메인 페이지의 url - '/sogaewonsil_geukhyum')
+//   (좋은 예: 메인 페이지의 url - '/main/', 나쁜 예: 메인 페이지의 url - '/sogaewonsil_geukhyum/')
 // 3. switch문의 케이스에 추가한다.
-//   (ex. 메인페이지 추가 - case '/main': yield spawn(timeLinePageSaga); break;)
-// 4. 페이지 이동은 yield put(actions.changeUrl('/target_path'))를 이용하시면 됩니다.
+//   (ex. 메인페이지 추가 - case '/main/': yield spawn(timeLinePageSaga); break;)
+// 4. 페이지 이동은 yield put(actions.changeUrl('/target_path/'))를 이용하시면 됩니다.
 //////////////////////////////////////////////////
 function *loginPageSaga() {
     console.log("Login Page");
@@ -89,6 +92,7 @@ function *mainPageSaga() {
     yield spawn(watchGoToMain);
     yield spawn(watchEdit);
     yield spawn(watchDelete);
+    //yield spawn(watchChattingRoom)
     //TODO 시간 남으면 더 보기 기능 부탁해요
 }
 
@@ -124,7 +128,32 @@ function *editPageSaga(id){
 }
 
 //TODO 이후 채팅 추가 시 채팅용 사가함수를 구현할 것
+function *roomPageSaga(){
+    console.log("Chatting Room Page")
+    yield spawn(watchLoginState);
+    yield spawn(watchSignOut);
+    yield spawn(watchGoToMain);
+    //yield spawn(watchCreateRoom);
+    //yield spawn(watchJoinRoom);
+    //yield spawn(watchChatting);
+}
 
+function *chattingPageSaga(id){
+    console.log("Chatting Page: "+id);
+    yield spawn(watchLoginState);
+    yield spawn(watchSignOut);
+    yield spawn(watchGoToMain);
+    //yield spawn(watchChattingRoom);
+    //yield spawn(watchSendText);
+//  yield spawn(watchLoadMoreText); // 더 보기 기능
+}
+
+function *createRoomPageSaga(){
+    console.log("Create Chatting Room Page")
+    yield spawn(watchLoginState);
+    yield spawn(watchSignOut);
+    //yield spawn(watchPostRoom);
+}
 
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
 // watchLoginState: 브라우저에서의 로그인 여부 확인 및 state 업데이트
@@ -133,10 +162,10 @@ function *editPageSaga(id){
 function *watchLoginState() {
     //console.log("Prev Auth: "+localStorage.getItem("auth"));
     //console.log("Prev Parent: "+localStorage.getItem("parent"))
-    if(window.location.pathname === '/' || window.location.pathname === '/sign_up') {
+    if(window.location.pathname === '/' || window.location.pathname === '/sign_up/') {
         if(localStorage.getItem("auth") !== null) {
             localStorage.removeItem('parent');
-            yield put(actions.changeUrl('/main'));
+            yield put(actions.changeUrl('/main/'));
         }
     }
     else {
@@ -146,11 +175,12 @@ function *watchLoginState() {
         }
         else {
             const path = window.location.pathname;
+	    console.log(path)
             let data, parent_data;
-            if(path === '/main' || path === '/write') {
+            if(path === '/main/' || path === '/write/') {
                 localStorage.removeItem('parent');
                 try {
-                    data = yield call(xhr.get, fixed_url+'/mainpage/', {
+                    data = yield call(xhr.get, fixed_url+'mainpage/', {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': 'Basic '+ localStorage['auth'],
@@ -198,7 +228,7 @@ function *watchLoginState() {
                 // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
                 try {
                     localStorage.setItem('parent', id);
-                    data = yield call(xhr.get, fixed_url+'/article/'+id+'/article/', {
+                    data = yield call(xhr.get, fixed_url+'article/'+id+'/article/', {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': 'Basic '+ localStorage['auth'],
@@ -231,7 +261,7 @@ function *watchLoginState() {
                 }
                 // 스테이트의 parent_article에 들어갈 내용을 받는 try-catch 문
                 try {
-                    parent_data = yield call(xhr.get, fixed_url+'/article/'+id+'/', {
+                    parent_data = yield call(xhr.get, fixed_url+'article/'+id+'/', {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': 'Basic '+ localStorage['auth'],
@@ -290,7 +320,7 @@ function *watchSignIn() {
 function *watchSignUp() {
     while(true) {
         yield take('GOTO_SIGN_UP');
-        yield put(actions.changeUrl('/sign_up'));
+        yield put(actions.changeUrl('/sign_up/'));
     }
 }
 
@@ -317,9 +347,9 @@ function *watchWrite() {
     while(true) {
         const data = yield take('WRITE_ARTICLE');
         if(data.id === null)
-            yield put(actions.changeUrl('/write'));
+            yield put(actions.changeUrl('/write/'));
         else
-            yield put(actions.changeUrl('/write/'+data.id.id));
+            yield put(actions.changeUrl('/write/'+data.id.id+'/'));
     }
 
 }
@@ -328,7 +358,7 @@ function *watchWrite() {
 function *watchDetail() {
     while(true) {
         const data = yield take('ARTICLE_DETAIL');
-        yield put(actions.changeUrl('/article/'+data.id.id));
+        yield put(actions.changeUrl('/article/'+data.id.id+'/'));
     }
 }
 
@@ -345,7 +375,7 @@ function *watchLike() {
 function *watchGoToMain() {
     while(true) {
         yield take('POST_BACK');
-        yield put(actions.changeUrl('/main'));
+        yield put(actions.changeUrl('/main/'));
     }
 
 }
@@ -371,7 +401,7 @@ function *watchEdit(){
      console.log("in edit article");
      const data = yield take('EDIT_ARTICLE');
      //TODO user data GET해서 forbidden or not
-    yield put(actions.changeUrl('/edit/'+data.id));     
+    yield put(actions.changeUrl('/edit/'+data.id+'/'));     
    } 
 }
 function *watchPutArticle(id){
@@ -399,14 +429,14 @@ function *signIn(data) {
         console.log("Login Success without exception");
         alert("Succeed to sign in! :)");
         localStorage.setItem("auth", encodedData);
-        yield put(actions.changeUrl('/main'));
+        yield put(actions.changeUrl('/main/'));
     }
     catch(error) {
         if(error.statusCode === 200) {
             console.log('Login Success');
             alert("Succeed to sign in! :)");
             localStorage.setItem("auth", encodedData);
-            yield put(actions.changeUrl('/main'));
+            yield put(actions.changeUrl('/main/'));
         }
         else if(error.statusCode === 403) {
             console.log("User not found");
@@ -426,7 +456,7 @@ function *signIn(data) {
 // signUp: 백엔드 users에 POST를 날리는 함수
 function *signUp(data) {
     try {
-        yield call(xhr.post, fixed_url + '/users/', {
+        yield call(xhr.post, fixed_url + 'users/', {
             headers: {
                 "Content-Type": 'application/json',
                 Accept: 'application/json'
@@ -436,13 +466,13 @@ function *signUp(data) {
         });
         console.log("post article succeed 1");
         localStorage.setItem("auth", window.btoa(data.username + ":" + data.password));
-        yield put(actions.changeUrl('/main'));
+        yield put(actions.changeUrl('/main/'));
     }
     catch(error) {
         if(error.statusCode === 201) {
             console.log("post article succeed 2");
             localStorage.setItem("auth", window.btoa(data.username + ":" + data.password));
-            yield put(actions.changeUrl('/main'));
+            yield put(actions.changeUrl('/main/'));
 
         }
         else if(error.statusCode === 0) {
@@ -456,7 +486,7 @@ function *signUp(data) {
         else if(Object.keys(error).length === 0) {
             console.log("post article succeed 3");
             localStorage.setItem("auth", window.btoa(data.username + ":" + data.password));
-            yield put(actions.changeUrl('/main'));
+            yield put(actions.changeUrl('/main/'));
 
         }
         else {
@@ -469,7 +499,7 @@ function *signUp(data) {
 
 // postLike: article_id가 id인 아티클에 Like를 날리는 함수
 function *postLike(id) {
-    const path = '/article/'+id+'/like/';
+    const path = 'article/'+id+'/like/';
     try {
         yield call(xhr.post, fixed_url + path, {
             headers: {
@@ -514,7 +544,7 @@ function *postLike(id) {
 
 // postArticle:  새로운 글/댓글을 쓰는 함수
 function *postArticle(text) {
-    const path = localStorage['parent'] === null || localStorage['parent'] === undefined ? '/mainpage/' : '/article/'+localStorage['parent']+'/article/';
+    const path = localStorage['parent'] === null || localStorage['parent'] === undefined ? 'mainpage/' : 'article/'+localStorage['parent']+'/article/';
     try {
         yield call(xhr.post, fixed_url + path, {
             headers: {
@@ -526,12 +556,12 @@ function *postArticle(text) {
             body: JSON.stringify({"text": text})
         });
         console.log("post article succeed 1");
-        yield put(actions.changeUrl(path === '/mainpage/' ? '/main' : '/article/'+localStorage['parent']));
+        yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
     }
     catch(error) {
         if(error.statusCode === 201) {
             console.log("post article succeed 2");
-            yield put(actions.changeUrl(path === '/mainpage/' ? '/main' : '/article/'+localStorage['parent']));
+            yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
         }
         else if(error.statusCode === 0) {
             alert("Backend server not available");
@@ -543,7 +573,7 @@ function *postArticle(text) {
         }
         else if(Object.keys(error).length === 0) {
             console.log("post article succeed 3");
-            yield put(actions.changeUrl(path === '/mainpage/' ? '/main' : '/article/'+localStorage['parent']));
+            yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
         }
         else {
             alert("Unknown Error Occurred");
@@ -552,7 +582,7 @@ function *postArticle(text) {
     }
 }
 function *deleteArticle(id){
-  const path = '/article/'+id+'/';
+  const path = 'article/'+id+'/';
   try{
     yield call(xhr.send, fixed_url+path,{
                 method: 'DELETE',
@@ -563,22 +593,22 @@ function *deleteArticle(id){
                 responseType:'json'
                });
     console.log("delete article succeed!!!");
-    yield put(actions.changeUrl('/main'));
-   //TODO parent article여부 확인해서 main 똔s detailpage로
+    yield put(actions.changeUrl('/main/'));
+   //TODO parent article여부 확인해서 main 또는 detailpage로
   }catch(error){
        console.log(error);
        if(error.statusCode ===204){
           console.log("delete article succeedd!!");
-          yield put(actions.changeUrl('/main'));
+          yield put(actions.changeUrl('/main/'));
        }
        else if(error.statusCode === 403){
           alert("This is not your article");
        }  
-       else yield put(actions.changeUrl('/main'));
+       else yield put(actions.changeUrl('/main/'));
   }
 }
 function *putArticle(id, text){
-  const  path =  '/article/'+id+'/';
+  const  path =  'article/'+id+'/';
   console.log("in editArticle[path]: "+path);
   try{
     yield call(xhr.send, fixed_url+path, {
@@ -593,7 +623,7 @@ function *putArticle(id, text){
                responseType:'json'
            });
      console.log("edit article succeeeeed!!!!!!!!!");
-     yield put(actions.changeUrl('/main')); //TODO
+     yield put(actions.changeUrl('/main/')); //TODO
   }catch(error){
      console.log(error);
      if(error.statusCode === 403){
@@ -602,6 +632,6 @@ function *putArticle(id, text){
 //     else if(error.statusCode ===202 );//page자체가 없을때?
 //      alert("No article exists");
 //     else
-//       yield put(actions.changeUrl('/main'));
+//       yield put(actions.changeUrl('/main/'));
   }
 }
