@@ -132,9 +132,8 @@ print("7. reply test")
 replyVerification(driver, data[0]["id"], "reply test")
 sleep(1)
 reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
-sleep(1)
 tmp = data[0]["children_num"]
-data[0] = get_json_or_error(article_link, user_list[0][0], user_list[0][1])
+data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 if(data[0]["children_num"] != tmp + 1):
     print("reply fail")
     exit(1)
@@ -143,16 +142,8 @@ detailPageVerification(driver, data[0], reply_data)
 sleep(1)
 driver.find_element_by_id("to_main_page_field").click()
 
-# detail button test
-print("8. detail test")
-sleep(1)
-detailVerification(driver, data[0]["id"])
-sleep(1)
-detailPageVerification(driver, data[0], reply_data)
-driver.find_element_by_id("to_main_page_field").click()
-
 # delete test
-print("9. delete test")
+print("8. delete test")
 sleep(1)
 tmp = data[0]
 deleteVerification(driver, data[0]["id"])
@@ -160,6 +151,34 @@ data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 if data[0] == tmp:
     print("delete fail")
     exit(1)
+mainPageVerification(driver, data[0:5])
+
+article_link = backend_link + 'article/' + str(data[0]["id"]) + '/'
+
+# detail button test
+print("9. detail test")
+sleep(1)
+detailVerification(driver, data[0]["id"])
+sleep(1)
+reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
+detailPageVerification(driver, data[0], reply_data)
+sleep(1)
+replyVerification(driver, data[0]["id"], "reply test on detail page")
+sleep(1)
+reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
+data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
+likeVerification(driver, reply_data[0]["id"], False)
+sleep(1)
+reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
+data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
+sleep(1)
+detailPageVerification(driver, data[0], reply_data)
+sleep(1)
+deleteVerification(driver, reply_data[0]["id"])
+sleep(1)
+data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
+sleep(1)
+mainPageVerification(driver, data[0:5])
 
 # edit / delete error test
 print("10. edit / delete error test")
