@@ -7,6 +7,8 @@ var xhr = require('xhr-promise-redux');
 const fixed_url = "http://localhost:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
 const auth_check_url = fixed_url+'auth/';
 
+// 이제 backend에서 사용하는 url은 모두 'path_name/'의 형식을 따르고, frontend에서 사용하는 url은 모두 '/path_name/'의 형식을 따릅니다.
+
 // localStorage: 현재 사용하고 있는 브라우저 상에 스테이트를 저장하는데 사용.
 // 무려 크롬을 종료했다 시작해도 정보가 저장되어 있어요!
 // state의 경우 현재 페이지에서만 유지됩니다. (다른 페이지로 이동 시 리셋되기 때문에 새로 스테이트를 세팅해줘야 합니다. - 이 기능을 하는게 watchLoginState)
@@ -46,6 +48,15 @@ export default function *saga() {
                     yield spawn(editPageSaga, url[2]);
                     break;
                 //TODO 이후 채팅 추가 시 case 'chatting'같은거 추가
+                case 'room':
+                    yield spawn(roomPageSaga);
+                    break;
+                case 'create_room':
+                    yield spawn(createRoomPageSaga);
+                    break;
+                case 'chatting':
+                    yield spawn(chattingPageSaga, url[2]);
+                    break;
 		case 'chatting':
 		    yield spawn(roomPageSaga);
 		    break;
@@ -92,7 +103,7 @@ function *mainPageSaga() {
     yield spawn(watchGoToMain);
     yield spawn(watchEdit);
     yield spawn(watchDelete);
-    //yield spawn(watchChattingRoom)
+    yield spawn(watchChattingRoom)
     //TODO 시간 남으면 더 보기 기능 부탁해요
 }
 
@@ -133,9 +144,9 @@ function *roomPageSaga(){
     yield spawn(watchLoginState);
     yield spawn(watchSignOut);
     yield spawn(watchGoToMain);
-    //yield spawn(watchCreateRoom);
-    //yield spawn(watchJoinRoom);
-    //yield spawn(watchChatting);
+    yield spawn(watchCreateRoom);
+    yield spawn(watchJoinRoom);
+    yield spawn(watchChatting);
 }
 
 function *chattingPageSaga(id){
@@ -143,8 +154,8 @@ function *chattingPageSaga(id){
     yield spawn(watchLoginState);
     yield spawn(watchSignOut);
     yield spawn(watchGoToMain);
-    //yield spawn(watchChattingRoom);
-    //yield spawn(watchSendText);
+    yield spawn(watchChattingRoom);
+    yield spawn(watchSendText);
 //  yield spawn(watchLoadMoreText); // 더 보기 기능
 }
 
@@ -152,7 +163,7 @@ function *createRoomPageSaga(){
     console.log("Create Chatting Room Page")
     yield spawn(watchLoginState);
     yield spawn(watchSignOut);
-    //yield spawn(watchPostRoom);
+    yield spawn(watchPostRoom);
 }
 
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
@@ -388,7 +399,7 @@ function *watchPostArticle() {
     }
 }
 
-// watchDelete: 메인페이지또는 세부페이지에서 삭제 버튼 클릭 관찰
+// watchDelete: 메인페이지 또는 세부페이지에서 삭제 버튼 클릭 관찰
 function *watchDelete() {
     while(true) {
         const data = yield take('DELETE_ARTICLE');
@@ -396,21 +407,72 @@ function *watchDelete() {
     }
 }
 
+// watchEdit: 메인페이지 또는 세부페이지에서 수정 버튼 클릭 관찰 
 function *watchEdit(){
-   while(true){
-     console.log("in edit article");
-     const data = yield take('EDIT_ARTICLE');
-     //TODO user data GET해서 forbidden or not
-    yield put(actions.changeUrl('/edit/'+data.id+'/'));     
-   } 
+    while(true){
+        console.log("in edit article");
+        const data = yield take('EDIT_ARTICLE');
+        //TODO user data GET해서 forbidden or not
+        yield put(actions.changeUrl('/edit/'+data.id+'/'));     
+    } 
 }
+
+// watchPutArticle: 글 수정 페이지에서 EDIT 버튼 클릭 관찰
 function *watchPutArticle(id){
-   while(true){
-       console.log("in watchPutArticle...");
-       const data = yield take('PUT_ARTICLE');
-       console.log("text: "+data.text);
-       yield call(putArticle, id, data.text);
-   }
+    while(true){
+        console.log("in watchPutArticle...");
+        const data = yield take('PUT_ARTICLE');
+        console.log("text: "+data.text);
+        yield call(putArticle, id, data.text);
+    }
+}
+
+// watchCreateRoom: 채팅방 목록 페이지에서 새 채팅방 버튼 클릭 관찰
+function watchCreateRoom(){
+    while(true){
+        yield take('SHOW_CREATE_ROOM');
+        yield put(actions.changeUrl('/create_room/'));
+    }
+}
+
+// watchJoinRoom: 채팅방 목록 페이지에서 참가하기 버튼 클릭 관찰
+function *watchJoinRoom(){
+    while(true){
+        const data = yield take('JOIN_ROOM');
+        yield call(joinRoom, data.id);
+    }
+}
+
+// watchChatting: 채팅방 목록 페이지에서 대화하기 버튼 클릭 관찰
+function *watchChatting(){
+    while(true){
+        const data = yield take('SHOW_CHATTING');
+        yield put(actions.changeUrl('/chatting/'+data.id+'/'));
+    }
+}
+
+// watchChattingRoom: 메인페이지에서의 채팅 버튼 또는 채팅 페이지에서의 방 변경 버튼 클릭 관찰
+function *watchChattingRoom(){
+    while(true){
+        yield take('SHOW_CHATTING_ROOM');
+        yield put(actions.changeUrl('/room/'));
+    }
+}
+
+// watchSendText: 채팅 페이지에서 전송 버튼 클릭 관찰
+function *watchSendText(){
+    while(true){
+        const data = yield take('POST_TEXT');
+        yield call(postText, data.room_id, data.text);
+    }
+}
+
+// watchPostRoom: 채팅방 목록 페이지에서 새 채팅방 버튼 클릭 관찰
+function *watchPostRoom(){
+    while(true){
+        const data = yield take('POST_ROOM');
+        yield call(postRoom, data.room_name);
+    }
 }
 
 ///// Page별 saga함수에서 쓸 saga함수 (그 외)
@@ -542,7 +604,7 @@ function *postLike(id) {
     }
 }
 
-// postArticle:  새로운 글/댓글을 쓰는 함수
+// postArticle: 새로운 글/댓글을 쓰는 함수
 function *postArticle(text) {
     const path = localStorage['parent'] === null || localStorage['parent'] === undefined ? 'mainpage/' : 'article/'+localStorage['parent']+'/article/';
     try {
@@ -581,57 +643,61 @@ function *postArticle(text) {
         }
     }
 }
+
+// deleteArticle: 자신이 쓴 글을 지우는 함수
 function *deleteArticle(id){
-  const path = 'article/'+id+'/';
-  try{
-    yield call(xhr.send, fixed_url+path,{
-                method: 'DELETE',
-                headers:{
-                        'Authorization': 'Basic '+localStorage['auth'],
-                         Accept: 'application/json'
-                        },
-                responseType:'json'
-               });
+    const path = 'article/'+id+'/';
+    try{
+        yield call(xhr.send, fixed_url+path,{
+            method: 'DELETE',
+            headers:{
+                'Authorization': 'Basic '+localStorage['auth'],
+                Accept: 'application/json'
+            },
+            responseType:'json'
+        });
     console.log("delete article succeed!!!");
     yield put(actions.changeUrl('/main/'));
-   //TODO parent article여부 확인해서 main 또는 detailpage로
-  }catch(error){
-       console.log(error);
-       if(error.statusCode ===204){
-          console.log("delete article succeedd!!");
-          yield put(actions.changeUrl('/main/'));
-       }
-       else if(error.statusCode === 403){
-          alert("This is not your article");
-       }  
-       else yield put(actions.changeUrl('/main/'));
-  }
+    //TODO parent article여부 확인해서 main 또는 detailpage로
+    }catch(error){
+        console.log(error);
+        if(error.statusCode === 204){
+            console.log("delete article succeedd!!");
+            yield put(actions.changeUrl('/main/'));
+        }
+        else if(error.statusCode === 403){
+            alert("This is not your article");
+        }  
+        else yield put(actions.changeUrl('/main/'));
+    }
 }
+
+// putArticle: 자신이 쓴 글을 수정하는 함수
 function *putArticle(id, text){
-  const  path =  'article/'+id+'/';
-  console.log("in editArticle[path]: "+path);
-  try{
-    yield call(xhr.send, fixed_url+path, {
-               method: 'PUT',
-               headers: { 
-                  "Authorization": "Basic "+localStorage['auth'],
-                  "Content-Type": 'application/json',
-                  Accept: 'application/json'
-               },
-               contentType:'json',
-               body: JSON.stringify({"text": text}),
-               responseType:'json'
-           });
-     console.log("edit article succeeeeed!!!!!!!!!");
-     yield put(actions.changeUrl('/main/')); //TODO
-  }catch(error){
-     console.log(error);
-     if(error.statusCode === 403){
-        alert("This article is not yours");
-     }
-//     else if(error.statusCode ===202 );//page자체가 없을때?
-//      alert("No article exists");
-//     else
-//       yield put(actions.changeUrl('/main/'));
-  }
+    const  path =  'article/'+id+'/';
+    console.log("in editArticle[path]: "+path);
+    try{
+        yield call(xhr.send, fixed_url+path, {
+            method: 'PUT',
+            headers: { 
+                "Authorization": "Basic "+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType:'json',
+            body: JSON.stringify({"text": text}),
+            responseType:'json'
+        });
+        console.log("edit article succeeeeed!!!!!!!!!");
+        yield put(actions.changeUrl('/main/')); // TODO 메인페이지 말고 postArticle에서 보내는 것처럼 보내주세요. 수정바람.
+    }catch(error){
+        console.log(error);
+        if(error.statusCode === 403){
+            alert("This article is not yours");
+        }
+//      else if(error.statusCode === 202);//page자체가 없을때?
+//          alert("No article exists");
+//      else
+//          yield put(actions.changeUrl('/main/'));
+    }
 }

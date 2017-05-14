@@ -110,8 +110,43 @@ export const postBack = () => {
 }
 
 // for chatting
+export const showCreateRoom = () => {
+    return {
+	type: 'SHOW_CREATE_ROOM'
+    }
+}
+
+export const joinRoom = (id) => {
+    return {
+	type: 'JOIN_ROOM',
+	id: id
+    }
+}
+
+export const showChatting = (id) => {
+    return {
+	type: 'SHOW_CHATTING',
+	id: id
+    }
+}
+
 export const showChattingRoom = () => {
     return {
         type: 'SHOW_CHATTING_ROOM'
+    }
+}
+
+export const postText = (room_id, text) => {
+    return {
+	type: 'POST_TEXT',
+	room_id: room_id,
+	text: text
+    }
+}
+
+export const postRoom = (room_name) => {
+    return {
+	type: 'POST_ROOM',
+	room_name: room_name
     }
 }
