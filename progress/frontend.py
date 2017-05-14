@@ -22,6 +22,7 @@ def alert(driver, text):
             Alert(driver).accept()
         else:
             print("Alert message should be [%s] but it's [%s]" % (text, Alert(driver).text))
+            exit(1)
     except NoAlertPresentException:
         print("No Alert Error")
         exit(1)
@@ -29,12 +30,14 @@ def alert(driver, text):
 
 
 #####SIGN IN PAGE#####
+# sign in page의 렌더링 확인
 def signInPageVerification(driver):
     check(driver, "username_field")
     check(driver, "password_field")
     check(driver, "sign_in")
-    check(driver, "sign_up") # sign in page의 rendering확인
+    check(driver, "sign_up")
 
+# 로그인 관련 전반적인 기능 확인
 def signInVerification(driver, username, password):
     signInPageVerification(driver)
     driver.find_element_by_id("username_field").clear() # reset username field
@@ -126,6 +129,7 @@ def articleVerification(driver, article):
     check(driver, likeButtonId)
     check(driver, replyButtonId)
     check(driver, detailId) # component check finished
+    #Contents checking
     if driver.find_element_by_id(writerId).text != "id: "+article["owner"]:
         print("Owner not match on article %d" % article["id"])
         exit(1)
@@ -181,6 +185,26 @@ def detailVerification(driver, article_id):
     check(driver, detailId)
     driver.find_element_by_id(detailId).click()
     sleep(0.5)
+
+## error checking functions for edit and delete
+def editErrorVerification(driver, article_id):
+    editId = "a"+str(article_id)+"_edit_button_field"
+    check(driver, editId)
+    driver.find_element_by_id(editId).click()
+    sleep(1)
+    check(driver, "edit_article_field")
+    check(driver, "edit_text_field")
+    check(driver, "edit_button_field")
+    driver.find_element_by_id("edit_button_field").click()
+    sleep(1)
+    alert(driver, "This article is not yours")
+
+def deleteErrorVerification(driver, article_id):
+    deleteId = "a"+str(article_id)+"_delete_button_field"
+    check(driver, deleteId)
+    driver.find_element_by_id(deleteId).click()
+    sleep(1)
+    alert(driver, "This is not your article")
 
 def mainPageVerification(driver, articles):
     time.sleep(1)

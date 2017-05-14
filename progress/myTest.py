@@ -4,6 +4,7 @@ import sys
 from time import sleep
 from random import randint
 from backend import *
+
 ####FRONTEND용 패키지들
 from frontend import *
 from selenium import webdriver
@@ -158,6 +159,13 @@ if data[0] == tmp:
 # edit / delete error test
 print("10. edit / delete error test")
 sleep(1)
+signOutVerification(driver)
+sleep(1)
+signInVerification(driver, user_list[1][0], user_list[1][1])
+sleep(1)
+deleteErrorVerification(driver, data[0]["id"])
+sleep(1)
+editErrorVerification(driver, data[0]["id"])
 ##########################FRONTEND TEST FINISHED###########################
 driver.quit()
 print("TEST SUCCESSFUL")
