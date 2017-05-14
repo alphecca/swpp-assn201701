@@ -5,9 +5,9 @@ import SignOut from './SignOut.js'
 class TimeLinePage extends React.Component {
     render() {
         return (
-                <div>
-                    <TimeLine />
+                <div >
                     <SignOut />
+                    <TimeLine />
                 </div>
                )
     }

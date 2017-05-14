@@ -1,23 +1,29 @@
 import React from 'react';
 import { connect } from 'react-redux';
-//import { } from '../actions';
-
-//const SignUpUrl = window.location.href + 'sign_up'
+import {gotoSignUpPage} from '../../actions'
+import  './styles1.css';
 
 class SignUp extends React.Component {
     render() {
         const onNewTab = () => {
-            window.location = '/sign_up';
+//            window.location = '/sign_up';
             console.log("Redirect to signup page...");
+            this.props.onClick();
         };
         return (
-                <div>
-                    No account? <button id="sign_up" onClick={onNewTab}>Sign Up</button>
+                <div className="Button-Field">
+                     No account? <button id="sign_up" onClick={onNewTab}>Sign Up</button>
                 </div>
                 )
     }
 }
 
-SignUp = connect()(SignUp);
+let mapDispatchToProps = (dispatch) => {
+    return {
+        onClick: () => dispatch(gotoSignUpPage())
+    }
+}
+
+SignUp = connect(undefined, mapDispatchToProps)(SignUp);
 
 export default SignUp;

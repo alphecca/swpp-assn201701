@@ -12,7 +12,14 @@ urlpatterns = [
     url(r'^article/(?P<pk>[0-9]+)/like/$',views.like),
     url(r'^like/$',views.like_list),
     url(r'^like/(?P<pk>[0-9]+)/$',views.like_detail),
-    url(r'^mainpage/$',views.main_list)
+    url(r'^mainpage/$',views.main_list),
+    # for CHATTING
+    url(r'^chatroom/$',views.chatroom_list),
+    url(r'^chatroom/(?P<pk>[0-9]+)/$',views.chatroom_detail),
+    url(r'^chatuser/$',views.chatuser_list),
+    url(r'^chatroom/(?P<pk>[0-9]+)/user/$',views.chatuser),
+    url(r'^text/$', views.text_list),
+    url(r'^chatroom/(?P<pk>[0-9]+)/text/$',views.text)
     ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
