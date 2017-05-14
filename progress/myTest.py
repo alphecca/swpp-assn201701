@@ -23,8 +23,6 @@ user_link = backend_link + "users/"
 frontend_link = sys.argv[2]
 userN = 10
 user_list = create_users(userN)
-"""unknownname = "unknown_user"
-unknownpwd = "unknown_userpwd"""
 ########################FRONTEND TEST INITIALIZE###########################
 print("Frontend initializer is running...")
 try:
@@ -45,12 +43,14 @@ print("Frontend initializer ran successfully!")
 ##########################FRONTEND TEST START##############################
 driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
+
+# 본격적인 프론트엔드 테스트 시작
 # 로그인 및 로그아웃 테스트
 print("1. sign in/out test")
 sleep(1)
-signInVerification(driver, user_list[0][0], user_list[0][1])
+signInVerification(driver, user_list[0][0], user_list[0][1]) # sign in
 sleep(1)
-signOutVerification(driver)
+signOutVerification(driver, user_list[0][0]) # sign out
 
 # 회원가입 테스트
 driver.find_element_by_id("sign_up").click()
@@ -60,16 +60,17 @@ signUpVerification(driver, 5)
 sleep(1)
 signUpVerification(driver, 10)
 sleep(1)
-signOutVerification(driver)
+signOutVerification(driver, "test10")
 
 # 메인페이지 테스트
 print("3. main page test")
-sleep(0.5)
+sleep(1)
 signInVerification(driver, user_list[0][0], user_list[0][1])
-## get data from backend to test
+# get data from backend to test
 forbidden_or_error_anon('GET', main_link)
-data = get_json_or_error(main_link, "newspring", "swppswpp")
-sleep(0.5)
+data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
+# rendering test
+sleep(1)
 mainPageVerification(driver, data[0:5])
 # write test
 print("4. write test")
@@ -85,16 +86,19 @@ sleep(1)
 forbidden_or_error_anon('GET', main_link)
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 sleep(1)
+# 두 번째로 쓴 글
 if data[0]["owner"] == user_list[0][0] and data[0]["text"] == "test2":
     pass
 else:
     print("Post Fail")
     exit(1)
+# 첫 번째로 쓴 글
 if data[1]["owner"] == user_list[0][0] and data[1]["text"] == "test1":
     pass
 else:
     print("Post Fail")
     exit(1)
+mainPageVerification(driver, data[0:5])
 
 # like test
 print("5. like test")
@@ -119,6 +123,7 @@ data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 if(data[0]["text"] != "edit test"):
     print("Edit fail")
     exit(1)
+mainPageVerification(driver, data[0:5])
 
 # reply test
 print("7. reply test")
@@ -159,7 +164,7 @@ if data[0] == tmp:
 # edit / delete error test
 print("10. edit / delete error test")
 sleep(1)
-signOutVerification(driver)
+signOutVerification(driver, user_list[0][0])
 sleep(1)
 signInVerification(driver, user_list[1][0], user_list[1][1])
 sleep(1)

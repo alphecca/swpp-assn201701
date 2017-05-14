@@ -1,4 +1,4 @@
-import time
+from time import sleep
 import sys
 import http, base64
 from selenium import webdriver
@@ -43,22 +43,26 @@ def signInVerification(driver, username, password):
     driver.find_element_by_id("username_field").clear() # reset username field
     driver.find_element_by_id("password_field").clear() # reset password field
     driver.find_element_by_id("sign_in").click()
-    time.sleep(1)
+    sleep(1)
     alert(driver, "User not exist!")
     driver.find_element_by_id("username_field").send_keys(username)
     driver.find_element_by_id("sign_in").click()
-    time.sleep(1)
+    sleep(1)
     alert(driver, "User not exist!")
     driver.find_element_by_id("password_field").send_keys(password)
     driver.find_element_by_id("sign_in").click()
-    time.sleep(1)
+    sleep(1)
     alert(driver, "Succeed to sign in! :)")
 
 #####SIGN OUT CHECK#####
-def signOutVerification(driver):
+def signOutVerification(driver, username):
     check(driver, "sign_out")
+    check(driver, "user_data_field")
+    if driver.find_element_by_id("user_data_field").text != username + " 동무 어서오시오!":
+        print("username does not match!")
+        exit(1)
     driver.find_element_by_id("sign_out").click()
-    time.sleep(0.5)
+    sleep(1)
     signInPageVerification(driver)
 
 #####SIGN UP CHECK#####
@@ -70,22 +74,22 @@ def signUpPageVerification(driver):
 def signUpAlertVerification(driver, username, password):
     # no username
     driver.find_element_by_id('sign_up').click()
-    time.sleep(0.5)
+    sleep(1)
     alert(driver, "Enter the username")
     # no password
     driver.find_element_by_id('username_field').send_keys('test')
     driver.find_element_by_id('sign_up').click()
-    time.sleep(0.5)
+    sleep(1)
     alert(driver, "Enter the password")
     # no pwd verification
     driver.find_element_by_id('password_field').send_keys('testpasswd')
     driver.find_element_by_id('sign_up').click()
-    time.sleep(0.5)
+    sleep(1)
     alert(driver, "Enter the password verification")
     # password not matching
     driver.find_element_by_id('pwdverification_field').send_keys('testpasswd_diff')
     driver.find_element_by_id('sign_up').click()
-    time.sleep(1)
+    sleep(1)
     alert(driver, "Password does not match")
 
 def signUpVerification(driver, testNum):
@@ -102,7 +106,7 @@ def signUpVerification(driver, testNum):
     driver.find_element_by_id('password_field').send_keys(password)
     driver.find_element_by_id('pwdverification_field').send_keys(password)
     driver.find_element_by_id('sign_up').click()
-    time.sleep(1)
+    sleep(1)
     if testNum < 10:
         alert(driver, "Unknown Error Occurred")
 
@@ -153,7 +157,7 @@ def likeVerification(driver, article_id, isClicked):
     likeId = "a"+str(article_id)+"_like_button_field"
     check(driver, likeId)
     driver.find_element_by_id(likeId).click()
-    sleep(0.5)
+    sleep(1)
     if isClicked == True:
         alert(driver, "You already like this post!")
 
@@ -161,7 +165,7 @@ def replyVerification(driver, article_id, text):
     replyId = "a"+str(article_id)+"_reply_button_field"
     check(driver, replyId)
     driver.find_element_by_id(replyId).click()
-    sleep(0.5)
+    sleep(1)
     writePageVerification(driver, text)
 
 def editVerification(driver, article_id, text):
@@ -184,7 +188,7 @@ def detailVerification(driver, article_id):
     detailId = "a"+str(article_id)+"_detail_button_field"
     check(driver, detailId)
     driver.find_element_by_id(detailId).click()
-    sleep(0.5)
+    sleep(1)
 
 ## error checking functions for edit and delete
 def editErrorVerification(driver, article_id):
@@ -207,7 +211,7 @@ def deleteErrorVerification(driver, article_id):
     alert(driver, "This is not your article")
 
 def mainPageVerification(driver, articles):
-    time.sleep(1)
+    sleep(1)
     check(driver, "article_list_field")
     check(driver, "write_button_field")
     for article in articles:
@@ -216,7 +220,7 @@ def mainPageVerification(driver, articles):
 #####WRITE PAGE#####
 # write page verification (article, not reply)
 def writePageVerification(driver, text):
-    time.sleep(1)
+    sleep(1)
     check(driver, "add_article_field")
     check(driver, "post_text_field")
     check(driver, "post_button_field") # check rendering
