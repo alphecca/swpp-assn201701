@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
-import '../styles.css';
+import './styles1.css';
 
 class Root extends Component {
     render() {
         return (
-            <div style={ {textAlign: 'center'} }>
+           <body>
+            <div className="app">
                 <SignIn />
                 <SignUp />
             </div>
+           </body>
     );
   }
 }

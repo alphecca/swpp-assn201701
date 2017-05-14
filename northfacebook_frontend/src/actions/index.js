@@ -32,3 +32,79 @@ export const signOut = () => {
     }
 }
 export const SIGN_OUT = 'SIGN_OUT'
+export function addArticle (id, text){
+    return {
+      type: 'ADD_ARTICLE',
+      text,
+      id
+    }
+}
+export const ADD_ARTICLE = 'ADD_ARTICLE'
+
+// Move to another page
+export const changeUrl = (pathname) => {
+    return {
+        type: 'CHANGE_URL',
+        path: pathname
+    }
+}
+
+// Send redirection request to /write
+export const writeArticle = (id) => {
+    return {
+        type: 'WRITE_ARTICLE',
+        id
+    }
+}
+export const editArticle = (id) => {
+    return {
+        type: 'EDIT_ARTICLE',
+        id: id,
+    }
+}
+export const putArticle = (text) =>{
+    return {
+        type: 'PUT_ARTICLE',
+        text: text//after edit
+    }
+}
+export const deleteArticle = (id) => {
+    return {
+        type: 'DELETE_ARTICLE',
+        id: id
+    }
+}
+
+export const setState = (state) => {
+    return {
+        type: 'SET_STATE',
+        state: state
+    }
+}
+
+export const articleDetail = (id) => {
+    return {
+        type: 'ARTICLE_DETAIL',
+        id: id
+    }
+}
+
+export const gotoSignUpPage = () => {
+    return {
+        type: 'GOTO_SIGN_UP',
+    }
+}
+
+export const postLike = (id, auth) => {
+    return {
+        type: 'POST_LIKE',
+        id: id,
+        auth: auth
+    }
+}
+
+export const postBack = () => {
+    return {
+        type: 'POST_BACK'
+    }
+}

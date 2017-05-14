@@ -1,23 +1,24 @@
 import React from 'react';
 import { render } from 'react-dom';
-//import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
+
 import homepageApp from './reducers'
 import App from './components/App';
-import saga from './store/homepage/sagas'
+import saga from './store/homepage/new_sagas.js'
 import './index.css';
 
-const sagaMiddleware = createSagaMiddleware()
+const sagaMiddleware = createSagaMiddleware();
+
+const reducer = homepageApp;
 const store = createStore(
-    homepageApp,
+    reducer,
     applyMiddleware(sagaMiddleware)
 )
+
 sagaMiddleware.run(saga)
 
 render(
-//    <Provider store={store}>
-        <App store={store} />,
-//    </Provider>,
+    <App store={store} />,
     document.getElementById('root')
 );
