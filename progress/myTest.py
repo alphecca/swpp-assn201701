@@ -108,11 +108,13 @@ sleep(1)
 likeVerification(driver, data[0]["id"], True)
 tmp = data[0]["like_num"]
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
+## 좋아요 수 증가 확인
 if data[0]["like_num"] == tmp + 1:
     pass
 else:
     print("Like fail")
     exit(1)
+mainPageVerification(driver, data[0:5])
 
 # edit test
 print("6. edit test")
@@ -141,7 +143,7 @@ detailPageVerification(driver, data[0], reply_data)
 sleep(1)
 driver.find_element_by_id("to_main_page_field").click()
 
-# detail page test
+# detail button test
 print("8. detail test")
 sleep(1)
 detailVerification(driver, data[0]["id"])
@@ -158,8 +160,6 @@ data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 if data[0] == tmp:
     print("delete fail")
     exit(1)
-
-#TODO 자신이 쓴 글이 아닌 다른 사람이 쓴 글 수정/삭제 못하는거 확인...귀찮
 
 # edit / delete error test
 print("10. edit / delete error test")

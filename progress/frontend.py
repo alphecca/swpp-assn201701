@@ -153,6 +153,7 @@ def articleVerification(driver, article):
         print("Reply num not match on article %d" % article["id"])
         exit(1)
 
+## like, edit, delete, detail button verification
 def likeVerification(driver, article_id, isClicked):
     likeId = "a"+str(article_id)+"_like_button_field"
     check(driver, likeId)
@@ -210,6 +211,7 @@ def deleteErrorVerification(driver, article_id):
     sleep(1)
     alert(driver, "This is not your article")
 
+## main page rendering test
 def mainPageVerification(driver, articles):
     sleep(1)
     check(driver, "article_list_field")
