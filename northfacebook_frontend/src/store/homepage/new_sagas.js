@@ -57,11 +57,9 @@ export default function *saga() {
                 case 'chatting':
                     yield spawn(chattingPageSaga, url[2]);
                     break;
-		case 'chatting':
-		    yield spawn(roomPageSaga);
-		    break;
                 default:
                     console.log("default state");
+                    alert("Oops, page not found");
             }
     }
 }
@@ -186,9 +184,9 @@ function *watchLoginState() {
         }
         else {
             const path = window.location.pathname;
-	    console.log(path)
+	        console.log(path);
             let data, parent_data;
-            if(path === '/main/' || path === '/write/') {
+            if(path === '/main/' || path === '/write/' || path === '/room/' || path === '/create_room/') { // TODO 여기 하드코딩된 부분인데 왜 알려주지 않은 거죠? 찾느라 고생함.
                 localStorage.removeItem('parent');
                 try {
                     data = yield call(xhr.get, fixed_url+'mainpage/', {
@@ -261,7 +259,7 @@ function *watchLoginState() {
                     }
                     else if(error.statusCode === 0) {
                         console.log("Backend is not accessible");
-                        alert("Temporal Server Error. Try reloading!");
+                        alert("Temporary Server Error. Try reloading!");
                         return;
                     }
                     else {
@@ -428,7 +426,7 @@ function *watchPutArticle(id){
 }
 
 // watchCreateRoom: 채팅방 목록 페이지에서 새 채팅방 버튼 클릭 관찰
-function watchCreateRoom(){
+function *watchCreateRoom(){
     while(true){
         yield take('SHOW_CREATE_ROOM');
         yield put(actions.changeUrl('/create_room/'));
@@ -455,6 +453,7 @@ function *watchChatting(){
 function *watchChattingRoom(){
     while(true){
         yield take('SHOW_CHATTING_ROOM');
+        console.log("take SHOw_CHATTING_ROOM");
         yield put(actions.changeUrl('/room/'));
     }
 }
@@ -471,7 +470,7 @@ function *watchSendText(){
 function *watchPostRoom(){
     while(true){
         const data = yield take('POST_ROOM');
-        yield call(postRoom, data.room_name);
+        yield call(postRoom, data.room_name); // TODO 채팅방 관련 추가구현 시 방 정보(방 공개 여부 등)에 관한 사항을 여기에 추가해야 함.
     }
 }
 
@@ -674,7 +673,7 @@ function *deleteArticle(id){
 
 // putArticle: 자신이 쓴 글을 수정하는 함수
 function *putArticle(id, text){
-    const  path =  'article/'+id+'/';
+    const path = 'article/'+id+'/';
     console.log("in editArticle[path]: "+path);
     try{
         yield call(xhr.send, fixed_url+path, {
@@ -701,3 +700,136 @@ function *putArticle(id, text){
 //          yield put(actions.changeUrl('/main/'));
     }
 }
+
+// joinRoom: 선택한 채팅방(아직 참가하지 않은 채팅방)을 참가한 채팅방으로 만드는 함수
+function *joinRoom(id) {
+    const path = 'chatroom/'+id+'/user/';
+    try{
+        yield call(xhr.post, fixed_url+path, {
+            headers: {
+                "Authorization": "Basic "+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType: 'json',
+            body: JSON.stringify({})
+        });
+        console.log("join room succeed.");
+        yield put(window.location.pathname);
+    }catch(error){
+        if(error.statusCode === 201){
+            console.log("join room succeed 2.");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else if(error.statusCode === 0) {
+            alert("Backend server not available");
+            console.log("Check backend server");
+        }
+        else if(error.statusCode === 403) {
+            alert("Please sign in first");
+            console.log("permission denied");
+            yield put(actions.changeUrl('/'));
+        }
+        else if(error.statusCode === 404) {
+            alert("This room does not exist");
+            console.log("the room has removed");
+        }
+        else if(error.statusCode === 405) {
+            alert("You already join in this room");
+            console.log("you can join in this room once");
+        }
+        else if(Object.keys(error).length === 0) {
+            console.log("join room succeed 3.");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else {
+            alert("Unknown Error Occurred");
+            console.log(error);
+        }
+    }
+}
+
+// postText: 그 채팅방에 새 메시지를 전송하는 함수
+function *postText(room_id, text) {
+    const path = 'chatroom/'+room_id+'/text/';
+    try{
+        yield call(xhr.post, fixed_url+path, {
+            headers: {
+                "Authorization": "Basic "+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType: 'json',
+            body: JSON.stringify({"text": text})
+        });
+        console.log("post text succeed.");
+        yield put(window.location.pathname);
+    }catch(error){
+        if(error.statusCode === 201){
+            console.log("post text succeed 2.");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else if(error.statusCode === 0) {
+            alert("Backend server not available");
+            console.log("Check backend server");
+        }
+        else if(error.statusCode === 403) {
+            alert("Please sign in first");
+            console.log("permission denied");
+            yield put(actions.changeUrl('/'));
+        }
+        else if(error.statusCode === 404) {
+            alert("This room does not exist");
+            console.log("the room has removed");
+        }
+        else if(Object.keys(error).length === 0) {
+            console.log("post text succeed 3.");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else {
+            alert("Unknown Error Occurred");
+            console.log(error);
+        }
+    }
+}
+
+// postRoom: 새 채팅방을 생성하는 함수 TODO 채팅방 관련 추가구현 시 수정바람.
+function *postRoom(room_name) {
+    const path = 'chatroom/';
+    try{
+        yield call(xhr.post, fixed_url+path, {
+            headers: {
+                "Authorization": "Basic "+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType: 'json',
+            body: JSON.stringify({"room_name": room_name})
+        });
+        console.log("post room succeed.");
+        yield put(window.location.pathname);
+    }catch(error){
+        if(error.statusCode === 201){
+            console.log("post room succeed 2.");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else if(error.statusCode === 0) {
+            alert("Backend server not available");
+            console.log("Check backend server");
+        }
+        else if(error.statusCode === 403) {
+            alert("Please sign in first");
+            console.log("permission denied");
+            yield put(actions.changeUrl('/'));
+        }
+        else if(Object.keys(error).length === 0) {
+            console.log("post room succeed 3.");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else {
+            alert("Unknown Error Occurred");
+            console.log(error);
+        }
+    }
+}
+

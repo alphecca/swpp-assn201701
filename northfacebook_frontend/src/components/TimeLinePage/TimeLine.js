@@ -17,6 +17,6 @@ class TimeLine extends React.Component {
     }
 }
 
-TimeLine = connect(undefined, (dispatch) => {return {onClick: () => dispatch(writeArticle(null)), onChatclick: () => dispatch(showChattingRoom())}})(TimeLine)
+TimeLine = connect(undefined, (dispatch) => {return {onClick: () => dispatch(writeArticle(null)), onChatClick: () => dispatch(showChattingRoom(null))}})(TimeLine)
 
 export default TimeLine
