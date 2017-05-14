@@ -374,7 +374,6 @@ get_json_or_error(link, test1, test1pw)
 forbidden_or_error_anon_data("POST", link, {"text": "anonymous user"})
 post_or_error(link, {"text": "reply1"}, test1, test1pw)
 temp = get_json_or_error(link, test1, test1pw)
-chatroom3id = temp[0]["id"]
 post_or_error(link, {"text": "reply2"}, test2, test2pw)
 link = sys.argv[1] + "chatroom/" + str(chatroom2id) + "/user/"
 print("8. GET & POST charuser.")
