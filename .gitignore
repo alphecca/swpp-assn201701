@@ -1,7 +1,9 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+/northfacebook_frontend/node_modules
+/northfacebook_backend/homepage/__pycache__
+/northfacebook_backend/northfacebook_backend/__pycache__
 
 # testing
 /coverage
