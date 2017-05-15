@@ -164,6 +164,7 @@ function *createRoomPageSaga(){
     yield spawn(watchLoginState);
     yield spawn(watchSignOut);
     yield spawn(watchPostRoom);
+    yield spawn(watchChattingRoom);
 }
 
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
@@ -232,7 +233,8 @@ function *watchLoginState() {
                     parent_article: null,
                     rooms: [],
                     texts: [],
-                    chatting_users: []
+                    chatting_users: [],
+                    room_id: 0
                     //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                 }));
             }
@@ -279,7 +281,8 @@ function *watchLoginState() {
                     parent_article: null,
                     rooms: data.body,
                     texts: [],
-                    chatting_users: []
+                    chatting_users: [],
+                    room_id: 0
                     // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
                 }));
             }
@@ -381,7 +384,8 @@ function *watchLoginState() {
                         parent_article: parent_data.body,
                         rooms: [],
                         texts: [],
-                        chatting_users: []
+                        chatting_users: [],
+                        room_id: 0
                         //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                     }));
                 }
@@ -890,15 +894,19 @@ function *postRoom(room_name) {
             body: JSON.stringify({"room_name": room_name})
         });
         console.log("post room succeed.");
-        yield put(actions.changeUrl(window.location.pathname));
+        yield put(actions.changeUrl('/room/'));
     }catch(error){
         if(error.statusCode === 201){
             console.log("post room succeed 2.");
-            yield put(actions.changeUrl(window.location.pathname));
+            yield put(actions.changeUrl('/room/'));
         }
         else if(error.statusCode === 0) {
             alert("Backend server not available");
             console.log("Check backend server");
+        }
+        else if(error.statusCode === 400) {
+            alert("Please input correctly");
+            console.log("Bad request");
         }
         else if(error.statusCode === 403) {
             alert("Please sign in first");
@@ -907,7 +915,7 @@ function *postRoom(room_name) {
         }
         else if(Object.keys(error).length === 0) {
             console.log("post room succeed 3.");
-            yield put(actions.changeUrl(window.location.pathname));
+            yield put(actions.changeUrl('/room/'));
         }
         else {
             alert("Unknown Error Occurred");
@@ -1006,7 +1014,8 @@ function *updateChatting(room_id) {
         parent_article: getParentArticle,
         rooms: getRooms,
         texts: textRes.body,
-        chatting_users: userRes.body
+        chatting_users: userRes.body,
+        room_id: room_id
         // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
     }));
     const path = window.location.pathname;

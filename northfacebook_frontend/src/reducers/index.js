@@ -5,7 +5,8 @@ const homepageInitialState = {
     parent_article: null,
     rooms: [],
     texts: [],
-    chatting_users: []
+    chatting_users: [],
+    room_id: 0
 };
 
 const homepage = (state = homepageInitialState, action) => {
@@ -29,9 +30,10 @@ const homepage = (state = homepageInitialState, action) => {
                 authorization: action.state.authorization,
                 articles: action.state.articles,
                 parent_article: action.state.parent_article,
-		rooms: action.state.rooms,
-		texts: action.state.texts,
-		chatting_users: action.state.chatting_users
+                rooms: action.state.rooms,
+                texts: action.state.texts,
+                chatting_users: action.state.chatting_users,
+                room_id: action.state.room_id
             })
         }
         case 'ARTICLE_DETAIL': {
