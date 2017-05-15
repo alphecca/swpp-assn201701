@@ -1,3 +1,4 @@
+
 import json
 import requests
 import sys
@@ -372,9 +373,6 @@ print("7. GET & POST text.")
 forbidden_or_error_anon("GET", link)
 get_json_or_error(link, test1, test1pw)
 forbidden_or_error_anon_data("POST", link, {"text": "anonymous user"})
-post_or_error(link, {"text": "reply1"}, test1, test1pw)
-temp = get_json_or_error(link, test1, test1pw)
-post_or_error(link, {"text": "reply2"}, test2, test2pw)
 link = sys.argv[1] + "chatroom/" + str(chatroom2id) + "/user/"
 print("8. GET & POST charuser.")
 forbidden_or_error_anon("GET", link)
@@ -417,3 +415,4 @@ delete_or_error(link, test1, test1pw)
 delete_or_error(link, test2, test2pw)
 
 print("TEST SUCCESSFUL")
+

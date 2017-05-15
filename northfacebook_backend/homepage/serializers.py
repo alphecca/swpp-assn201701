@@ -44,6 +44,38 @@ class ChatRoomSerializer(serializers.ModelSerializer):
         model = Chat
         fields = ('id','user_num', 'room_name')
 
+class NowChatSerializer(serializers.BaseSerializer):
+    def to_representation(self, obj):
+        ca=Chat.objects.all()
+        nowchat=[]
+        for x in ca:
+            cu = ChatUser.objects.filter(chatroom=x.id)
+            for y in cu:
+                if obj==y.chatuser:
+                    nowchat.append(x.id)
+                    break
+        return nowchat
+    class Meta:
+        model = User
+
+
+class NonChatSerializer(serializers.BaseSerializer):
+    def to_representation(self, obj):
+        ca=Chat.objects.all()
+        nonchat=[]
+        for x in ca:
+            cu = ChatUser.objects.filter(chatroom=x.id)
+            nonchat.append(x.id)
+            for y in cu:
+                if obj==y.chatuser:
+                    nonchat.pop()
+                    break
+        return nonchat
+    class Meta:
+        model = User
+
+
+
 class ChatUserSerializer(serializers.ModelSerializer):
     chatuser = serializers.ReadOnlyField(source='chatuser.username')
     chatroom=serializers.ReadOnlyField(source='chatroom.id')
@@ -56,4 +88,4 @@ class TextSerializer(serializers.ModelSerializer):
     room = serializers.ReadOnlyField(source='room.id')
     class Meta:
        model = Text
-       fields = ('room', 'text', 'writer', 'created_time')
+       fields = ('id','room', 'text', 'writer', 'created_time')
