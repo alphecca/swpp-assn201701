@@ -15,7 +15,7 @@ class TextList extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
-        texts: Object.assign(state.texts).slice(0, 10).map(text => JSON.parse(JSON.stringify(
+        texts: Object.assign(state.texts).slice(0, 10).reverse().map(text => JSON.parse(JSON.stringify(
                             {
                                 text: text,
                                 id: text.id

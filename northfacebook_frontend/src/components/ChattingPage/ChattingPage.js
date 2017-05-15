@@ -22,7 +22,9 @@ class ChattingPage extends React.Component {
                 <button id="to_main_page_field" onClick={this.props.onBackClick}>Back to main</button>
                 <div className="divider" />
                 <button id="change_room_button_field" onClick={this.props.onChangeRoomClick}>Change room</button>
+                <p>Chatting user list</p>
                 <ChattingUserList />
+                <br />
                 <TextList />
                 <form onSubmit={e => {
                     e.preventDefault()
@@ -51,7 +53,7 @@ let mapDispatchToProps = (dispatch) => {
     return {
         onBackClick: () => dispatch(postBack()),
         onChangeRoomClick: () => dispatch(showChattingRoom()),
-        onSendClick: (message) => dispatch(postText(message))
+        onSendClick: (room_id, message) => dispatch(postText(room_id, message))
     }
 }
 

@@ -8,7 +8,7 @@ class ChattingUser extends React.Component {
         const componentId = "u"+this.props.user.id+"_field";
         return (
                 <div id={componentId} className="ChattingUser">
-                {username}
+                <span>{username}</span>
                 </div>
                )
     }

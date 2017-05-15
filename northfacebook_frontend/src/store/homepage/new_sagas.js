@@ -5,7 +5,7 @@ import * as actions from './../../actions'
 var xhr = require('xhr-promise-redux');
 
 //TODO 개인적으로 테스트할 때는 포트번호를 바꾸자. 풀리퀘를 날릴 때는 URL을 확인할 것
-const fixed_url = /*"http://localhost:8000/";*/"http://wlxyzlw.iptime.org:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
+const fixed_url = "http://localhost:8000/";//"http://wlxyzlw.iptime.org:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
 const auth_check_url = fixed_url+'auth/';
 
 // 이제 backend에서 사용하는 url은 모두 'path_name/'의 형식을 따르고, frontend에서 사용하는 url은 모두 '/path_name/'의 형식을 따릅니다.
@@ -860,6 +860,10 @@ function *postText(room_id, text) {
             alert("Backend server not available");
             console.log("Check backend server");
         }
+        else if(error.statusCode === 400) {
+            alert("Please input message correctly");
+            console.log("bad request");
+        }
         else if(error.statusCode === 403) {
             alert("Please sign in first");
             console.log("permission denied");
@@ -868,6 +872,11 @@ function *postText(room_id, text) {
         else if(error.statusCode === 404) {
             alert("This room does not exist");
             console.log("the room has removed");
+        }
+        else if(error.statusCode === 405) {
+            alert("You didn't join in this room. Please join in first.");
+            console.log("the user isn't chatting member");
+            yield put(actions.changeUrl('/room/'));
         }
         else if(Object.keys(error).length === 0) {
             console.log("post text succeed 3.");
