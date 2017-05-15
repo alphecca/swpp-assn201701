@@ -7,7 +7,7 @@ import './styles.css'
 
 class ChattingRoomPage extends React.Component {
     render() {
-        // TODO <br />µéÀº ³ªÁß¿¡ Áö¿öÁÖ¼¼¿ä.
+        // TODO <br />ë“¤ì€ ë‚˜ì¤‘ì— ì§€ì›Œì£¼ì„¸ìš”.
         return (
                 <div >
                 <SignOut />

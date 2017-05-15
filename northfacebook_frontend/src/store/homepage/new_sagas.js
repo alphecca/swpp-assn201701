@@ -342,7 +342,7 @@ function *watchLoginState() {
                                 'Authorization': 'Basic '+ localStorage['auth'],
                             Accept: 'application/json'
                             },
-                            responseType: 'application/json'
+                            responseType: 'json'
                         });
                         console.log('Get data without exception');
                     }
@@ -928,7 +928,7 @@ function *updateChatting(room_id) {
                 "Content-Type": 'application/json',
                 Accept: 'application/json'
             },
-            responseType: 'application/json'
+            responseType: 'json'
         });
     }catch(error){
         console.log(error);
@@ -966,7 +966,7 @@ function *updateChatting(room_id) {
                 "Content-Type": 'application/json',
                 Accept: 'application/json'
             },
-            responseType: 'application/json'
+            responseType: 'json'
         });
     }catch(error){
         console.log(error);

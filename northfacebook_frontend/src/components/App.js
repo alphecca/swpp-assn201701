@@ -24,7 +24,7 @@ const App = ({store}) => {
                     <Route exact path="/sign_up" component={SignUpPage} />
                     <Route exact path="/main" component={TimeLinePage} />
                     <Route path="/article/:id" component={ArticleDetailPage} />
-                    <Route exact path="/write/:id" component={AddArticlePage} />
+                    <Route exact path="/write/:id?" component={AddArticlePage} />
                     <Route exact path="/edit/:id" component={EditArticlePage} /> 
 		    <Route exact path="/room" component={ChattingRoomPage} />
                 </div>
