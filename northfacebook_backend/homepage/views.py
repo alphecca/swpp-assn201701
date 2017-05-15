@@ -168,7 +168,7 @@ class AuthList(APIView):
         }
         return Response(content)
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST' , 'DELETE'])
 @permission_classes((IsAuthenticatedOrPOSTOnly,))
 def user_list(request):
     if request.method == 'GET':
@@ -192,6 +192,11 @@ def user_list(request):
         user = User.objects.create_user(username, password=pwd)
         user.save()
         return Response(status = status.HTTP_201_CREATED)
+    elif request.method == 'DELETE':
+        if user==request.user:
+            user.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
 @api_view(['GET','DELETE'])
 def user_detail(request, pk):
