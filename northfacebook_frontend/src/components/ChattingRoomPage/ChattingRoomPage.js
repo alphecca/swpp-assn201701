@@ -9,6 +9,15 @@ class ChattingRoomPage extends React.Component {
     render() {
         // TODO <br />들은 나중에 지워주세요.
         return (
+            this.props.rooms.rooms.length === 0 ? (
+                <div >
+                <SignOut />
+                <br /> <br /> <br /> <br /> <br /> <br />
+                <div className="ChattingRoom">
+                <p>Now loading...</p>
+                </div>
+                </div>
+            ) : (
                 <div >
                 <SignOut />
                 <br /> <br /> <br /> <br /> <br /> <br /> 
@@ -19,7 +28,14 @@ class ChattingRoomPage extends React.Component {
                 <RoomList />
                 </div>
                 </div>
-               )
+            )
+        )
+    }
+}
+
+let mapStateToProps = (state) => {
+    return {
+        rooms: Object.assign(state)
     }
 }
 
@@ -30,6 +46,6 @@ let mapDispatchToProps = (dispatch) => {
     }
 }
 
-ChattingRoomPage = connect(undefined, mapDispatchToProps)(ChattingRoomPage)
+ChattingRoomPage = connect(mapStateToProps, mapDispatchToProps)(ChattingRoomPage)
 
 export default ChattingRoomPage

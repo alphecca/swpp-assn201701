@@ -11,7 +11,14 @@ import './styles.css'
 class ArticleDetailPage extends React.Component {
     render() {
         return (
-                this.props.article.parent_article === null ? <p>"Now loading..."</p> : (
+                this.props.article.parent_article === null ? (
+		    <div >
+		    <SignOut />
+		    <div className="ArticleDetail">
+		    <p>Now loading...</p>
+		    </div>
+		    </div>
+		) : (
                     <div >
                     <SignOut />
                     <div className="ArticleDetail">
