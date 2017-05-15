@@ -311,7 +311,7 @@ def text(request, pk):
   elif request.method == 'POST':
     chatuser=ChatUser.objects.filter(chatroom=chatroom.id)
     for t in chatuser:
-      if request.user.id == t.id:
+      if request.user == t.chatuser:
         serializer = TextSerializer(data=request.data)
         if serializer.is_valid():
           serializer.save(writer=request.user, room=chatroom)
