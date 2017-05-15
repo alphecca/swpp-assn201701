@@ -268,9 +268,13 @@ def text(request, pk):
     serializer = TextSerializer(text, many=True)
     return Response(serializer.data)
   elif request.method == 'POST':
-    serializer = TextSerializer(data=request.data)
-    if serializer.is_valid():
-      serializer.save(writer=request.user, room=chatroom)
-      return Response(status=status.HTTP_201_CREATED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    chatuser=ChatUser.objects.filter(chatroom=chatroom.id)
+    for t in chatuser:
+      if request.user.id == t.id:
+        serializer = TextSerializer(data=request.data)
+        if serializer.is_valid():
+          serializer.save(writer=request.user, room=chatroom)
+          return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
