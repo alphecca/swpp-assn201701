@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { showCreateRoom, joinRoom, showChatting } from '../../actions'
+import { joinRoom, showChatting } from '../../actions'
 import './styles.css'
 
 class Room extends React.Component {
