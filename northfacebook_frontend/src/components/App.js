@@ -7,6 +7,9 @@ import TimeLinePage from './TimeLinePage/TimeLinePage.js';
 import AddArticlePage from './AddArticlePage/AddArticlePage.js';
 import ArticleDetailPage from './ArticleDetailPage/ArticleDetailPage.js';
 import EditArticlePage from './EditArticlePage/EditArticlePage.js';
+import ChattingRoomPage from './ChattingRoomPage/ChattingRoomPage.js';
+import CreateRoomPage from './CreateRoomPage/CreateRoomPage.js';
+import ChattingPage from './ChattingPage/ChattingPage.js';
 //import NoMatchPage from './NoMatchPage/NoMatchPage.js';
 import PropTypes from 'prop-types';
 
@@ -25,6 +28,9 @@ const App = ({store}) => {
                     <Route path="/article/:id" component={ArticleDetailPage} />
                     <Route exact path="/write/:id?" component={AddArticlePage} />
                     <Route exact path="/edit/:id" component={EditArticlePage} /> 
+                    <Route exact path="/room" component={ChattingRoomPage} />
+                    <Route exact path="/create_room" component={CreateRoomPage} />
+                    <Route exact path="/chatting/:id" component={ChattingPage} />
                 </div>
             </BrowserRouter>
         </Provider>

@@ -12,8 +12,8 @@ from selenium.common.exceptions import NoSuchElementException, NoAlertPresentExc
 from selenium.webdriver.common.alert import Alert
 
 if len(sys.argv) != 3:
-    print("backend_tests.py <backend_url> <frontend_url>")
-    print("Example: backend_tests.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/")
+    print("myTest.py <backend_url> <frontend_url>")
+    print("Example: myTest.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/")
     exit(1)
 # 백엔드 주소
 backend_link = sys.argv[1]
