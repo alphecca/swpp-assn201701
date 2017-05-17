@@ -22,15 +22,30 @@ body{
 }
 .Notif{
   position: fixed;
-  left:8em;
+  left: 8em;
   top: 1em;
+}
+.TOMAIN{
+  border: none;
+  float: left;
+  width: 200px;
+  height: 80px;
+  position: fixed;
+  top: 8px;
+  left: 2em;
+  font-size: 25px;
+  font-family: 궁서;
+  background: url('login_logo.png');
+  background-repeat: no-repeat;
+  background-size: 8em 4em;
+  background-color: rgb(237,30,39);
 }
 .SIGNOUT{
   float: right;
   width: 6em;
   height: 2em;
   position: fixed;
-  top:20px;
+  top: 20px;
   left: 30em;
   font-size: 25px;
   font-family: 궁서;

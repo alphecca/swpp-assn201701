@@ -6,7 +6,6 @@ import SignOut from '../TimeLinePage/SignOut.js'
 import ReplyList from './ReplyList.js'
 import {connect} from 'react-redux'
 import {postBack} from '../../actions'
-import './styles.css'
 
 class ArticleDetailPage extends React.Component {
     render() {
