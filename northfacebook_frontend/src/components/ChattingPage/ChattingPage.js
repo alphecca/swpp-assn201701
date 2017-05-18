@@ -25,6 +25,8 @@ class ChattingPage extends React.Component {
                 <p>Chatting user list</p>
                 <ChattingUserList />
                 <br />
+                <hr />
+                <br />
                 <TextList />
                 <form onSubmit={e => {
                     e.preventDefault()

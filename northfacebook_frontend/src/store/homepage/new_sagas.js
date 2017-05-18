@@ -5,7 +5,7 @@ import * as actions from './../../actions'
 var xhr = require('xhr-promise-redux');
 
 //TODO 개인적으로 테스트할 때는 포트번호를 바꾸자. 풀리퀘를 날릴 때는 URL을 확인할 것
-const fixed_url = "http://wlxyzlw.iptime.org:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
+const fixed_url =/* "http://localhost:8000/";*/"http://wlxyzlw.iptime.org:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
 const auth_check_url = fixed_url+'auth/';
 
 // 이제 backend에서 사용하는 url은 모두 'path_name/'의 형식을 따르고, frontend에서 사용하는 url은 모두 '/path_name/'의 형식을 따릅니다.
@@ -903,34 +903,73 @@ function *postRoom(room_name) {
             body: JSON.stringify({"room_name": room_name})
         });
         console.log("post room succeed.");
-        yield put(actions.changeUrl('/room/'));
     }catch(error){
         if(error.statusCode === 201){
             console.log("post room succeed 2.");
-            yield put(actions.changeUrl('/room/'));
         }
         else if(error.statusCode === 0) {
             alert("Backend server not available");
             console.log("Check backend server");
+            return;
         }
         else if(error.statusCode === 400) {
             alert("Please input correctly");
             console.log("Bad request");
+            return;
         }
         else if(error.statusCode === 403) {
             alert("Please sign in first");
             console.log("permission denied");
             yield put(actions.changeUrl('/'));
+            return;
         }
         else if(Object.keys(error).length === 0) {
             console.log("post room succeed 3.");
-            yield put(actions.changeUrl('/room/'));
         }
         else {
             alert("Unknown Error Occurred");
             console.log(error);
+            return;
         }
     }
+    // get new room's id
+    let data, id;
+    try {
+        data = yield call(xhr.get, fixed_url+'chatroom/', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic '+ localStorage['auth'],
+                Accept: 'application/json'
+            },
+            responseType: 'json'
+        })
+        console.log('Get data without exception');
+    }
+    catch(error) {
+        console.log(error);
+        if(error.statusCode === 200) {
+            console.log('Succeed to get data');
+            data = error;
+        }
+        else if(error.statusCode === 403) {
+            alert("Unauthorized user tried to access chatting room page. Please sign in first!");
+            localStorage.removeItem('auth');
+            yield put(actions.changeUrl('/'));
+        }
+        else if(error.statusCode === 0) {
+            console.log("Backend is not accessible");
+            alert("Temporary Server Error");
+            return;
+        }
+        else {
+            alert("Unknown Error Occurred");
+            return;
+        }
+    }
+    // auto join
+    id=data.body[data.body.length-1]["id"];
+    yield call(joinRoom, id);
+    yield put(actions.changeUrl('/room/'));
 }
 
 // updateChatting: 채팅 유저 목록과 메시지들을 새로고침 없이 불러오는 함수
