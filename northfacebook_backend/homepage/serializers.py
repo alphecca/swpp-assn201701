@@ -88,4 +88,4 @@ class TextSerializer(serializers.ModelSerializer):
     room = serializers.ReadOnlyField(source='room.id')
     class Meta:
        model = Text
-       fields = ('room', 'text', 'writer', 'created_time')
+       fields = ('id','room', 'text', 'writer', 'created_time')
