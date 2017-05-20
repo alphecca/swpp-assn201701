@@ -5,6 +5,8 @@ from time import sleep
 from random import randint
 from backend import *
 
+# TODO We should implement that "Final. Deleting all data that test has created." will always be executed even though the test ended with exit(1). 
+
 if len(sys.argv) != 2:
     print("backend_tests2.py <url>")
     print("Example: backend_tests2.py http://wlxyzlw.iptime.org:8000/")
@@ -81,8 +83,8 @@ get_json_or_error(link, test1, test1pw)
 forbidden_or_error_anon_data("POST", link, {"text": "anonymous user"})
 bad_request_or_error_data("POST", link, {}, test1, test1pw)
 bad_request_or_error_data("POST", link, {"room_name": ""}, test1, test1pw)
-post_or_error(link, {"room_name": "test room1"}, test1, test1pw)
-post_or_error(link, {"room_name": "test room2"}, test2, test2pw)
+post_or_error(link, {"room_name": "test room1"}, test2, test2pw)
+post_or_error(link, {"room_name": "test room2"}, test1, test1pw)
 
 chatroom_list = get_json_or_error(link, test1, test1pw)
 chatroom2id = chatroom_list[len(chatroom_list)-1]["id"]
@@ -100,7 +102,7 @@ get_json_or_error(link, test2, test2pw)
 
 forbidden_or_error_anon("DELETE", link)
 delete_or_error(link, test1, test1pw)
-not_found_or_error(link, test1, test1pw)
+not_found_or_error(link, test2, test2pw)
 
 link = sys.argv[1] + "chatroom/" + str(chatroom2id) + "/"
 temp = get_json_or_error(link, test1, test1pw)
@@ -113,16 +115,13 @@ link = sys.argv[1] + "chatroom/" + str(chatroom2id) + "/user/"
 print("7. GET & POST & DELETE chatuser.")
 forbidden_or_error_anon("GET", link)
 temp = get_json_or_error(link, test1, test1pw)
-if len(temp) != 0:
-    print("ERROR: the length of chatuser list should be 0!")
+if len(temp) != 1:
+    print("ERROR: the length of chatuser list should be 1!")
     exit(1)
 
-# the following codes assume that room creator hasn't joined in the room automatically.
-# TODO if you implement auto join feature on backend, please revise the following codes.
 forbidden_or_error_anon_data("POST", link, {})
-post_or_error(link, {}, test1, test1pw)
-method_not_allowed_or_error_data("POST", link, {}, test1, test1pw)
 post_or_error(link, {}, test2, test2pw)
+method_not_allowed_or_error_data("POST", link, {}, test2, test2pw)
 temp = get_json_or_error(link, test2, test2pw)
 if len(temp) != 2 or temp[len(temp)-1]["chatroom"] != chatroom2id or temp[len(temp)-1]["chatuser"] != test2:
     print("ERROR: the contents of chatuser does not match after POST!")
@@ -183,9 +182,7 @@ chatroom_list_link = sys.argv[1] + "chatroom/"
 post_or_error(chatroom_list_link, {"room_name": "additional test"}, test1, test1pw)
 temp = get_json_or_error(chatroom_list_link, test1, test1pw)
 chatroom3id = temp[len(temp)-1]["id"]
-# TODO if auto join feature is implemented, please revise the following codes.
 chatuser_link = chatroom_list_link + str(chatroom3id) + "/user/"
-post_or_error(chatuser_link, {}, test1, test1pw)
 temp = get_json_or_error(link, test1, test1pw)
 if temp[len(temp)-1]["chatroom"] != chatroom3id or temp[len(temp)-1]["chatuser"] != test1:
     print("ERROR: the contents of chatuser list does not match after POST!")
@@ -202,9 +199,10 @@ if temp["user_num"] != 1:
     print("WARNING: the test has interrupted! this step will be skipped.")
     delete_or_error(link, test1, test1pw)
 else:
-    delete_or_error_200(chatuser_link, test1, test1pw)
-    #not_found_or_error(link, test1, test1pw) # TODO we should implement garbage collector on empty rooms.
-    delete_or_error(link, test1, test1pw) # TODO after implement garbage collector on empty rooms, this line will be deleted.
+    post_or_error(chatuser_link, {}, test2, test2pw)
+    delete_or_error_200(chatuser_link, test2, test2pw)
+    delete_or_error(chatuser_link, test1, test1pw)
+    not_found_or_error(link, test1, test1pw)
 
 link = chatroom_list_link + str(chatroom2id) + "/"
 print("13. check if chatuser and text are deleted together after the room is deleted.")
