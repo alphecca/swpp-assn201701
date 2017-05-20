@@ -932,6 +932,7 @@ function *postRoom(room_name) {
             return;
         }
     }
+    /*
     // get new room's id
     let data, id;
     try {
@@ -969,6 +970,7 @@ function *postRoom(room_name) {
     // auto join
     id=data.body[data.body.length-1]["id"];
     yield call(joinRoom, id);
+    */
     yield put(actions.changeUrl('/room/'));
 }
 
