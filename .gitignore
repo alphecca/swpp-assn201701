@@ -2,18 +2,18 @@
 
 # dependencies
 
-/northfacebook_frontend/node_modules/
-/northfacebook_backend/db.sqlite3/
-/northfacebook_backend/homepage/migrations/
-/northfacebook_backend/homepage/__pycache__/
-/northfacebook_backend/northfacebok_backend/__pycache__/
+/northfacebook_frontend/node_modules
+/northfacebook_backend/db.sqlite3
+/northfacebook_backend/homepage/migrations
+/northfacebook_backend/homepage/__pycache__
+/northfacebook_backend/northfacebook_backend/__pycache__
 
 
 # testing
-/coverage
+/northfacebook_frontend/coverage
 
 # production
-/build
+/northfacebook_frontend/build
 
 # misc
 .DS_Store
