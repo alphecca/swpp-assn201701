@@ -12,6 +12,8 @@
   background-color: rgb(237,30,39);
   color: white;
   z-index:100;
+  left: 2em;
+
 }
 .Notif{
   position: fixed;

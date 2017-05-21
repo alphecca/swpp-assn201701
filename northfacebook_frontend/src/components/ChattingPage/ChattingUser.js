@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import './styles.css'
 
 class ChattingUser extends React.Component {
     render() {

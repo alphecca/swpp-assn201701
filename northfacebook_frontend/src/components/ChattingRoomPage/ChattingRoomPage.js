@@ -12,7 +12,6 @@ class ChattingRoomPage extends React.Component {
                 <SignOut />
                 <br /> <br /> <br /> <br /> <br /> <br /> 
                 <div className="ChattingRoom">
-                <button id="to_main_page_field" onClick={this.props.onBackClick}>Back to main</button>
                 <div className="divider" />
                 <button id="new_room_button_field" onClick={this.props.onNewRoomClick}>New room</button>
                 <RoomList />
