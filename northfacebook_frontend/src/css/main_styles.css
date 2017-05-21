@@ -20,6 +20,7 @@
   top: 1em;
 }
 .TOMAIN{
+  cursor: pointer;
   border: none;
   float: left;
   width: 200px;
@@ -155,7 +156,7 @@
   height: 40px;
 }
 #sign_up{
-   width: 120px;
+   width: 200px;
    height: 40px;
 }
 /* SignUp Page css */
@@ -171,11 +172,12 @@
 textarea{
   font-size: 20px;
 }
-/*button{
+button{
   text-align: center;
   left: 20em;
   font-size: 20px;
-}*/
+  cursor: pointer;
+}
 hr{
   color: rgb(237,30,39);
 }

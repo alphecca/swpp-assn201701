@@ -4,7 +4,6 @@ import TextList from './TextList.js'
 import SignOut from '../TimeLinePage/SignOut.js'
 import { postBack, showChattingRoom, postText } from '../../actions'
 import { connect } from 'react-redux'
-import './styles.css'
 
 class ChattingPage extends React.Component {
     render() {
