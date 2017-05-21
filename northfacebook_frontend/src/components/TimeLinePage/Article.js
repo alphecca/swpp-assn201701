@@ -27,7 +27,7 @@ class Article extends React.Component {
                 <div id={componentId} className="Article">
                     <p id={writerId}>id: {username}</p>
                     <hr />
-                    <div id={textId} className="article_text">{articleText}</div>
+                    <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}</div>
                     <hr />
                     <p id={createdId}>Created: {this.props.article.created_time}</p>
                     <p id={updatedId}>Last update: {this.props.article.updated_time}</p>
