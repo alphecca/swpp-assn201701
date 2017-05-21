@@ -7,25 +7,24 @@ class CreateRoom extends React.Component{
     render() {
         const onSubmit = () => {
             if (this.roomName !== undefined) {
-                this.props.onClick(this.roomName.value)
+                this.props.onPostClick(this.roomName.value)
             }
         };
         return (
                 <div id="create_room_field" className="CreateRoom">
-                <form onSubmit={e => {
-                    e.preventDefault()
-                    onSubmit()
-                    }}
-                >
                 <div className="Text-Field">
+                    <form onSubmit={e => {
+                        e.preventDefault()
+                        onSubmit()
+                        }}
+                    >
                     Room name
                     <div className="divider" />
                     <input type="text" ref={ node => {this.roomName = node;} } id='input_room_name_field' className='field'></input><br />
-                    <button type="submit" id='post_room_button_field' className='PostRoomButton'>Create room</button>
-                    <div className="divider" />
+                    <button type='submit' id='post_room_button_field' className='PostRoomButton'>Create room</button>
+                    </form>
                     <button id="cancel_button_field" className='CancelButton' onClick={this.props.onCancelClick}>Cancel</button>
                 </div>
-                </form>
                 </div>
                )
     }
@@ -33,7 +32,7 @@ class CreateRoom extends React.Component{
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        onClick: (roomName) => {
+        onPostClick: (roomName) => {
                      dispatch(postRoom(roomName))
                  },
         onCancelClick: () => dispatch(showChattingRoom())

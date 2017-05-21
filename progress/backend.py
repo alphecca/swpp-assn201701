@@ -43,6 +43,18 @@ def delete_or_error(link, uname, upwd):
         print("ERROR: Cannot delete {0}".format(link))
         exit(1)
 
+# delete or print error(response statusCode is 200)
+def delete_or_error_200(link, uname, upwd):
+    sleep(0.05)
+    try:
+        res = requests.delete(link, auth=(uname, upwd))
+        if res.status_code != 200:
+            print("ERROR: Cannot delete {0} : {1}, id = {2}, pwd = {3}".format(link, res.status_code, uname, upwd))
+            exit(1)
+    except Exception:
+        print("ERROR: Cannot delete {0}".format(link))
+        exit(1)
+
 # put data or error
 def put_or_error(link, data, uname, upwd):
     sleep(0.05)

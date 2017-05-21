@@ -139,6 +139,8 @@ def articleVerification(driver, article):
         exit(1)
     elif driver.find_element_by_id(textId).text != article["text"]:
         print("Text not match on article %d" % article["id"])
+        print(driver.find_element_by_id(textId).text)
+        print(article["text"])
         exit(1)
     elif driver.find_element_by_id(createdId).text != "Created: "+article["created_time"]:
         print("Created time not match on article %d" % article["id"])
