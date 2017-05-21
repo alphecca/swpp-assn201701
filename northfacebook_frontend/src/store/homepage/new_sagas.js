@@ -875,7 +875,7 @@ function *postText(room_id, text) {
         }
         else if(error.statusCode === 405) {
             alert("You didn't join in this room. Please join in first.");
-            console.log("the user isn't chatting member");
+            console.log("The user isn't a chatting member");
             yield put(actions.changeUrl('/room/'));
         }
         else if(Object.keys(error).length === 0) {
