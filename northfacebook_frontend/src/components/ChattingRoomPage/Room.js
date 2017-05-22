@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { joinRoom, showChatting } from '../../actions'
-import './styles.css'
 
 class Room extends React.Component {
     render() {
@@ -27,13 +26,7 @@ class Room extends React.Component {
         )
     }
 }
-/*
-let mapStateToProps = (state) => {
-    return {
-        authorization: Object.assign(state.authorization)
-    }
-}
-*/
+
 Room.propTypes = {
     room: PropTypes.object,
 }

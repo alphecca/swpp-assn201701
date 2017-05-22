@@ -11,6 +11,8 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
 
+delayTime = 1 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫자를 늘려보자
+
 if len(sys.argv) != 3:
     print("myTest.py <backend_url> <frontend_url>")
     print("Example: myTest.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/")
@@ -47,45 +49,45 @@ driver.get(frontend_link)
 # 본격적인 프론트엔드 테스트 시작
 # 로그인 및 로그아웃 테스트
 print("1. sign in/out test")
-sleep(1)
+sleep(delayTime)
 signInVerification(driver, user_list[0][0], user_list[0][1]) # sign in
-sleep(1)
+sleep(delayTime)
 signOutVerification(driver, user_list[0][0]) # sign out
 
 # 회원가입 테스트
 driver.find_element_by_id("sign_up").click()
 print("2. sign up test")
-sleep(1)
+sleep(delayTime)
 signUpVerification(driver, 5)
-sleep(1)
+sleep(delayTime)
 signUpVerification(driver, 10)
-sleep(1)
+sleep(delayTime)
 signOutVerification(driver, "test10")
 
 # 메인페이지 테스트
 print("3. main page test")
-sleep(1)
+sleep(delayTime)
 signInVerification(driver, user_list[0][0], user_list[0][1])
 # get data from backend to test
 forbidden_or_error_anon('GET', main_link)
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 # rendering test
-sleep(1)
+sleep(delayTime)
 mainPageVerification(driver, data[0:5])
 # write test
 print("4. write test")
 driver.find_element_by_id("write_button_field").click()
-sleep(1)
+sleep(delayTime)
 writePageVerification(driver, "test1")
-sleep(1)
+sleep(delayTime)
 driver.find_element_by_id("write_button_field").click()
-sleep(1)
+sleep(delayTime)
 writePageVerification(driver, "test2")
-sleep(1)
+sleep(delayTime)
 ## check the result
 forbidden_or_error_anon('GET', main_link)
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-sleep(1)
+sleep(delayTime)
 # 두 번째로 쓴 글
 if data[0]["owner"] == user_list[0][0] and data[0]["text"] == "test2":
     pass
@@ -104,7 +106,7 @@ mainPageVerification(driver, data[0:5])
 print("5. like test")
 article_link = backend_link + 'article/' + str(data[0]["id"]) + '/'
 likeVerification(driver, data[0]["id"], False)
-sleep(1)
+sleep(delayTime)
 likeVerification(driver, data[0]["id"], True)
 tmp = data[0]["like_num"]
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
@@ -118,9 +120,9 @@ mainPageVerification(driver, data[0:5])
 
 # edit test
 print("6. edit test")
-sleep(1)
+sleep(delayTime)
 editVerification(driver, data[0]["id"], "edit test")
-sleep(1)
+sleep(delayTime)
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 if(data[0]["text"] != "edit test"):
     print("Edit fail")
@@ -130,21 +132,21 @@ mainPageVerification(driver, data[0:5])
 # reply test
 print("7. reply test")
 replyVerification(driver, data[0]["id"], "reply test")
-sleep(1)
+sleep(delayTime)
 reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
 tmp = data[0]["children_num"]
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 if(data[0]["children_num"] != tmp + 1):
     print("reply fail")
     exit(1)
-sleep(1)
+sleep(delayTime)
 detailPageVerification(driver, data[0], reply_data)
-sleep(1)
+sleep(delayTime)
 driver.find_element_by_id("to_main_page_field").click()
 
 # delete test
 print("8. delete test")
-sleep(1)
+sleep(delayTime)
 tmp = data[0]
 deleteVerification(driver, data[0]["id"])
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
@@ -157,38 +159,38 @@ article_link = backend_link + 'article/' + str(data[0]["id"]) + '/'
 
 # detail button test
 print("9. detail test")
-sleep(1)
+sleep(delayTime)
 detailVerification(driver, data[0]["id"])
-sleep(1)
+sleep(delayTime)
 reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
 detailPageVerification(driver, data[0], reply_data)
-sleep(1)
+sleep(delayTime)
 replyVerification(driver, data[0]["id"], "reply test on detail page")
-sleep(1)
+sleep(delayTime)
 reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 likeVerification(driver, reply_data[0]["id"], False)
-sleep(1)
+sleep(delayTime)
 reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-sleep(1)
+sleep(delayTime)
 detailPageVerification(driver, data[0], reply_data)
-sleep(1)
+sleep(delayTime)
 deleteVerification(driver, reply_data[0]["id"])
-sleep(1)
+sleep(delayTime)
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-sleep(1)
+sleep(delayTime)
 mainPageVerification(driver, data[0:5])
 
 # edit / delete error test
 print("10. edit / delete error test")
-sleep(1)
+sleep(delayTime)
 signOutVerification(driver, user_list[0][0])
-sleep(1)
+sleep(delayTime)
 signInVerification(driver, user_list[1][0], user_list[1][1])
-sleep(1)
+sleep(delayTime)
 deleteErrorVerification(driver, data[0]["id"])
-sleep(1)
+sleep(delayTime)
 editErrorVerification(driver, data[0]["id"])
 ##########################FRONTEND TEST FINISHED###########################
 driver.quit()

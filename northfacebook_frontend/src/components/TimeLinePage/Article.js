@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {editArticle, deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
-import  './styles.css'
 
 class Article extends React.Component {
     render() {

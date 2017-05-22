@@ -4,7 +4,6 @@ import TextList from './TextList.js'
 import SignOut from '../TimeLinePage/SignOut.js'
 import { postBack, showChattingRoom, postText } from '../../actions'
 import { connect } from 'react-redux'
-import './styles.css'
 
 class ChattingPage extends React.Component {
     render() {
@@ -19,7 +18,6 @@ class ChattingPage extends React.Component {
                 <SignOut />
                 <br /> <br /> <br /> <br /> <br /> <br />
                 <div className="Chatting">
-                <button id="to_main_page_field" onClick={this.props.onBackClick}>Back to main</button>
                 <div className="divider" />
                 <button id="change_room_button_field" onClick={this.props.onChangeRoomClick}>Change room</button>
                 <p>Chatting user list</p>
