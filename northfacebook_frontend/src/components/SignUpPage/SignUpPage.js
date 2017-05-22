@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import {postSignUp} from '../../actions';
-import './styles2.css';
+import {changeUrl, postSignUp} from '../../actions';
 
 class SignUpPage extends React.Component {
     render() {
@@ -23,6 +22,7 @@ class SignUpPage extends React.Component {
                    <img alt="" />
                 </div>
                 <div className="box">
+                    <button id="to_main" className="to_main" onClick={this.props.onToLogin}/>
                     아이디<input type="text" ref={ node => {this.username = node;}} id="username_field" className="field" />
                     <br />
                     비밀번호<input type="password" ref={ node => {this.password = node;}} id="password_field" className="field" />
@@ -41,7 +41,8 @@ let mapDispatchToProps = (dispatch) => {
         onClick: (username, password) => {
             console.log("ask for sign-up");
             dispatch(postSignUp(username, password))
-        }
+        },
+        onToLogin: () => dispatch(changeUrl('/'))
     }
 }
 

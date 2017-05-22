@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {putArticle} from '../../actions'
-import '../AddArticlePage/styles.css'
+//import '../AddArticlePage/styles.css'
 class EditArticle extends React.Component{
   render(){
     let text = "Enter the text" 
