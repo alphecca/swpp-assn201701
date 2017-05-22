@@ -134,4 +134,75 @@ def signOutVerification(driver):
     check(driver, "sign_out")
     driver.find_element_by_id("sign_out").click()
 
+def B_chatRoomVerification(driver):
+# in the ~/main/
+    check(driver, "chat_button_field")
+    driver.find_element_by_id('chat_button_field').click()
+    sleep(1)
+# in the ~/room/
+    check(driver, "chat_button_field")
+    driver.find_element_by_id('chat_button_field').click()
+    sleep(1)
+    check(driver, "input_text_field")
+    check(driver, "post_text_button_field")
+    driver.find_element_by_id("input_text_field").send_keys("XXX")
+    driver.find_element_by_id('post_text_button_field').click()
+    alert(driver, 'You didn\'t join in this room. Please join in first.') 
+    sleep(1)
+# at room list 
+    check(driver, "room1_join_field")
+    driver.find_element_by_id('room1_join_field').click()
+    sleep(1)
+    if driver.find_element_by_id('room1_user_num_field').text != str(2):
+	print("# of people in the chatroom1 isn't correct")
+    check(driver, "room1_chat_field")
+    driver.find_element_by_id('room1_chat_field').click()
+   
+def B_sendTextVerification(driver, link, uname, upwd ):
+    try:
+       res = requests.get(link+"/chatroom/1/user/", auth=(uname, upwd))
+       if res.status_code != 200:
+         print("ERROR: Cannot get {0} : {1}, id = {2}, pwd= {3}".format(link, res.status_code, uname, upwd))
+         exit(1)
+    except Exception:
+	print("ERROR: Cannot get {0}".format(link))
+    sleep(1)
+    userId=res.json().user[res.json().length-1]
+    if driver.find_element_by_id("u"+userId+"_username_field").text != uname:
+        print("Text writer isn't match!")
+        exit(1)
+
+    try:
+        res = requests.get(link+"/chatroom/1/text/", auth=(uname, upwd))
+        if res.status_code != 200:
+            print("ERROR: Cannot get {0} : {1}, id= {2}, pwd={3}".format(link, res.status_code, uname, upwd))
+            exit(1)
+    except Exception:
+            print("ERROR: Cannot get {0}".format(link))
+    sleep(1)
+    userId=res.json().user[res.json().length-1]
+    if driver.find_element_by_id("u"+userId+"_username_field").text != "cahtA": # check old text
+        print("Text writer isn't match!")
+        exit(1)
+
+    check(driver, 'input_text_field')
+    textCont= "text2"
+    driver.find_eleemnt_by_id("input_text_field").send_keys(textCont)
+    driver.find_element_by_id("post_text_button_field").click()
+    sleep(0.6)
+    try:
+	res = requests.get(link+"/chatroom/1/text/", auth=(uname, upwd)) 
+	if res.status_code != 200:
+            print("ERROR: Cannot get {0} : {1}, id = {2}, pwd = {3}".format(link, res.status_code, uname, upwd))
+	    exit(1)
+    except Exception:
+	print("ERROR: Cannot get {0}".format(link))
+    sleep(1)
+    textId=res.json().text[res.json().length-1]
+    if driver.find_element_by_id("t"+textId+"_text_field").text != textCont:
+	print("Text message isn't match!")
+	exit(1)
+    elif driver.find_element_by_id("t"+textId+"_writer_field").text != uname:
+	print("Text writer isn't match!")
+	exit(1)
 

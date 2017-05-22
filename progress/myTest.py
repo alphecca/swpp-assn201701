@@ -223,9 +223,15 @@ signOutVerification(driver)
 
 # for the other user
 print("[test for person B]")
-chatRoomVerification(driver, "chatB", "chatB")
-complexVerification
-
+sleep(1)
+signInVerification(driver, "chatB", "chatB")
+sleep(1)
+B_chatRoomVerification(driver)
+sleep(1)
+#B_joinUserVerifiaction(driver, backend_link, "chatB", "chatB")
+sleep(1)
+B_sendTextVerification(driver, backend_link, "chatB", "chatB")
+sleep(1)
 signOutVerification(driver)
 
 ##########################FRONTEND TEST FINISHED###########################
