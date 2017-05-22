@@ -1,7 +1,6 @@
 import React from 'react'
 import CreateRoom from './CreateRoom.js'
 import SignOut from '../TimeLinePage/SignOut.js'
-import './styles.css'
 
 class CreateRoomPage extends React.Component {
     render() {
