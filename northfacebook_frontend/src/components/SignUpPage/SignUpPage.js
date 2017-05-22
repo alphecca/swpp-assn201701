@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import {postSignUp} from '../../actions';
-import './styles2.css';
 
 class SignUpPage extends React.Component {
     render() {

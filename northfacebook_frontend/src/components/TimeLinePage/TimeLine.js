@@ -2,7 +2,6 @@ import React from 'react'
 import ArticleList from './ArticleList.js'
 import {writeArticle, showChattingRoom} from '../../actions'
 import {connect} from 'react-redux'
-import './styles.css'
 
 class TimeLine extends React.Component {
     render() {

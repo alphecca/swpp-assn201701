@@ -6,7 +6,6 @@ import SignOut from '../TimeLinePage/SignOut.js'
 import ReplyList from './ReplyList.js'
 import {connect} from 'react-redux'
 import {postBack} from '../../actions'
-import './styles.css'
 
 class ArticleDetailPage extends React.Component {
     render() {
@@ -22,7 +21,6 @@ class ArticleDetailPage extends React.Component {
                     <div >
                     <SignOut />
                     <div className="ArticleDetail">
-                    <button id="to_main_page_field" onClick={this.props.onBackClick}>Back to main</button>
                     <Article article={this.props.article.parent_article} />
                     <hr />
                     <ReplyList articles={this.props.article.articles}/>
