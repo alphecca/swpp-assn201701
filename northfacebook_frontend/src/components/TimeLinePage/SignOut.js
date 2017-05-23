@@ -7,7 +7,7 @@ class SignOut extends React.Component {
         return (
                 <div className="ToolBar" >
                    <div className="Notif">
-                   <button className="TOMAIN" onClick={this.props.onBackClick}/>
+                   <button id="to_main_page_field" className="TOMAIN" onClick={this.props.onBackClick}/>
                    <span id="user_data_field">{this.props.username} 동무 어서오시오!</span>
                    <button id="sign_out" className="SIGNOUT" onClick={this.props.onLogOut}>Sign Out</button>
                    </div>

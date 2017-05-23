@@ -158,17 +158,42 @@
   height: 40px;
 }
 #sign_up{
-   width: 200px;
-   height: 40px;
+  width: 10em;
+  height: 1.5em;
+  color: white;
+  font-size: 30px;
+  background-color:rgb(237,30,39); 
+  font-size: 20px;
+  font-family: 궁서;
+  width: 200px;
+  height: 40px;
 }
 /* SignUp Page css */
 .SIGNUP{
   width: 10em;
   height: 1.5em;
+  font-weight: bold;
   font-family: 궁서;
   color: white;
   font-size: 30px;
   background-color:rgb(237,30,39); 
+}
+.box{
+    position: static;
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    font-family: 궁서;
+}
+#to_main{
+    border: none;
+    width: 120px;
+    height: 75px;
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    background: url("./login_logo.png") no-repeat;
+    background-size: contain;
 }
 /* 일반적인 버튼 및 textarea등 태그에 대한 css */
 textarea{
