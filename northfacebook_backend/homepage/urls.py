@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^article/$',views.article_list),
     url(r'^article/(?P<pk>[0-9]+)/$',views.article_detail),
     url(r'^article/(?P<pk>[0-9]+)/article/$',views.article_article),
+    url(r'^article/(?P<pk>[0-9]+)/total/$',views.total_article),
     url(r'^article/(?P<pk>[0-9]+)/like/$',views.like),
     url(r'^like/$',views.like_list),
     url(r'^like/(?P<pk>[0-9]+)/$',views.like_detail),
