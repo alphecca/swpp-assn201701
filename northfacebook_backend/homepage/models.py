@@ -1,7 +1,6 @@
 from django.db import models
 class Like(models.Model):
     parent = models.ForeignKey('Article',
-            related_name='likedfs',
             on_delete=models.CASCADE)
     owner = models.ForeignKey('auth.User',
             on_delete=models.CASCADE)
@@ -16,6 +15,7 @@ class Article(models.Model):
         on_delete=models.CASCADE)
     children_num = models.IntegerField(default=0)
     like_num = models.IntegerField(default=0)
+    depth = models.IntegerField(default=0)
     class Meta:
         ordering = ['-created_time']
 
