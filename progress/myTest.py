@@ -7,6 +7,7 @@ from backend import *
 
 ####FRONTEND용 패키지들
 from frontend import *
+from chat_front import *
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
@@ -15,7 +16,7 @@ delayTime = 1 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫
 
 if len(sys.argv) != 3:
     print("myTest.py <backend_url> <frontend_url>")
-    print("Example: myTest.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/")
+    print("Example: myTest.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/") #TODO change port num
     exit(1)
 # 백엔드 주소
 backend_link = sys.argv[1]
@@ -192,6 +193,47 @@ sleep(delayTime)
 deleteErrorVerification(driver, data[0]["id"])
 sleep(delayTime)
 editErrorVerification(driver, data[0]["id"])
+
+## TODO 채팅 테스트
+print("Frontend chatting test is running...")
+print("[test for person A]")
+# sign in
+sleep(1)
+print("1. sign in ")
+signInVerification(driver, "chatA", "chatA")
+
+# create chatroom
+sleep(1)
+print("2. creat  chatroom")
+chatRoomVerification(driver) 
+
+# join the chatroom
+sleep(1)
+print("3. join the chatroom")
+joinUserVerification(driver, backend_link, "chatA", "chatA")
+# send / get message
+sleep(1)
+print("4. send/get message")
+sendTextVerification(driver, backend_link, "chatA", "chatA")
+
+# sign out
+sleep(1)
+print("5. sign out...")
+signOutVerification(driver)
+
+# for the other user
+'''
+print("[test for person B]")
+sleep(1)
+signInVerification(driver, "chatB", "chatB")
+sleep(1)
+B_chatRoomVerification(driver)
+sleep(1)
+sleep(1)
+B_sendTextVerification(driver, backend_link, "chatB", "chatB")
+sleep(1)
+signOutVerification(driver)
+'''
 ##########################FRONTEND TEST FINISHED###########################
 driver.quit()
 print("TEST SUCCESSFUL")
