@@ -93,7 +93,7 @@ def signUpAlertVerification(driver, username, password):
     alert(driver, "Password does not match")
 
 def signUpVerification(driver, testNum):
-    username = 'test'+str(testNum)
+    username='test'+str(testNum)
     password = username + 'passwd'
     driver.find_element_by_id('username_field').clear()
     driver.find_element_by_id('password_field').clear()
