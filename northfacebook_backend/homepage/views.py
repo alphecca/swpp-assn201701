@@ -149,6 +149,7 @@ def article_article(request,pk):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     articlearticle = Article.objects.filter(parent=article.id)
+    print(articlearticle)
     if request.method == 'GET':
         serializer = ArticleSerializer(articlearticle,many=True)
         return Response(serializer.data)
@@ -158,6 +159,22 @@ def article_article(request,pk):
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+@api_view(['GET'])
+def total_article(request,pk):
+    try:
+        article = Article.objects.get(pk=pk)
+    except Article.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    articlearticle = Article.objects.filter(parent=article.id)
+    QS=Q(parent=article.id)
+    for aa in articlearticle:
+        QS=QS|Q(parent=aa.id)
+    ta=Article.objects.filter(QS)
+    if request.method == 'GET':
+        serializer = ArticleSerializer(ta,many=True)
+        return Response(serializer.data)
 
 
 class AuthList(APIView):
@@ -243,17 +260,17 @@ def chatroom_list(request):
 @api_view(['GET', 'DELETE'])
 def chatroom_detail(request,pk):
     try:
-       chatroom = Chat.objects.get(pk=pk)
+        chatroom = Chat.objects.get(pk=pk)
     except Chat.DoesNotExist:
-       return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
     if request.user.id == None:
-       return Response(status=status.HTTP_403_FORBIDDEN)
+        return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
-       serializer = ChatRoomSerializer(chatroom)
-       return Response(serializer.data)
+        serializer = ChatRoomSerializer(chatroom)
+        return Response(serializer.data)
     elif request.method == 'DELETE':
-       chatroom.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+        chatroom.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
 def chatuser_list(request):

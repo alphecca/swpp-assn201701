@@ -1,7 +1,6 @@
 import React from 'react'
 import Article from './Article.js'
 import {connect} from 'react-redux'
-//import {writeArticle} from '../../actions'
 
 class ArticleList extends React.Component {
     render() {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { signIn } from '../../actions';
-import './styles1.css';
 
 class SignIn extends React.Component {
     render() {

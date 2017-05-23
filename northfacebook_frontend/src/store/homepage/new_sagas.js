@@ -875,7 +875,7 @@ function *postText(room_id, text) {
         }
         else if(error.statusCode === 405) {
             alert("You didn't join in this room. Please join in first.");
-            console.log("the user isn't chatting member");
+            console.log("The user isn't a chatting member");
             yield put(actions.changeUrl('/room/'));
         }
         else if(Object.keys(error).length === 0) {
@@ -932,6 +932,7 @@ function *postRoom(room_name) {
             return;
         }
     }
+    /*
     // get new room's id
     let data, id;
     try {
@@ -969,6 +970,7 @@ function *postRoom(room_name) {
     // auto join
     id=data.body[data.body.length-1]["id"];
     yield call(joinRoom, id);
+    */
     yield put(actions.changeUrl('/room/'));
 }
 

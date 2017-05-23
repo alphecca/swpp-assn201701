@@ -1,0 +1,198 @@
+/* ToolBar css: SignOut 및 유저 정보, 메인으로 돌아가기 버튼 */
+.ToolBar{
+  width: 2048px;
+  height: 80px;
+  background: url("login_logo.png");
+  background-repeat: no-repeat;
+  background-size: 6em 3em;
+  position: fixed;
+  font-family: 궁서;
+  font-size: 32px;
+  font-style: bold;
+  background-color: rgb(237,30,39);
+  color: white;
+  z-index:100;
+  left: 2em;
+
+}
+.Notif{
+  position: fixed;
+  left: 8em;
+  right: 8em;
+  top: 1em;
+}
+.TOMAIN{
+  cursor: pointer;
+  border: none;
+  float: left;
+  width: 200px;
+  height: 80px;
+  position: fixed;
+  top: 8px;
+  left: 2em;
+  font-size: 25px;
+  font-family: 궁서;
+  background: url('login_logo.png');
+  background-repeat: no-repeat;
+  background-size: 8em 4em;
+  background-color: rgb(237,30,39);
+}
+.SIGNOUT{
+  float: right;
+  width: 6em;
+  height: 2em;
+  position: fixed;
+  top: 20px;
+  left: 30em;
+  font-size: 25px;
+  font-family: 궁서;
+  background-color: rgb(237,30,39);
+}
+/* AddArticle & EditArticle css */
+.AddArticle{
+  position: absolute;
+  top: 100px;
+  left: 18em;
+  font-size: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+}
+.EditArticle{
+  position: absolute;
+  top: 100px;
+  left: 18em;
+  font-size: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+}
+/* TimeLine & ArticleDetailPage css*/
+#write_button_field{
+  text-align: center;
+  width: 6em;
+  height: 2em;
+  left: 20em;
+  font-size: 25px;
+  font-family: 궁서;
+}
+#chat_button_field{
+  text-align: center;
+  width: 6em;
+  height: 2em;
+  left: 20em;
+  font-size: 25px;
+  font-family: 궁서;
+}
+.TimeLine{
+  text-align: center;
+  position: absolute;
+  top: 100px;
+  left: 23em;
+}
+.Article{
+  text-align: center;
+  background-color: rgba(237,156,156,0.5);
+  font-size: 18px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+}
+.article_text{
+  font-weight: bold;
+  font-size: 23px;
+}
+.divider{
+  width:1em;
+  height:auto;
+  display:inline-block;
+}
+.ArticleDetail{
+  position: absolute;
+  top: 100px;
+  left:23em;
+}
+.Tags{
+  text-align: justify;
+}
+/* TODO ChattingPage 및 ChattingRoomPage, CreateRoomPage css는 여기에 추가할 것 */
+
+/* Login Page css */
+.app{
+  background-image: url('login_logo.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin: auto;
+  width: 50%;
+  padding: auto;
+}
+.Login-Box{
+  margin: 80px;
+  padding: 80px;
+  width: 500px;
+  height: 30px;
+  opacity: 0.7;
+}
+.Text-Field{
+  font-size: 2em;
+  font-family: 궁서;
+  color: white;
+  font-style: bold;
+  margin: 10px;
+  filter: alpha(opacity=70);
+}
+.Button-Field{
+  font-size: 2em;
+  color: white;
+  font-family: 궁서;
+}
+#sign_in{
+  width: 10em;
+  height: 1.5em;
+  color: white;
+  font-size: 30px;
+  background-color:rgb(237,30,39); 
+  font-size: 20px;
+  font-family: 궁서;
+  width: 120px;
+  height: 40px;
+}
+#sign_up{
+   width: 200px;
+   height: 40px;
+}
+/* SignUp Page css */
+.SIGNUP{
+  width: 10em;
+  height: 1.5em;
+  font-family: 궁서;
+  color: white;
+  font-size: 30px;
+  background-color:rgb(237,30,39); 
+}
+/* 일반적인 버튼 및 textarea등 태그에 대한 css */
+textarea{
+  font-size: 20px;
+}
+button{
+  text-align: center;
+  left: 20em;
+  font-size: 20px;
+  cursor: pointer;
+}
+hr{
+  color: rgb(237,30,39);
+}
+input{
+   width: 130px;
+   height: 30px;
+   font-size: 18px;
+}
+body{
+  background-attachment: fixed;
+  background-image: url("background.jpg");
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}

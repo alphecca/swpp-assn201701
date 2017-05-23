@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { postRoom, showChattingRoom } from '../../actions'
-import './styles.css'
 
 class CreateRoom extends React.Component{
     render() {
