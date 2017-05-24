@@ -195,45 +195,48 @@ deleteErrorVerification(driver, data[0]["id"])
 sleep(delayTime)
 editErrorVerification(driver, data[0]["id"])
 '''
-## TODO 채팅 테스트
+## 채팅 테스트
 print("Frontend chatting test is running...")
 print("[test for person A]")
 # sign in
-sleep(1)
+sleep(delayTime)
 print("1. sign in ")
 signInVerification(driver, "test1", "test1passwd")
 
 # create chatroom
-sleep(1)
+sleep(delayTime)
 print("2. create  chatroom")
-chatRoomVerification(driver) 
+roomId = chatRoomVerification(driver, backend_link, "test1","test1passwd") 
 
 # join the chatroom
-sleep(1)
+sleep(delayTime)
 print("3. join the chatroom")
-joinUserVerification(driver, backend_link, "test1", "test1passwd")
+joinUserVerification(driver, backend_link, "test1", "test1passwd", roomId)
 # send / get message
-sleep(1)
+sleep(delayTime)
 print("4. send/get message")
-sendTextVerification(driver, backend_link, "test1", "test1passwd")
+sendTextVerification(driver, backend_link, "test1", "test1passwd", roomId)
 
 # sign out
-sleep(1)
+sleep(delayTime)
 print("5. sign out...")
 signOutVerification(driver)
 
 # for the other user
 print("[test for person B]")
-sleep(1)
+sleep(delayTime)
+print("1. sign in")
 signInVerification(driver, "test2", "test2passwd")
-sleep(1)
-B_chatRoomVerification(driver)
-sleep(1)
-#B_joinUserVerifiaction(driver, backend_link, "test2", "test2passwd")
-sleep(1)
-B_sendTextVerification(driver, backend_link, "test2", "test2passwd")
-sleep(1)
+sleep(delayTime)
+print("2. join chatroom")
+B_chatRoomVerification(driver, roomId)
+sleep(delayTime)
+print("3. sen/get message")
+B_sendTextVerification(driver, backend_link, "test2", "test2passwd", roomId)
+sleep(delayTime)
+print("4. sign out...")
 signOutVerification(driver)
+
 ##########################FRONTEND TEST FINISHED###########################
 driver.quit()
 print("TEST SUCCESSFUL")
