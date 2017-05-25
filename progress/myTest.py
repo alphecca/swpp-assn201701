@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import json
 import requests
 import sys
@@ -42,11 +44,10 @@ for i in range(1,userN):
     body = {"username": username.encode("ascii"), "password": password.encode("ascii")}
     post_or_error_anon(user_link, body)
 print("Frontend initializer ran successfully!")
-
 ##########################FRONTEND TEST START##############################
 driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
-
+'''
 # 본격적인 프론트엔드 테스트 시작
 # 로그인 및 로그아웃 테스트
 print("1. sign in/out test")
@@ -193,28 +194,28 @@ sleep(delayTime)
 deleteErrorVerification(driver, data[0]["id"])
 sleep(delayTime)
 editErrorVerification(driver, data[0]["id"])
-
+'''
 ## TODO 채팅 테스트
 print("Frontend chatting test is running...")
 print("[test for person A]")
 # sign in
 sleep(1)
 print("1. sign in ")
-signInVerification(driver, "chatA", "chatA")
+signInVerification(driver, "test1", "test1passwd")
 
 # create chatroom
 sleep(1)
-print("2. creat  chatroom")
+print("2. create  chatroom")
 chatRoomVerification(driver) 
 
 # join the chatroom
 sleep(1)
 print("3. join the chatroom")
-joinUserVerification(driver, backend_link, "chatA", "chatA")
+joinUserVerification(driver, backend_link, "test1", "test1passwd")
 # send / get message
 sleep(1)
 print("4. send/get message")
-sendTextVerification(driver, backend_link, "chatA", "chatA")
+sendTextVerification(driver, backend_link, "test1", "test1passwd")
 
 # sign out
 sleep(1)
@@ -222,18 +223,17 @@ print("5. sign out...")
 signOutVerification(driver)
 
 # for the other user
-'''
 print("[test for person B]")
 sleep(1)
-signInVerification(driver, "chatB", "chatB")
+signInVerification(driver, "test2", "test2passwd")
 sleep(1)
 B_chatRoomVerification(driver)
 sleep(1)
+#B_joinUserVerifiaction(driver, backend_link, "test2", "test2passwd")
 sleep(1)
-B_sendTextVerification(driver, backend_link, "chatB", "chatB")
+B_sendTextVerification(driver, backend_link, "test2", "test2passwd")
 sleep(1)
 signOutVerification(driver)
-'''
 ##########################FRONTEND TEST FINISHED###########################
 driver.quit()
 print("TEST SUCCESSFUL")

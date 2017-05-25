@@ -19,6 +19,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     owner=serializers.ReadOnlyField(source='owner.username')
     parent=serializers.ReadOnlyField(source='article.id')
     children_num = serializers.SerializerMethodField()
+    depth = serializers.SerializerMethodField()
     like_num = serializers.SerializerMethodField()
     def get_children_num(self,obj):
         article=Article.objects.filter(parent=obj.id)
@@ -28,11 +29,21 @@ class ArticleSerializer(serializers.ModelSerializer):
         return s
     def get_like_num(self,obj):
         return Like.objects.filter(parent=obj.id).count()
+    def get_depth(self,obj):
+        try:
+            o=Article.objects.get(pk=obj.parent.id)
+            try:
+                Article.objects.get(pk=o.parent.id)
+                return 2
+            except:
+                return 1
+        except:
+            return 0
     class Meta:
         model = Article
-        fields = ('id','owner','parent',
-                'created_time','updated_time','text',
-                'children_num','like_num')
+        fields = ('id','parent','owner',
+        'like_num','depth','text','children_num',
+        'created_time','updated_time')
 
 # for CHATTING
 class ChatRoomSerializer(serializers.ModelSerializer):

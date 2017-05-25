@@ -149,6 +149,7 @@ def article_article(request,pk):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     articlearticle = Article.objects.filter(parent=article.id)
+    print(articlearticle)
     if request.method == 'GET':
         serializer = ArticleSerializer(articlearticle,many=True)
         return Response(serializer.data)
@@ -158,6 +159,22 @@ def article_article(request,pk):
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+@api_view(['GET'])
+def total_article(request,pk):
+    try:
+        article = Article.objects.get(pk=pk)
+    except Article.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    articlearticle = Article.objects.filter(parent=article.id)
+    QS=Q(parent=article.id)
+    for aa in articlearticle:
+        QS=QS|Q(parent=aa.id)
+    ta=Article.objects.filter(QS)
+    if request.method == 'GET':
+        serializer = ArticleSerializer(ta,many=True)
+        return Response(serializer.data)
 
 
 class AuthList(APIView):

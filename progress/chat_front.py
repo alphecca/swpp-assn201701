@@ -30,18 +30,17 @@ def alert(driver, text):
 
 # 1. SignIn
 def signInVerification(driver, uname, upwd):
-    check(driver, "sign_up")
-    driver.find_element_by_id('sign_up').click()
-    sleep(1)
     check(driver, "username_field")
     check(driver, "password_field")
-    check(driver, "pwdverification_field")
-    check(driver, "sign_up")
+    check(driver, "sign_in")
     driver.find_element_by_id('username_field').send_keys(uname)
     driver.find_element_by_id('password_field').send_keys(upwd)
-    driver.find_element_by_id('pwdverification_field').send_keys(upwd)
-    driver.find_element_by_id('sign_up').click()
+    print("Click")
+    driver.find_element_by_id('sign_in').click()
+    sleep(2)
+    alert(driver, "Succeed to sign in! :)")
     sleep(1)
+    print("Done")
     '''
     check(driver, "username_field")
     check(driver, "password_field")
@@ -58,7 +57,7 @@ def chatRoomVerification(driver):
     check(driver, "chat_button_field")
     driver.find_element_by_id('chat_button_field').click()
     for a in range(1,4):
-        sleep(1)
+        sleep(1.5)
         check(driver, "new_room_button_field")
         driver.find_element_by_id('new_room_button_field').click()
         sleep(1)
@@ -88,6 +87,7 @@ def chatRoomVerification(driver):
         roomName = "myroom"+str(t)
         roomId = "room"+str(t)
         # check num=1 & roomName
+        print(driver.find_element_by_id(roomId+"_user_num_field").text)
         if driver.find_element_by_id(roomId+"_user_num_field").text != str(1):
             print("number of people in the chatroom "+str(t)+" isn't 1")
             exit(1)
@@ -122,7 +122,7 @@ def joinUserVerification(driver, link, uname, upwd):
         print("ERROR: Cannot get {0}".format(link))
 
     userId= res.json()[-1]['id']
-    if driver.find_element_by_id("u"+str(userId)+"_username_field" ).getText()  != uname:
+    if driver.find_element_by_id("u"+str(userId)+"_username_field" ).text  != uname:
         print("You are not in the chatroom!")
         exit(1)
     
@@ -145,7 +145,7 @@ def sendTextVerification(driver, link, uname, upwd):
     except Exception:
         print("ERROR: Cannot get {0}".format(link))
         sleep(1)
-        textId=res.json()[-1]['text']
+        textId=res.json()[-1]['id']
         if driver.find_element_by_id("t"+str(textId)+"_text_field").text != textCont:
             print("Text message isn't match!")
             exit(1)
@@ -156,7 +156,7 @@ def sendTextVerification(driver, link, uname, upwd):
 def signOutVerification(driver):
     check(driver, "sign_out")
     driver.find_element_by_id("sign_out").click()
-'''
+
 def B_chatRoomVerification(driver):
 # in the ~/main/
     check(driver, "chat_button_field")
@@ -172,17 +172,19 @@ def B_chatRoomVerification(driver):
     driver.find_element_by_id('post_text_button_field').click()
     sleep(1)
     alert(driver, "You didn't join in this room. Please join in first.") 
-    sleep(1)
+    sleep(2)
 # at room list 
     check(driver, "room1_join_field")
-    driver.find_element_by_id('room1_join_field').click()
+    driver.find_element_by_id("room1_join_field").click()
     sleep(1)
-    if driver.find_element_by_id('room1_user_num_field').text != str(2):
+    if driver.find_element_by_id("room1_user_num_field").text != str(2):
         print("# of people in the chatroom1 isn't correct")
-        check(driver, "room1_chat_field")
-        driver.find_element_by_id('room1_chat_field').click()
+        exit(1)
+    check(driver, "room1_chat_field")
+    driver.find_element_by_id('room1_chat_field').click()
    
 def B_sendTextVerification(driver, link, uname, upwd ):
+    
     try:
        res = requests.get(link+"chatroom/1/user/", auth=(uname, upwd))
        if res.status_code != 200:
@@ -191,28 +193,18 @@ def B_sendTextVerification(driver, link, uname, upwd ):
     except Exception:
         print("ERROR: Cannot get {0}".format(link))
         sleep(1)
-    userId=res.json()[-1]['chatuser']
+    userId=res.json()[-1]['id']
+    sleep(1)
+    check(driver, "u"+str(userId)+"_username_field")
     if driver.find_element_by_id("u"+str(userId)+"_username_field").text != uname:
         print("Text writer isn't match!")
         exit(1)
 
-    try:
-        res = requests.get(link+"chatroom/1/text/", auth=(uname, upwd))
-        if res.status_code != 200:
-            print("ERROR: Cannot get {0} : {1}, id= {2}, pwd={3}".format(link+"chatroom/1/text/", res.status_code, uname, upwd))
-            exit(1)
-    except Exception:
-            print("ERROR: Cannot get {0}".format(link))
-            exit(1)
-    sleep(1)
-    userId=res.json()[-1]['user']
-    if driver.find_element_by_id("u"+str(userId)+"_username_field").text != "cahtA": # check old text
-       print("Text writer isn't match!")
-        exit(1)
-
-    check(driver, 'input_text_field')
+    check(driver, "input_text_field")
+    check(driver, "input_text_field")
+    check(driver, "post_text_button_field")
     textCont= "text2"
-    driver.find_eleemnt_by_id("input_text_field").send_keys(textCont)
+    driver.find_element_by_id("input_text_field").send_keys(textCont)
     driver.find_element_by_id("post_text_button_field").click()
     sleep(0.6)
     try:
@@ -222,9 +214,11 @@ def B_sendTextVerification(driver, link, uname, upwd ):
             exit(1)
     except Exception:
         print("ERROR: Cannot get {0}".format(link))
-        sleep(1)
-        textId=res.json()[-1]['text']
-
+    sleep(1)
+    textId=res.json()[0]['id']
+    sleep(1)
+    check(driver, "t"+str(textId)+"_text_field")
+    check(driver, "t"+str(textId)+"_writer_field")
     if driver.find_element_by_id("t"+str(textId)+"_text_field").text != textCont:
         print("Text message isn't match!")
         exit(1)
@@ -232,4 +226,4 @@ def B_sendTextVerification(driver, link, uname, upwd ):
         print("Text writer isn't match!")
         exit(1)
 
-'''
+
