@@ -675,7 +675,7 @@ function *postLike(id) {
             console.log("parent article removed");
         }
         else if(error.statusCode === 405) {
-            alert("You already like this post!");
+            alert("You cannot like this post!");
             console.log("double like");
         }
         else if(Object.keys(error).length === 0) {

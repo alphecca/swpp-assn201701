@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^users/(?P<pk>[0-9]+)/$', views.user_detail),
     url(r'^users/(?P<pk>[0-9]+)/nowchat/$', views.user_nowchat),
     url(r'^users/(?P<pk>[0-9]+)/nonchat/$', views.user_nonchat),
+    url(r'^users/(?P<pk>[0-9]+)/wall/$', views.wall),
     url(r'^article/$',views.article_list),
     url(r'^article/(?P<pk>[0-9]+)/$',views.article_detail),
     url(r'^article/(?P<pk>[0-9]+)/article/$',views.article_article),

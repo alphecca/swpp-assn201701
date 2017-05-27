@@ -111,6 +111,8 @@ def like(request,pk):
         serializer = LikeSerializer(data=request.data)
         if like.filter(owner=request.user.id).count()!=0:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        if request.user.id == article.owner.id:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         if serializer.is_valid():
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)
@@ -231,12 +233,6 @@ def user_detail(request, pk):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
 
-"""
-class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-# permission_classes = ()
-"""
 # for CHATTING
 @api_view(['GET', 'POST'])
 def chatroom_list(request):
@@ -343,3 +339,11 @@ def text(request, pk):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+#####담벼락#####
+@api_view(['GET'])
+def wall(request, pk):
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    if request.method == 'GET':
+        serializer = WallSerializer(pk)
+        return Response(serializer.data)
