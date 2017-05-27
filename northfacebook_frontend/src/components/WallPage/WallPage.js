@@ -1,6 +1,6 @@
 import React from 'react';
 import SignOut from '../TimeLinePage/SignOut.js';
-import ArticleList from '../TimeLinePage/ArticleList.js';
+import WallArticleList from './WallArticleList.js';
 import {connect} from 'react-redux';
 
 class WallPage extends React.Component {
@@ -11,7 +11,7 @@ class WallPage extends React.Component {
                     <div className="TimeLine">
                         <span>{this.props.profile_user}의 프로필</span>
                         <button id="back_to_profile" onClick={this.props.onBackToProfile}>Back to Profile</button>
-                        <ArticleList />
+                        <WallArticleList />
                     </div>
                 </div>
                )
