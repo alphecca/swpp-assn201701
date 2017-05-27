@@ -6,7 +6,6 @@ from django.db.models import Sum, Q
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        #article
         fields = ('id','username')
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -94,12 +93,14 @@ class ChatUserSerializer(serializers.ModelSerializer):
         model = ChatUser
         fields = ('id', 'chatroom', 'chatuser')
 
+
 class TextSerializer(serializers.ModelSerializer):
     writer=serializers.ReadOnlyField(source='writer.username')
     room = serializers.ReadOnlyField(source='room.id')
     class Meta:
        model = Text
        fields = ('id','room', 'text', 'writer', 'created_time')
+
 
 class WallSerializer(serializers.BaseSerializer):
     def to_representation(self, obj):
