@@ -108,6 +108,7 @@ class WallSerializer(serializers.BaseSerializer):
         likes = Like.objects.filter(owner=obj)
         test = Article.objects.filter(id__in= likes.values('parent_id'))
         total = articles | test
-        return total.order_by('-created_time').values()
+        serializer = ArticleSerializer(total, many=True)
+        return serializer.data
     class Meta:
         model = User
