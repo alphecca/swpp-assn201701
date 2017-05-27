@@ -15,6 +15,7 @@ class AddArticle extends React.Component{
       <div id="add_article_field" className="AddArticle">
         <textarea id={this.props.textId} cols="50" rows="10" placeholder={text} onChange={handleChange}/>
         <br />
+        <input id="upload_file" type="file" onChange={(e) => console.log(e.target.files)}/>
         <button id={this.props.buttonId} onClick={onPostClick}>POST</button>
       </div>
     );

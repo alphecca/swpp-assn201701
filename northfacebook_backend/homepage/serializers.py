@@ -2,10 +2,10 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from homepage.models import *
 from django.db.models import Sum, Q
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        #article
         fields = ('id','username')
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -86,7 +86,6 @@ class NonChatSerializer(serializers.BaseSerializer):
         model = User
 
 
-
 class ChatUserSerializer(serializers.ModelSerializer):
     chatuser = serializers.ReadOnlyField(source='chatuser.username')
     chatroom=serializers.ReadOnlyField(source='chatroom.id')
@@ -94,9 +93,22 @@ class ChatUserSerializer(serializers.ModelSerializer):
         model = ChatUser
         fields = ('id', 'chatroom', 'chatuser')
 
+
 class TextSerializer(serializers.ModelSerializer):
     writer=serializers.ReadOnlyField(source='writer.username')
     room = serializers.ReadOnlyField(source='room.id')
     class Meta:
        model = Text
        fields = ('id','room', 'text', 'writer', 'created_time')
+
+
+class WallSerializer(serializers.BaseSerializer):
+    def to_representation(self, obj):
+        articles = Article.objects.filter(owner=obj)
+        likes = Like.objects.filter(owner=obj)
+        test = Article.objects.filter(id__in= likes.values('parent_id'))
+        total = articles | test
+        serializer = ArticleSerializer(total, many=True)
+        return serializer.data
+    class Meta:
+        model = User
