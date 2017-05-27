@@ -6,10 +6,9 @@ from homepage import views
 urlpatterns = [
     url(r'^auth/$', views.AuthList.as_view()),
     url(r'^users/$', views.user_list),
-    url(r'^users/(?P<username>\w+)/$', views.user_detail),
-    url(r'^users/(?P<pk>[0-9]+)/nowchat/$', views.user_nowchat), #TODO URL 유저네임 버전으로 수정
-    url(r'^users/(?P<pk>[0-9]+)/nonchat/$', views.user_nonchat), # TODO URL 유저네임 버전으로 수정
-    url(r'^users/(?P<username>\w+)/wall/$', views.wall),
+    url(r'^users/(?P<pk>[0-9]+)/$', views.user_detail),
+    url(r'^users/(?P<pk>[0-9]+)/nowchat/$', views.user_nowchat),
+    url(r'^users/(?P<pk>[0-9]+)/nonchat/$', views.user_nonchat),
     url(r'^article/$',views.article_list),
     url(r'^article/(?P<pk>[0-9]+)/$',views.article_detail),
     url(r'^article/(?P<pk>[0-9]+)/article/$',views.article_article),
@@ -23,7 +22,9 @@ urlpatterns = [
     url(r'^chatuser/$',views.chatuser_list),
     url(r'^chatroom/(?P<pk>[0-9]+)/user/$',views.chatuser),
     url(r'^text/$', views.text_list),
-    url(r'^chatroom/(?P<pk>[0-9]+)/text/$',views.text)
+    url(r'^chatroom/(?P<pk>[0-9]+)/text/$',views.text),
+    url(r'^profile/$',views.profile_list),
+    url(r'^profile/(?P<pk>[0-9]+)/$', views.profile_detail) 
     ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
