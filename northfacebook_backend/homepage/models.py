@@ -1,9 +1,13 @@
 from django.db import models
+
 class Like(models.Model):
     parent = models.ForeignKey('Article',
             on_delete=models.CASCADE)
     owner = models.ForeignKey('auth.User',
             on_delete=models.CASCADE)
+    created_time = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-created_time']
 
 class Article(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)

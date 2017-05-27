@@ -111,13 +111,15 @@ def like(request,pk):
         serializer = LikeSerializer(data=request.data)
         if like.filter(owner=request.user.id).count()!=0:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        if request.user.id == article.owner.id:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         if serializer.is_valid():
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def user_nowchat(request,pk):
+def user_nowchat(request,pk): #TODO pk => username 버전으로 수정하기
     try:
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
@@ -129,7 +131,7 @@ def user_nowchat(request,pk):
         return Response(serializer.data)
 
 @api_view(['GET'])
-def user_nonchat(request,pk):
+def user_nonchat(request,pk): #TODO pk => username 버전으로 수정하기
     try:
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
@@ -149,7 +151,6 @@ def article_article(request,pk):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     articlearticle = Article.objects.filter(parent=article.id)
-    print(articlearticle)
     if request.method == 'GET':
         serializer = ArticleSerializer(articlearticle,many=True)
         return Response(serializer.data)
@@ -215,9 +216,9 @@ def user_list(request):
         return Response(status = status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET','DELETE'])
-def user_detail(request, pk):
+def user_detail(request, username):
     try:
-        user = User.objects.get(pk=pk)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.user.id == None:
@@ -231,12 +232,6 @@ def user_detail(request, pk):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
 
-"""
-class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-# permission_classes = ()
-"""
 # for CHATTING
 @api_view(['GET', 'POST'])
 def chatroom_list(request):
@@ -343,3 +338,15 @@ def text(request, pk):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+#####담벼락#####
+@api_view(['GET'])
+def wall(request, username):
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    if request.method == 'GET':
+        try:
+            owner = User.objects.get(username=username)
+            serializer = WallSerializer(owner)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
