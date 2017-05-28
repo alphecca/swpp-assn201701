@@ -28,7 +28,6 @@ const homepage = (state = homepageInitialState, action) => {
             return state
         }
         case 'SET_STATE': {
-            console.log(action.state.profile_user);
             return Object.assign({}, state, {
                 authorization: action.state.authorization,
                 articles: action.state.articles,
