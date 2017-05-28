@@ -118,3 +118,10 @@ class FriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Friend
         fields = ('friend',)
+class SasangSerializer(serializers.ModelSerializer):
+    first=serializers.ReadOnlyField(source='first.username')
+    second=serializers.ReadOnlyField(source='second.username')
+    class Meta:
+       model = Sasang
+       fields = ('first','second','counter')
+

@@ -11,7 +11,7 @@ from homepage.serializers import *
 from homepage.permissions import IsAuthenticatedOrPOSTOnly
 
 from base64 import b64decode as decode
-
+import re
 # Create your views here.
 @api_view(['GET', 'POST'])
 def main_list(request):
@@ -198,7 +198,11 @@ def user_list(request):
         try: # if request is bad request, return 400
             username = auth['username']
             pwd = auth['password']
-            if (username == '' or pwd == ''):
+
+            if len(username)<4 or len(username)>20):
+                return Response(stauts = HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
+            p = re.compile('\w+')
+            if (p.match(username) == None or pwd == ''):
                 return Response(status = status.HTTP_400_BAD_REQUEST)
         except KeyError:
             return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -242,6 +246,11 @@ def chatroom_list(request):
         serializer = ChatRoomSerializer(chat, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
+        rd = request.data
+        if rd['noom_name']=='':
+            rd['room_name']=request.user.username
+        elif len(rd['noom_name'])>60:
+            return Response(suatus=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
         serializer = ChatRoomSerializer(data=request.data)
         if serializer.is_valid():
             chatroom = serializer.save()
@@ -362,7 +371,7 @@ def friend_list(request, username):
     if request.method == 'GET':
         if request.user != user:
             return Response(status=status.HTTP_403_FORBIDDEN)
-        friends = Friend.objects.filter(me=user, is_mutual=True) 
+        friends = Friend.objects.filter(me=user, is_mutual=True)
         serializer = FriendSerializer(friends, many=True)
         return Response(serializer.data)
 
@@ -432,3 +441,42 @@ def add_friend(request, username, friendname):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+
+@api_view(['GET','POST','PUT'])
+def sasang(request,username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.user.username == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    if request.method == 'GET':
+        if request.user== user:
+            sasang = Sasang.objects.filter(Q(first=user)|Q(second=user))
+            serializer = SasangSerializer(sasang, many=True)
+            return Response(serializer.data)
+        else:
+            sasang = Sasang.objects.filter(Q(first=user,second=request.user)|Q(first=request.user,second=user))
+            serializer = SasangSerializer(sasang,many=True)
+            return Response(serializer.data)
+    if request.method == 'POST':
+        if request.user==user or Sasang.objects.filter(Q(first=user,second=request.user)|Q(first=request.user,second=user)).exists() == True:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer=SasangSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(first=user,second=request.user)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'PUT':
+        try:
+            sasang = Sasang.objects.get(first=request.user,second=user)
+        except Sasang.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = SasangSerializer(sasang,data=request.data)
+        if serializer.is_valid():
+            serializer.save(first=sasang.second,second=sasang.first,counter=sasang.counter+1)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+

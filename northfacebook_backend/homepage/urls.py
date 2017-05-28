@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^users/(?P<username>\w+)/$', views.user_detail),
     url(r'^users/(?P<pk>[0-9]+)/nowchat/$', views.user_nowchat), #TODO URL 유저네임 버전으로 수정
     url(r'^users/(?P<pk>[0-9]+)/nonchat/$', views.user_nonchat), # TODO URL 유저네임 버전으로 수정
+    url(r'^users/(?P<username>\w+)/sasang/$', views.sasang),
     url(r'^users/(?P<username>\w+)/wall/$', views.wall),
     url(r'^users/(?P<username>\w+)/friends/$', views.friend_list),
     url(r'^users/(?P<username>\w+)/addfriend/$', views.add_friend_list),
