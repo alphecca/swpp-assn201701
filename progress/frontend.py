@@ -242,6 +242,7 @@ def detailPageVerification(driver, article, replies):
 
 #####WALL PAGE#####
 def wallPageVerification(driver, articles, username):
+    check(driver, "back_to_profile")
     for article in articles:
         labelId = "a"+str(article["id"])+"_label"
         label = ""
