@@ -12,7 +12,7 @@ if len(sys.argv) != 2:
     print("Example: backend_chatting_tests.py http://wlxyzlw.iptime.org:8000/")
     exit(1)
 
-userN = 10
+userN = 5
 user_pairs = create_users(userN)
 unknownname = "unknown_user"
 unknownpwd = "unknown_userpwd"
