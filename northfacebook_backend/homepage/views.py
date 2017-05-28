@@ -360,8 +360,8 @@ def friend_list(request, username):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
-#        if request.user != user:
-#            return Response(status=status.HTTP_403_FORBIDDEN)
+        if request.user != user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         friends = Friend.objects.filter(me=user, is_mutual=True) 
         serializer = FriendSerializer(friends, many=True)
         return Response(serializer.data)

@@ -78,33 +78,87 @@ test1pw = "test1passwd"
 test2pw = "test2passwd"
 test3pw = "test3passwd"
 
-link = sys.argv[1] + "chatroom/"
-print("5. GET & POST chatroom list.")
+link = sys.argv[1] + "users/test1/friends/"
+print("5. GET friend list.")
 forbidden_or_error_anon("GET", link)
+forbidden_or_error("GET", link, test2, test2pw)
 get_json_or_error(link, test1, test1pw)
-forbidden_or_error_anon_data("POST", link, {"text": "anonymous user"})
-bad_request_or_error_data("POST", link, {}, test1, test1pw)
-bad_request_or_error_data("POST", link, {"room_name": ""}, test1, test1pw)
-post_or_error(link, {"room_name": "test room1"}, test2, test2pw)
-post_or_error(link, {"room_name": "test room2"}, test1, test1pw)
+not_found_or_error(sys.argv[1] + "users/test4/friends/", test1, test1pw)
 
-chatroom_list = get_json_or_error(link, test1, test1pw)
-chatroom2id = chatroom_list[len(chatroom_list)-1]["id"]
-chatroom1id = chatroom_list[len(chatroom_list)-2]["id"]
-
-link = sys.argv[1] + "chatroom/" + str(chatroom1id) + "/"
-print("6. GET & DELETE chatroom detail.")
+link = sys.argv[1] + "users/test1/addfriend/"
+print("6. GET & POST add friend list.")
 forbidden_or_error_anon("GET", link)
-temp = get_json_or_error(link, test1, test1pw)
-# TODO if you add some features to chatting room, add test here.
-if temp["room_name"] != "test room1":
-    print("ERROR: the contents of chatroom does not match after POST!")
+forbidden_or_error_anon_data("POST", link, {})
+method_not_allowed_or_error_data("POST", link, {}, test1, test1pw)
+post_or_error(link, {}, test2, test2pw)
+method_not_allowed_or_error_data("POST", link, {}, test2, test2pw)
+temp = get_json_or_error(link, test2, test2pw)
+if temp[0]["friend"] != test2:
+    print("ERROR: the contents of addfriend does not match after POST!")
     exit(1)
-get_json_or_error(link, test2, test2pw)
+temp = get_json_or_error(link, test1, test1pw)
+if temp[0]["friend"] != test2 or len(temp) != 1:
+    print("ERROR: the contents of addfriend does not match after POST!")
+    exit(1)
+link2 = sys.argv[1] + "users/test2/addfriend/"
+temp = get_json_or_error(link2, test2, test2pw)
+if len(temp) != 0:
+    print("ERROR: the length of addfriend should be 0!")
 
+post_or_error(link, {}, test3, test3pw)
+temp = get_json_or_error(link, test3, test3pw)
+if temp[0]["friend"] != test3 or len(temp) != 1:
+    print("ERROR: a user should not GET other's addfriend request!")
+    exit(1)
+temp = get_json_or_error(link, test1, test1pw)
+if len(temp) != 2 or temp[0]["friend"] != test2 or temp[1]["friend"] != test3:
+    print("ERROR: a user should GET his(her) own addfriend request!")
+    exit(1)
+not_found_or_error(sys.argv[1] + "users/test4/addfriend/", test1, test1pw)
+
+print("7. Check when two users become a friend.")
+post_or_error(link2, {}, test1, test1pw)
+method_not_allowed_or_error_data("POST", link2, {}, test1, test1pw)
+method_not_allowed_or_error_data("POST", link, {}, test2, test2pw)
+temp = get_json_or_error(link, test2, test2pw)
+if len(temp) != 0:
+    print("ERROR: the addfriend request should be removed after two users became a friend!")
+    exit(1)
+temp = get_json_or_error(link2, test1, test1pw)
+if len(temp) != 0:
+    print("ERROR: the addfriend request should not be created when two users become a friend!")
+    exit(1)
+
+link = sys.argv[1] + "users/test1/friends/"
+link2 = sys.argv[1] + "users/test2/friends/"
+temp = get_json_or_error(link, test1, test1pw)
+if len(temp) < 1 or temp[0]["friend"] != test2:
+    print("ERROR: two users should become a friend!")
+    exit(1)
+temp = get_json_or_error(link2, test2, test2pw)
+if len(temp) < 1 or temp[0]["friend"] != test1:
+    print("ERROR: two users should become a friend!")
+    exit(1)
+
+link = sys.argv[1] + "users/test1/addfriend/test3/"
+print("8. GET add friend detail.")
+forbidden_or_error_anon("GET", link)
+forbidden_or_error("GET", link, test2, test2pw)
+get_json_or_error(link, test1, test1pw)
+temp = get_json_or_error(link, test3, test3pw)
+if temp["friend"] != test3:
+    print("ERROR: the content of addfriend does not match!")
+    exit(1)
+not_found_or_error(sys.argv[1] + "users/test2/addfriend/test3/", test2, test2pw)
+
+print("9. DELETE add friend detail.")
 forbidden_or_error_anon("DELETE", link)
+forbidden_or_error("DELETE", link, test2, test2pw)
 delete_or_error(link, test1, test1pw)
-not_found_or_error(link, test2, test2pw)
+not_found_or_error(link, test1, test1pw)
+post_or_error(sys.argv[1] + "users/test1/addfriend/", {}, test3, test3pw)
+delete_or_error(link, test3, test3pw)
+not_found_or_error(link, test3, test3pw)
 
 link = sys.argv[1] + "users/"
 print("Final. Deleting all data that test has created.")
