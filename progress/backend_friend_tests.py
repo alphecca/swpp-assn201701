@@ -3,13 +3,13 @@ import requests
 import sys
 from time import sleep
 from random import randint
-from backend import *
+from backend_ import *
 
 # TODO We should implement that "Final. Deleting all data that test has created." will always be executed even though the test ended with exit(1). 
 
 if len(sys.argv) != 2:
-    print("backend_tests2.py <url>")
-    print("Example: backend_tests2.py http://wlxyzlw.iptime.org:8000/")
+    print("backend_friend_tests.py <url>")
+    print("Example: backend_friend_tests.py http://wlxyzlw.iptime.org:8000/")
     exit(1)
 
 userN = 10

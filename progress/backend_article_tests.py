@@ -3,11 +3,11 @@ import requests
 import sys
 from time import sleep
 from random import randint
-from backend import *
+from backend_ import *
 
 if len(sys.argv) != 2:
-    print("backend_tests1.py <url>")
-    print("Example: backend_tests1.py http://wlxyzlw.iptime.org:8000/")
+    print("backend_article_tests.py <url>")
+    print("Example: backend_article_tests.py http://wlxyzlw.iptime.org:8000/")
     exit(1)
 
 userN = 10
