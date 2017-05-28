@@ -3,13 +3,13 @@ import requests
 import sys
 from time import sleep
 from random import randint
-from backend import *
+from backend_ import *
 
 # TODO We should implement that "Final. Deleting all data that test has created." will always be executed even though the test ended with exit(1). 
 
 if len(sys.argv) != 2:
-    print("backend_walltest.py <url>")
-    print("Example: backend_tests2.py http://wlxyzlw.iptime.org:8000/")
+    print("backend_wall_tests.py <url>")
+    print("Example: backend_wall_tests.py http://wlxyzlw.iptime.org:8000/")
     exit(1)
 
 userN = 10
@@ -97,6 +97,11 @@ print("6. Invalid HTTP request test")
 method_not_allowed_or_error_data('POST', link+user_pairs[0][0]+'/wall/', {}, user_pairs[0][0], user_pairs[0][1])
 method_not_allowed_or_error_data('DELETE', link+user_pairs[0][0]+'/wall/', {}, user_pairs[0][0], user_pairs[0][1])
 method_not_allowed_or_error_data('PUT', link+user_pairs[0][0]+'/wall/', {}, user_pairs[0][0], user_pairs[0][1])
+
+link = sys.argv[1] + "users/"
+print("Final. Deleting all data that test has created.")
+for i in range(0, userN-1):
+    delete_or_error(link, user_pairs[i][0], user_pairs[i][1])
 
 print("TEST SUCCESSFUL")
 

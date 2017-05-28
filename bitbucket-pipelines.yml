@@ -40,3 +40,4 @@ pipelines:
           - python3 backend_article_tests.py http://wlxyzlw.iptime.org:8000/
           - python3 backend_chatting_tests.py http://wlxyzlw.iptime.org:8000/
           - python3 backend_friend_tests.py http://wlxyzlw.iptime.org:8000/
+          - python3 backend_wall_tests.py http://wlxyzlw.iptime.org:8000/
