@@ -53,7 +53,10 @@ let mapDispatchToProps = (dispatch) => {
     return {
         onBackClick: () => dispatch(postBack()),
         onChangeRoomClick: () => dispatch(showChattingRoom()),
-        onSendClick: (room_id, message) => dispatch(postText(room_id, message))
+        onSendClick: (room_id, message) => {
+            dispatch(postText(room_id, message));
+            document.getElementById("input_text_field").value = "";
+        }
     }
 }
 
