@@ -15,7 +15,7 @@ from base64 import b64decode as decode
 # Create your views here.
 @api_view(['GET', 'POST'])
 def main_list(request):
-    if request.user.id==None:
+    if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         articles = Article.objects.filter(parent=0)
@@ -56,7 +56,7 @@ def article_detail(request, pk):
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
     elif request.method == 'PUT':
-        if article.owner==request.user:
+        if article.owner == request.user:
             serializer = ArticleSerializer(article,data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -64,7 +64,7 @@ def article_detail(request, pk):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_403_FORBIDDEN)
     elif request.method == 'DELETE':
-        if article.owner==request.user:
+        if article.owner == request.user:
             article.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
@@ -90,7 +90,7 @@ def like_detail(request, pk):
         serializer = LikeSerializer(like)
         return Response(serializer.data)
     elif request.method == 'DELETE':
-        if like.owner==request.user:
+        if like.owner == request.user:
             like.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
@@ -227,7 +227,7 @@ def user_detail(request, username):
         serializer = UserSerializer(user)
         return Response(serializer.data)
     elif request.method == 'DELETE':
-        if user==request.user:
+        if user == request.user:
             user.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
@@ -242,7 +242,7 @@ def chatroom_list(request):
         serializer = ChatRoomSerializer(chat, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = ChatRoomSerializer(data = request.data)
+        serializer = ChatRoomSerializer(data=request.data)
         if serializer.is_valid():
             chatroom = serializer.save()
             serializer = ChatUserSerializer(data=request.data)
@@ -297,13 +297,13 @@ def chatuser(request,pk):
       return Response(status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_400_BAD_REQUEST)
   elif request.method == 'DELETE':
-    exituser=ChatUser.objects.filter(chatroom=chatroom.id,chatuser=request.user)
+    exituser = ChatUser.objects.filter(chatroom=chatroom.id, chatuser=request.user)
     if exituser.exists():
       exituser.delete()
       if not ChatUser.objects.filter(chatroom=chatroom.id).exists():
         chatroom.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-      return Response(ChatUserSerializer(chatuser,many=True).data)
+      return Response(ChatUserSerializer(chatuser, many=True).data)
     return Response(ChatUserSerializer(chatuser, many=True).data)
 
 
@@ -350,3 +350,61 @@ def wall(request, username):
             return Response(serializer.data)
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+# 동무 목록
+@api_view(['GET'])
+def friend_list(request, username):
+    try: user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    if request.method == 'GET':
+#        if request.user != user:
+#            return Response(status=status.HTTP_403_FORBIDDEN)
+        friends = Friend.objects.filter(me=user, is_mutual=True) 
+        serializer = FriendSerializer(friends, many=True)
+        return Response(serializer.data)
+
+@api_view(['GET', 'POST', 'DELETE'])
+def add_friend_list(request, username):
+    try: user = User.objects.get(username=username) # 동무추가 요청 페이지의 주인
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    if request.method == 'GET':
+        if request.user == user:
+            add_friends = Friend.objects.filter(me=user, is_mutual=False)
+        else:
+            add_friends = Friend.objects.filter(friend=request.user, is_mutual=False)
+        serializer = FriendSerializer(add_friends, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        if request.user == user: # 본인에게 동무추가 요청을 보내는 경우
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        friend = Friend.objects.filter(me=user, friend=request.user)
+        if friend.exists(): # 이미 같은 사람에게 동무추가 요청을 보냈거나 이미 동무인 경우
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        friend = Friend.objects.filter(me=request.user, friend=user, is_mutual=False)
+        if friend.exists(): # 상대가 이미 나에게 동무추가 요청을 보낸 경우
+            serializer = FriendSerializer(data=request.data)
+            if serializer.is_valid():
+                friend.delete()
+                serializer.save(me=user, friend=request.user, is_mutual=True)
+                serializer = FriendSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save(me=request.user, friend=user, is_mutual=True)
+                return Response(status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer = FriendSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(me=user, friend=request.user, is_mutual=False)
+                return Response(status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
