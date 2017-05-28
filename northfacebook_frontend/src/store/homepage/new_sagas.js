@@ -58,9 +58,19 @@ export default function *saga() {
                 case 'chatting':
                     yield spawn(chattingPageSaga, url[2]);
                     break;
+                case 'wall':
+                    yield spawn(wallPageSaga);
+                    break;
                 default:
                     console.log("default state");
-                    alert("Oops, page not found");
+                    alert("Oops, page not found");             
+                    if(localStorage.getItem("auth") === null) {
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
+                    } else {
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/main/'));
+                    }
             }
     }
 }
@@ -98,7 +108,6 @@ function *mainPageSaga() {
     yield spawn(watchDetail);
     yield spawn(watchLike);
     yield spawn(watchSignOut);
-    //TODO 메인페이지에도 메인으로 돌아가는 버튼 만들어주세요 와와
     yield spawn(watchGoToMain);
     yield spawn(watchEdit);
     yield spawn(watchDelete);
@@ -114,7 +123,6 @@ function *articleDetailPageSaga() {
     yield spawn(watchLike);
     yield spawn(watchGoToMain);
     yield spawn(watchSignOut);
-    //TODO 이 부분부터는 함수 구현해야해용
     yield spawn(watchEdit);
     yield spawn(watchDelete);
 }
@@ -124,7 +132,6 @@ function *writePageSaga() {
     yield spawn(watchLoginState);
     yield spawn(watchSignOut);
     yield spawn(watchPostArticle);
-    //TODO 글쓰기 페이지에도 메인페이지로 돌아가는 버튼 추가해주세오 와와
     yield spawn(watchGoToMain);
 }
 
@@ -133,11 +140,9 @@ function *editPageSaga(id){
     yield spawn(watchLoginState);
     yield spawn(watchSignOut);
     yield spawn(watchPutArticle, id);
-    //TODO 글쓰기 페이지에도 메인페이지로 돌아가는 버튼 추가해주세오 와와
     yield spawn(watchGoToMain);
 }
 
-//TODO 이후 채팅 추가 시 채팅용 사가함수를 구현할 것
 function *roomPageSaga(){
     console.log("Chatting Room Page")
     yield spawn(watchLoginState);
@@ -166,6 +171,20 @@ function *createRoomPageSaga(){
     yield spawn(watchPostRoom);
     yield spawn(watchChattingRoom);
 }
+
+function *wallPageSaga() {
+    yield spawn(watchLoginState);
+    yield spawn(watchWrite);
+    yield spawn(watchDetail);
+    yield spawn(watchLike);
+    yield spawn(watchSignOut);
+    yield spawn(watchGoToMain);
+    yield spawn(watchEdit);
+    yield spawn(watchDelete);
+    yield spawn(watchToProfile);
+}
+
+//TODO 프로필 페이지 만들어주세요 와와
 
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
 // watchLoginState: 브라우저에서의 로그인 여부 확인 및 state 업데이트
@@ -282,12 +301,14 @@ function *watchLoginState() {
                     rooms: data.body,
                     texts: [],
                     chatting_users: [],
-                    room_id: 0
+                    room_id: 0,
+                    profile_user: null
                     // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
                 }));
             }
             else { // id를 기준으로 backend에 겟을 날리는 경우
                 const id = path.split("/")[2];
+                let profile_data = null;
                 if (id === undefined) {
                     console.log("404 not found");
                     return;
@@ -296,6 +317,97 @@ function *watchLoginState() {
                     localStorage.removeItem('parent');
                     yield put(actions.updateChatting(id));
                     // watchUpdateChatting이 뒤를 맡게 되니 여기선 신경쓰지 않아도 됨
+                }
+                else if(path.split("/")[1] === 'wall') {
+                    // 담벼락에 들어갈 글을 Get하는 부분
+                    localStorage.removeItem('parent');
+                    console.log("asdf");
+                    try {
+                        data = yield call(xhr.get, fixed_url+'users/'+id+'/wall/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+ localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json'
+                        });
+                    }
+                    catch(error) {
+                        console.log(error);
+                        if(error.statusCode === 200) {
+                            data = error;
+                        }
+                        else if(error.statusCode === 403) {
+                            alert("Unauthorized user tried to access wall. Please sign in first!");
+                            console.log('whyyyyyyyy');
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                        }
+                        else if(error.statusCode === 404) {
+                            alert("404 Not Found");
+                            console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            return;
+                        }
+                        else if(error.statusCode === 0) {
+                            console.log("Backend is not accessible");
+                            alert("Temporary Server Error. Try reloading!");
+                            return;
+                        }
+                        else {
+                            console.log("Whyyyyyyyyyyy");
+                            alert("Unknown Error Occurred");
+                            return;
+                        }
+                    }
+                    try {
+                        profile_data = yield call(xhr.get, fixed_url+'users/'+id+'/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+ localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json'
+                        });
+                    }
+                    catch(error) {
+                        console.log(error);
+                        if(error.statusCode === 200) {
+                            data = error;
+                        }
+                        else if(error.statusCode === 403) {
+                            alert("Unauthorized user tried to access wall. Please sign in first!");
+                            console.log('whyyyyyyyy');
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                        }
+                        else if(error.statusCode === 404) {
+                            alert("404 Not Found");
+                            console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            return;
+                        }
+                        else if(error.statusCode === 0) {
+                            console.log("Backend is not accessible");
+                            alert("Temporary Server Error. Try reloading!");
+                            return;
+                        }
+                        else {
+                            console.log("Whyyyyyyyyyyy");
+                            alert("Unknown Error Occurred");
+                            return;
+                        }
+                    }
+                    console.log(profile_data);
+                    yield put(actions.setState({
+                        authorization: window.atob(localStorage['auth']),
+                        articles: data.body,
+                        parent_article: null,
+                        rooms: [],
+                        texts: [],
+                        chatting_users: [],
+                        room_id: 0,
+                        profile_user: profile_data.body
+                        //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
+                    }));
                 }
                 else {
                     // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
@@ -376,16 +488,15 @@ function *watchLoginState() {
                         }
                     }
                     //TODO 이후 state에 새로운 element를 추가할 경우 이 부분에 try-catch를 추가하면 됩니다
-//                  console.log(JSON.stringify(data.body));
-//                  console.log(parent_data.body);
                     yield put(actions.setState({
                         authorization: window.atob(localStorage['auth']),
                         articles: data.body,
-                        parent_article: parent_data.body,
+                        parent_article: parent_data !== null ? parent_data.body : null,
                         rooms: [],
                         texts: [],
                         chatting_users: [],
-                        room_id: 0
+                        room_id: 0,
+                        profile_user: profile_data !== null ? profile_data.body : null
                         //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                     }));
                 }
@@ -561,6 +672,15 @@ function *watchUpdateChatting(){
     }
 }
 
+function *watchToProfile() {
+    while(true) {
+        yield take('TO_PROFILE');
+        console.log("asdf");
+        const id = window.location.pathname.split('/')[2];
+        yield put(actions.changeUrl('/profile/' + id + '/'));
+    }
+}
+
 ///// Page별 saga함수에서 쓸 saga함수 (그 외)
 // signIn: 백엔드에 get을 날리는 함수
 function *signIn(data) {
@@ -675,7 +795,7 @@ function *postLike(id) {
             console.log("parent article removed");
         }
         else if(error.statusCode === 405) {
-            alert("You already like this post!");
+            alert("You cannot like this post!");
             console.log("double like");
         }
         else if(Object.keys(error).length === 0) {
@@ -762,7 +882,7 @@ function *deleteArticle(id){
 function *putArticle(id, text){
     const path = 'article/'+id+'/';
     console.log("in editArticle[path]: "+path);
-    try{
+    try {
         yield call(xhr.send, fixed_url+path, {
             method: 'PUT',
             headers: { 
@@ -775,16 +895,12 @@ function *putArticle(id, text){
             responseType:'json'
         });
         console.log("edit article succeeeeed!!!!!!!!!");
-        yield put(actions.changeUrl('/main/')); // TODO 메인페이지 말고 postArticle에서 보내는 것처럼 보내주세요. 수정바람.
-    }catch(error){
+        yield put(actions.changeUrl('/'+path));
+    } catch(error){
         console.log(error);
         if(error.statusCode === 403){
             alert("This article is not yours");
         }
-//      else if(error.statusCode === 202);//page자체가 없을때?
-//          alert("No article exists");
-//      else
-//          yield put(actions.changeUrl('/main/'));
     }
 }
 
@@ -850,11 +966,13 @@ function *postText(room_id, text) {
             body: JSON.stringify({"text": text})
         });
         console.log("post text succeed.");
-        yield put(window.location.pathname);
+        //yield put(window.location.pathname);
+        yield put(actions.updateChatting(room_id))
     }catch(error){
         if(error.statusCode === 201){
             console.log("post text succeed 2.");
-            yield put(actions.changeUrl(window.location.pathname));
+            //yield put(actions.changeUrl(window.location.pathname));
+            yield put(actions.updateChatting(room_id))
         }
         else if(error.statusCode === 0) {
             alert("Backend server not available");
@@ -880,7 +998,8 @@ function *postText(room_id, text) {
         }
         else if(Object.keys(error).length === 0) {
             console.log("post text succeed 3.");
-            yield put(actions.changeUrl(window.location.pathname));
+            yield put(actions.updateChatting(room_id))
+            //yield put(actions.changeUrl(window.location.pathname));
         }
         else {
             alert("Unknown Error Occurred");
@@ -932,45 +1051,6 @@ function *postRoom(room_name) {
             return;
         }
     }
-    /*
-    // get new room's id
-    let data, id;
-    try {
-        data = yield call(xhr.get, fixed_url+'chatroom/', {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Basic '+ localStorage['auth'],
-                Accept: 'application/json'
-            },
-            responseType: 'json'
-        })
-        console.log('Get data without exception');
-    }
-    catch(error) {
-        console.log(error);
-        if(error.statusCode === 200) {
-            console.log('Succeed to get data');
-            data = error;
-        }
-        else if(error.statusCode === 403) {
-            alert("Unauthorized user tried to access chatting room page. Please sign in first!");
-            localStorage.removeItem('auth');
-            yield put(actions.changeUrl('/'));
-        }
-        else if(error.statusCode === 0) {
-            console.log("Backend is not accessible");
-            alert("Temporary Server Error");
-            return;
-        }
-        else {
-            alert("Unknown Error Occurred");
-            return;
-        }
-    }
-    // auto join
-    id=data.body[data.body.length-1]["id"];
-    yield call(joinRoom, id);
-    */
     yield put(actions.changeUrl('/room/'));
 }
 

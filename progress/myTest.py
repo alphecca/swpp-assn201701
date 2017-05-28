@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import json
 import requests
 import sys
@@ -42,11 +44,10 @@ for i in range(1,userN):
     body = {"username": username.encode("ascii"), "password": password.encode("ascii")}
     post_or_error_anon(user_link, body)
 print("Frontend initializer ran successfully!")
-
 ##########################FRONTEND TEST START##############################
 driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
-
+'''
 # 본격적인 프론트엔드 테스트 시작
 # 로그인 및 로그아웃 테스트
 print("1. sign in/out test")
@@ -193,47 +194,49 @@ sleep(delayTime)
 deleteErrorVerification(driver, data[0]["id"])
 sleep(delayTime)
 editErrorVerification(driver, data[0]["id"])
-
-## TODO 채팅 테스트
+'''
+## 채팅 테스트
 print("Frontend chatting test is running...")
 print("[test for person A]")
 # sign in
-sleep(1)
+sleep(delayTime)
 print("1. sign in ")
-signInVerification(driver, "chatA", "chatA")
+signInVerification(driver, "test1", "test1passwd")
 
 # create chatroom
-sleep(1)
-print("2. creat  chatroom")
-chatRoomVerification(driver) 
+sleep(delayTime)
+print("2. create  chatroom")
+roomId = chatRoomVerification(driver, backend_link, "test1","test1passwd") 
 
 # join the chatroom
-sleep(1)
+sleep(delayTime)
 print("3. join the chatroom")
-joinUserVerification(driver, backend_link, "chatA", "chatA")
+joinUserVerification(driver, backend_link, "test1", "test1passwd", roomId)
 # send / get message
-sleep(1)
+sleep(delayTime)
 print("4. send/get message")
-sendTextVerification(driver, backend_link, "chatA", "chatA")
+sendTextVerification(driver, backend_link, "test1", "test1passwd", roomId)
 
 # sign out
-sleep(1)
+sleep(delayTime)
 print("5. sign out...")
 signOutVerification(driver)
 
 # for the other user
-'''
 print("[test for person B]")
-sleep(1)
-signInVerification(driver, "chatB", "chatB")
-sleep(1)
-B_chatRoomVerification(driver)
-sleep(1)
-sleep(1)
-B_sendTextVerification(driver, backend_link, "chatB", "chatB")
-sleep(1)
+sleep(delayTime)
+print("1. sign in")
+signInVerification(driver, "test2", "test2passwd")
+sleep(delayTime)
+print("2. join chatroom")
+B_chatRoomVerification(driver, roomId)
+sleep(delayTime)
+print("3. sen/get message")
+B_sendTextVerification(driver, backend_link, "test2", "test2passwd", roomId)
+sleep(delayTime)
+print("4. sign out...")
 signOutVerification(driver)
-'''
+
 ##########################FRONTEND TEST FINISHED###########################
 driver.quit()
 print("TEST SUCCESSFUL")

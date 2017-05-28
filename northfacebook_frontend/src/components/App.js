@@ -10,6 +10,7 @@ import EditArticlePage from './EditArticlePage/EditArticlePage.js';
 import ChattingRoomPage from './ChattingRoomPage/ChattingRoomPage.js';
 import CreateRoomPage from './CreateRoomPage/CreateRoomPage.js';
 import ChattingPage from './ChattingPage/ChattingPage.js';
+import WallPage from './WallPage/WallPage.js';
 //import NoMatchPage from './NoMatchPage/NoMatchPage.js';
 import PropTypes from 'prop-types';
 
@@ -31,6 +32,7 @@ const App = ({store}) => {
                     <Route exact path="/room" component={ChattingRoomPage} />
                     <Route exact path="/create_room" component={CreateRoomPage} />
                     <Route exact path="/chatting/:id" component={ChattingPage} />
+                    <Route path="/wall/:id" component={WallPage} />
                 </div>
             </BrowserRouter>
         </Provider>

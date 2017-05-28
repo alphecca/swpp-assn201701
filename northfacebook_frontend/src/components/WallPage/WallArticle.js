@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {editArticle, deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
 
-class Article extends React.Component {
+class WallArticle extends React.Component {
     render() {
         const writerId = "a"+this.props.article.id+"_writer_field"
         const username = this.props.article.owner
@@ -22,8 +22,32 @@ class Article extends React.Component {
         const createdId = "a"+this.props.article.id+"_created_field"
         const updatedId = "a"+this.props.article.id+"_updated_field"
 
+        const labelId = "a"+this.props.article.id+"_label"
+        const typeLabel = () => {
+            const current = window.atob(localStorage['auth']).split(":")[0];
+            console.log(current);
+            if(this.props.article.owner !== current)
+                return (
+                        <div>
+                            <p id={labelId}>{current}가 좋아요한 글입니다.</p>
+                        </div>
+                       )
+            else if(this.props.article.depth !== 0)
+                return (
+                        <div>
+                            <p id={labelId}>{current}가 작성한 댓글입니다.</p>
+                        </div>
+                       )
+            else
+                return (
+                        <div>
+                            <p id={labelId}>{current}가 작성한 글입니다.</p>
+                        </div>
+                       )
+        }
         return (
                 <div id={componentId} className="Article">
+                    {typeLabel()}
                     <p id={writerId}>id: {username}</p>
                     <hr />
                     <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}</div>
@@ -57,7 +81,7 @@ let mapStateToProps = (state) => {
     }
 }
 
-Article.propTypes = {
+WallArticle.propTypes = {
     article: PropTypes.object,
 }
 
@@ -71,8 +95,6 @@ let mapDispatchToProps = (dispatch) => {
     }
 }
 
-//Article = connect(undefined, mapDispatchToProps)(Article)
+WallArticle = connect(mapStateToProps, mapDispatchToProps)(WallArticle)
 
-Article = connect(mapStateToProps, mapDispatchToProps)(Article)
-
-export default Article
+export default WallArticle;
