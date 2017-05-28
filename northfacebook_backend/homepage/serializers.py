@@ -57,12 +57,12 @@ class ChatRoomSerializer(serializers.ModelSerializer):
 
 class NowChatSerializer(serializers.BaseSerializer):
     def to_representation(self, obj):
-        ca=Chat.objects.all()
-        nowchat=[]
+        ca = Chat.objects.all()
+        nowchat = []
         for x in ca:
             cu = ChatUser.objects.filter(chatroom=x.id)
             for y in cu:
-                if obj==y.chatuser:
+                if obj == y.chatuser:
                     nowchat.append(x.id)
                     break
         return nowchat
@@ -72,13 +72,13 @@ class NowChatSerializer(serializers.BaseSerializer):
 
 class NonChatSerializer(serializers.BaseSerializer):
     def to_representation(self, obj):
-        ca=Chat.objects.all()
-        nonchat=[]
+        ca = Chat.objects.all()
+        nonchat = []
         for x in ca:
             cu = ChatUser.objects.filter(chatroom=x.id)
             nonchat.append(x.id)
             for y in cu:
-                if obj==y.chatuser:
+                if obj == y.chatuser:
                     nonchat.pop()
                     break
         return nonchat
@@ -88,14 +88,14 @@ class NonChatSerializer(serializers.BaseSerializer):
 
 class ChatUserSerializer(serializers.ModelSerializer):
     chatuser = serializers.ReadOnlyField(source='chatuser.username')
-    chatroom=serializers.ReadOnlyField(source='chatroom.id')
+    chatroom = serializers.ReadOnlyField(source='chatroom.id')
     class Meta:
         model = ChatUser
         fields = ('id', 'chatroom', 'chatuser')
 
 
 class TextSerializer(serializers.ModelSerializer):
-    writer=serializers.ReadOnlyField(source='writer.username')
+    writer = serializers.ReadOnlyField(source='writer.username')
     room = serializers.ReadOnlyField(source='room.id')
     class Meta:
        model = Text
@@ -106,9 +106,15 @@ class WallSerializer(serializers.BaseSerializer):
     def to_representation(self, obj):
         articles = Article.objects.filter(owner=obj)
         likes = Like.objects.filter(owner=obj)
-        test = Article.objects.filter(id__in= likes.values('parent_id'))
+        test = Article.objects.filter(id__in=likes.values('parent_id'))
         total = articles | test
         serializer = ArticleSerializer(total, many=True)
         return serializer.data
     class Meta:
         model = User
+
+class FriendSerializer(serializers.ModelSerializer):
+    friend = serializers.ReadOnlyField(source='friend.username')
+    class Meta:
+        model = Friend
+        fields = ('friend',)
