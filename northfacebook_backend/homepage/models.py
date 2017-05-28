@@ -43,7 +43,6 @@ class Friend(models.Model):
     me = models.ForeignKey('auth.User', related_name='me', on_delete=models.CASCADE)
     friend = models.ForeignKey('auth.User', related_name='friend', on_delete=models.CASCADE)
     is_mutual = models.BooleanField()
-
 class Sasang(models.Model):
     first = models.ForeignKey('auth.User',
             related_name='first',
