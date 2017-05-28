@@ -218,6 +218,7 @@ def mainPageVerification(driver, articles):
     sleep(1)
     check(driver, "article_list_field")
     check(driver, "write_button_field")
+    check(driver, "to_my_wall")
     for article in articles:
         articleVerification(driver, article)
 
@@ -238,3 +239,27 @@ def detailPageVerification(driver, article, replies):
     check(driver, "reply_list_field")
     for reply in replies:
         articleVerification(driver, reply)
+
+#####WALL PAGE#####
+def wallPageVerification(driver, articles, username):
+    check(driver, "back_to_profile")
+    check(driver, "wall_info")
+    if driver.find_element_by_id('wall_info').text != username+"의 담벼락":
+        print("username not match")
+        exit(1)
+    for article in articles:
+        labelId = "a"+str(article["id"])+"_label"
+        label = ""
+        if article["owner"] != username:
+            label = "가 좋아요한 글입니다."
+        elif article["depth"] > 0:
+            label = "가 작성한 댓글입니다."
+        else:
+            label = "가 작성한 글입니다."
+        check(driver, labelId)
+        if driver.find_element_by_id(labelId).text != username+label:
+            print("label not match")
+            print(username+label)
+            print(driver.find_element_by_id(labelId).text)
+            exit(1)
+        articleVerification(driver, article)
