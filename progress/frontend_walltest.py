@@ -81,6 +81,24 @@ writePageVerification(driver, "test2")
 print("3. Wall Verification")
 sleep(delayTime)
 data = get_json_or_error(user_link+user_list[0][0]+'/wall/', user_list[0][0], user_list[0][1])
+if len(data) != 4:
+    print("data length not valid")
+    exit(1)
+
+for i in range(0, 4):
+    if i == 0 or i == 1:
+        if data[i]["depth"] > 0:
+            print("article not correct")
+            exit(1)
+    elif i == 2:
+        if data[i]["depth"] == 0:
+            print("reply not correct")
+            exit(1)
+    elif i == 3:
+        if data[i]["depth"] == user_list[0][0]:
+            print("like article not correct")
+            exit(1)
+
 driver.find_element_by_id("to_my_wall").click()
 sleep(delayTime)
 wallPageVerification(driver, data, user_list[0][0])
