@@ -366,7 +366,7 @@ def friend_list(request, username):
         serializer = FriendSerializer(friends, many=True)
         return Response(serializer.data)
 
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'POST'])
 def add_friend_list(request, username):
     try: user = User.objects.get(username=username) # 동무추가 요청 페이지의 주인
     except User.DoesNotExist:
@@ -408,3 +408,27 @@ def add_friend_list(request, username):
                 return Response(status=status.HTTP_201_CREATED)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET', 'DELETE'])
+def add_friend(request, username, friendname):
+    try:
+        user = User.objects.get(username=username)
+        friend = User.objects.get(username=friendname)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    try: add_friend = Friend.objects.get(me=user, friend=friend, is_mutual=False)
+    except Friend.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        if request.user == user or request.user == friend:
+            serializer = FriendSerializer(add_friend)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+    elif request.method == 'DELETE':
+        if request.user == user or request.user == friend:
+            add_friend.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN)

@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^users/(?P<username>\w+)/wall/$', views.wall),
     url(r'^users/(?P<username>\w+)/friends/$', views.friend_list),
     url(r'^users/(?P<username>\w+)/addfriend/$', views.add_friend_list),
+    url(r'^users/(?P<username>\w+)/addfriend/(?P<friendname>\w+)/$', views.add_friend),
     url(r'^article/$',views.article_list),
     url(r'^article/(?P<pk>[0-9]+)/$',views.article_detail),
     url(r'^article/(?P<pk>[0-9]+)/article/$',views.article_article),
