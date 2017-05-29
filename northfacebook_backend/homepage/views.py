@@ -202,7 +202,7 @@ def user_list(request):
             if len(username)<4 or len(username)>20:
                 return Response(stauts = HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
             p = re.compile('\W+')
-            if (p.match(username) != None or pwd == ''):
+            if (p.search(username) != None or pwd == ''):
                 return Response(status = status.HTTP_400_BAD_REQUEST)
         except KeyError:
             return Response(status = status.HTTP_400_BAD_REQUEST)
