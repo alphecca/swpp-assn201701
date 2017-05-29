@@ -29,7 +29,10 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
-          - cd progress
+          - cd northfacebook_frontend
+          - npm install
+          - npm test -- --coverage
+          - cd ../progress
 #          - apt-get update && apt-get install tmux
           - pip install -r requirements.txt
 #          - rm -f tmp.db ../northfacebook_backend/db.sqlite3
