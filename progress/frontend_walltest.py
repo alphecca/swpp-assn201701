@@ -45,11 +45,15 @@ for i in range(1,userN):
 print("Frontend initializer ran successfully!")
 ##########################FRONTEND TEST START##############################
 driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
+driver2 = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
+driver2.get(frontend_link)
 
 print("1. Sign In")
 sleep(delayTime)
 signInVerification(driver, user_list[0][0], user_list[0][1])
+sleep(delayTime)
+signInVerification(driver2, user_list[1][0], user_list[1][1])
 
 print("2. Initialization for wall")
 # get data from backend to test
@@ -57,8 +61,20 @@ forbidden_or_error_anon('GET', main_link)
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 sleep(delayTime)
 mainPageVerification(driver, data[0:5]) # 만일을 대비한 메인페이지 테스트
+sleep(delayTime)
+mainPageVerification(driver2, data[0:5]) # 만일을 대비한 메인페이지 테스트
+
+#test1이 좋아요 / 댓글 쓸 글 만들기
+driver2.find_element_by_id("write_button_field").click()
+sleep(delayTime)
+writePageVerification(driver2, "test0")
+sleep(delayTime)
+driver2.quit()
 
 # wall에 들어갈 좋아요한 글
+sleep(delayTime)
+driver.refresh()
+data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 sleep(delayTime)
 likeVerification(driver, data[0]["id"], False)
 

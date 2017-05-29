@@ -38,3 +38,17 @@ class Text(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     class Meta:
         ordering = ['-created_time']
+
+class Friend(models.Model):
+    me = models.ForeignKey('auth.User', related_name='me', on_delete=models.CASCADE)
+    friend = models.ForeignKey('auth.User', related_name='friend', on_delete=models.CASCADE)
+    is_mutual = models.BooleanField()
+class Sasang(models.Model):
+    first = models.ForeignKey('auth.User',
+            related_name='first',
+            on_delete=models.CASCADE)
+    second = models.ForeignKey('auth.User',
+            related_name='second',
+            on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=1)
+

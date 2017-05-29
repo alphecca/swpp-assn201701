@@ -9,7 +9,7 @@ class WallPage extends React.Component {
                 <div>
                     <SignOut />
                     <div className="TimeLine">
-                        <span>{this.props.profile_user}의 프로필</span>
+                        <span id="wall_info">{this.props.profile_user}의 담벼락</span>
                         <button id="back_to_profile" onClick={this.props.onBackToProfile}>Back to Profile</button>
                         <WallArticleList />
                     </div>

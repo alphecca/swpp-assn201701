@@ -3,11 +3,11 @@ import requests
 import sys
 from time import sleep
 from random import randint
-from backend import *
+from backend_ import *
 
 if len(sys.argv) != 2:
-    print("backend_tests1.py <url>")
-    print("Example: backend_tests1.py http://wlxyzlw.iptime.org:8000/")
+    print("backend_article_tests.py <url>")
+    print("Example: backend_article_tests.py http://wlxyzlw.iptime.org:8000/")
     exit(1)
 
 userN = 10
@@ -133,7 +133,7 @@ if len(temp) != 0:
 forbidden_or_error_anon_data("POST", link, {})
 post_or_error(link, {}, test1, test1pw)
 method_not_allowed_or_error_data("POST", link, {}, test1, test1pw)
-post_or_error(link, {}, test2, test2pw)
+method_not_allowed_or_error_data("POST", link, {}, test2, test2pw)
 temp = get_json_or_error(link, test2, test2pw)
 like2id = temp[len(temp)-1]["id"]
 method_not_allowed_or_error_data("POST", link, {}, test2, test2pw)
@@ -141,21 +141,21 @@ method_not_allowed_or_error_data("POST", link, {}, test1, test1pw)
 
 print("9. Checking inheritance of children_num and like_num.")
 temp = get_json_or_error(sys.argv[1]+"article/"+str(article2id)+"/", test2, test2pw)
-if temp["children_num"] != 2 or temp["like_num"] != 2:
+if temp["children_num"] != 2 or temp["like_num"] != 1:
     print("ERROR!")
     exit(1)
 temp = get_json_or_error(sys.argv[1]+"article/"+str(article3id)+"/", test1, test1pw)
 if temp["owner"] != test1 or temp["text"] != "reply1":
     print("ERROR: the contents of article does not match after POST!")
     exit(1)
-post_or_error(sys.argv[1]+"article/"+str(article3id)+"/article/", {"text": "reply of reply"}, test2, test2pw)
+post_or_error(sys.argv[1]+"article/"+str(article3id)+"/article/", {"text": "reply of reply"}, test1, test1pw)
 temp = get_json_or_error(sys.argv[1]+"article/"+str(article3id)+"/article/", test2, test2pw)
 article5id = temp[0]["id"]
 post_or_error(sys.argv[1]+"article/"+str(article5id)+"/like/", {}, test2, test2pw)
 temp = get_json_or_error(sys.argv[1]+"article/"+str(article5id)+"/like/", test2, test2pw)
 like3id = temp[0]["id"]
 temp = get_json_or_error(sys.argv[1]+"article/"+str(article2id)+"/", test2, test2pw)
-if temp["children_num"] != 3 or temp["like_num"] != 2:
+if temp["children_num"] != 3 or temp["like_num"] != 1:
     print("ERROR!")
     exit(1)
 temp = get_json_or_error(sys.argv[1]+"article/"+str(article3id)+"/", test2, test2pw)
@@ -171,7 +171,7 @@ get_json_or_error(link, test1, test1pw)
 print("11. GET & DELETE like detail.")
 forbidden_or_error_anon("GET", link+str(like2id)+"/")
 temp = get_json_or_error(link+str(like2id)+"/", test2, test2pw)
-if temp["owner"] != test2: # or temp["article"] != article2id:
+if temp["owner"] != test1: # or temp["article"] != article2id:
     print("ERROR: the contents of like does not match! 1")
     exit(1)
 temp = get_json_or_error(link+str(like3id)+"/", test1, test1pw)
@@ -179,10 +179,10 @@ if temp["owner"] != test2: # or temp["article"] != article5id:
     print("ERROR: the contents of like does not match! 2")
     exit(1)
 forbidden_or_error_anon("DELETE", link+str(like2id)+"/")
-forbidden_or_error("DELETE", link+str(like2id)+"/", test1, test1pw)
-delete_or_error(link+str(like2id)+"/", test2, test2pw)
+forbidden_or_error("DELETE", link+str(like2id)+"/", test2, test2pw)
+delete_or_error(link+str(like2id)+"/", test1, test1pw)
 temp = get_json_or_error(sys.argv[1]+"article/"+str(article2id)+"/", test2, test2pw)
-if temp["children_num"] != 3 or temp["like_num"] != 1:
+if temp["children_num"] != 3 or temp["like_num"] != 0:
     print("ERROR!")
     exit(1)
 
@@ -200,7 +200,7 @@ delete_or_error(link+str(article3id)+"/", test1, test1pw)
 not_found_or_error(link+str(article3id)+"/", test1, test1pw)
 not_found_or_error(link+str(article5id)+"/", test1, test1pw)
 temp = get_json_or_error(link+str(article2id)+"/", test1, test1pw)
-if temp["children_num"] != 1 or temp["like_num"] != 1:
+if temp["children_num"] != 1 or temp["like_num"] != 0:
     print("ERROR!")
     exit(1)
 post_or_error(link+str(article2id)+"/article/", {"text": "!@#$"}, test1, test1pw)

@@ -242,6 +242,11 @@ def detailPageVerification(driver, article, replies):
 
 #####WALL PAGE#####
 def wallPageVerification(driver, articles, username):
+    check(driver, "back_to_profile")
+    check(driver, "wall_info")
+    if driver.find_element_by_id('wall_info').text != username+"의 담벼락":
+        print("username not match")
+        exit(1)
     for article in articles:
         labelId = "a"+str(article["id"])+"_label"
         label = ""
