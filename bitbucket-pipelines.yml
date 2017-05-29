@@ -34,7 +34,6 @@ pipelines:
           - npm install
           - npm test -- --coverage
           - cd ..
-    - step:
         image: python:3.5.1
         script: # Modify the commands below to build your repository.
           - cd progress
