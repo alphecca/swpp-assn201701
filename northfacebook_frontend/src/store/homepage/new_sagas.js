@@ -334,7 +334,7 @@ function *watchLoginState() {
                     localStorage.removeItem('parent');
                     console.log("asdf");
                     try {
-                        data = yield call(xhr.get, fixed_url+'users/'+username+'/wall/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
+                        data = yield call(xhr.get, fixed_url+'users/'+username+'/wall/', { //TODO 이후 프로필 페이지 프론트도 완성 시 프로필이 들어갈 거에요
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': 'Basic '+ localStorage['auth'],
@@ -371,7 +371,7 @@ function *watchLoginState() {
                         }
                     }
                     try {
-                        profile_data = yield call(xhr.get, fixed_url+'users/'+username+'/profile/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
+                        profile_data = yield call(xhr.get, fixed_url+'users/'+username+'/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': 'Basic '+ localStorage['auth'],
@@ -416,7 +416,8 @@ function *watchLoginState() {
                         texts: [],
                         chatting_users: [],
                         room_id: 0,
-                        profile_user: profile_data.body
+                        profile_user: profile_data.body,
+                        profile_data: []
                         //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                     }));
                 }

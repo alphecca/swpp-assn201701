@@ -8,8 +8,7 @@ const homepageInitialState = {
     chatting_users: [],
     profile_user: null,
     room_id: 0,
-    profile_data: [],
-    profile_myname: null,
+    profile_data: []
 };
 
 const homepage = (state = homepageInitialState, action) => {
@@ -19,8 +18,7 @@ const homepage = (state = homepageInitialState, action) => {
                 authorization: window.atob(action.auth),
                 articles: state.articles,
                 parent_article: state.parent_article,
-                profile_data: state.profile_data,
-                profile_myname: state.profile_myname
+                profile_data: state.profile_data
             })
         }
         case 'SIGN_OUT': {
@@ -40,7 +38,7 @@ const homepage = (state = homepageInitialState, action) => {
                 chatting_users: action.state.chatting_users,
                 room_id: action.state.room_id,
                 profile_data: action.state.profile_data,
-                profile_myname: action.state.profile_myname
+                profile_user: action.state.profile_user
             })
         }
         case 'ARTICLE_DETAIL': {
