@@ -8,7 +8,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
 
-from backend import *
+from backend_ import *
 
 delayTime=1
 # general checker whether id exists
