@@ -218,7 +218,7 @@ def user_list(request):
     elif request.method == 'DELETE':
         # requested data should contain username attribute.
         request.user.delete()
-        return Response(status = status.HTTP_204_NO_CONTENT
+        return Response(status = status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET','PUT','DELETE'])
 def user_detail(request, username):
