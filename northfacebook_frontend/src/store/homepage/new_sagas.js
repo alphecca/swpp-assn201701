@@ -65,7 +65,14 @@ export default function *saga() {
                     break;
                 default:
                     console.log("default state");
-                    alert("Oops, page not found");
+                    alert("Oops, page not found");             
+                    if(localStorage.getItem("auth") === null) {
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
+                    } else {
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/main/'));
+                    }
             }
     }
 }
@@ -1036,11 +1043,13 @@ function *postText(room_id, text) {
             body: JSON.stringify({"text": text})
         });
         console.log("post text succeed.");
-        yield put(window.location.pathname);
+        //yield put(window.location.pathname);
+        yield put(actions.updateChatting(room_id))
     }catch(error){
         if(error.statusCode === 201){
             console.log("post text succeed 2.");
-            yield put(actions.changeUrl(window.location.pathname));
+            //yield put(actions.changeUrl(window.location.pathname));
+            yield put(actions.updateChatting(room_id))
         }
         else if(error.statusCode === 0) {
             alert("Backend server not available");
@@ -1066,7 +1075,8 @@ function *postText(room_id, text) {
         }
         else if(Object.keys(error).length === 0) {
             console.log("post text succeed 3.");
-            yield put(actions.changeUrl(window.location.pathname));
+            yield put(actions.updateChatting(room_id))
+            //yield put(actions.changeUrl(window.location.pathname));
         }
         else {
             alert("Unknown Error Occurred");

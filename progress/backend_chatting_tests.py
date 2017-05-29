@@ -3,16 +3,16 @@ import requests
 import sys
 from time import sleep
 from random import randint
-from backend import *
+from backend_ import *
 
-# TODO We should implement that "Final. Deleting all data that test has created." will always be executed even though the test ended with exit(1). 
+# TODO We should implement that "Final. Deleting all data that test has created." will always be executed even though the test ended with exit(1).
 
 if len(sys.argv) != 2:
-    print("backend_tests2.py <url>")
-    print("Example: backend_tests2.py http://wlxyzlw.iptime.org:8000/")
+    print("backend_chatting_tests.py <url>")
+    print("Example: backend_chatting_tests.py http://wlxyzlw.iptime.org:8000/")
     exit(1)
 
-userN = 10
+userN = 5
 user_pairs = create_users(userN)
 unknownname = "unknown_user"
 unknownpwd = "unknown_userpwd"
@@ -81,14 +81,14 @@ print("5. GET & POST chatroom list.")
 forbidden_or_error_anon("GET", link)
 get_json_or_error(link, test1, test1pw)
 forbidden_or_error_anon_data("POST", link, {"text": "anonymous user"})
-bad_request_or_error_data("POST", link, {}, test1, test1pw)
-bad_request_or_error_data("POST", link, {"room_name": ""}, test1, test1pw)
 post_or_error(link, {"room_name": "test room1"}, test2, test2pw)
 post_or_error(link, {"room_name": "test room2"}, test1, test1pw)
-
+bad_request_or_error_data("POST",link, {"room_name": ""}, test1, test1pw)
+bad_request_or_error_data("POST",link, {}, test1, test1pw)
+bad_request_or_error_data("POST", link,{"room_name":"l"*66},test2,test2pw)
 chatroom_list = get_json_or_error(link, test1, test1pw)
-chatroom2id = chatroom_list[len(chatroom_list)-1]["id"]
-chatroom1id = chatroom_list[len(chatroom_list)-2]["id"]
+chatroom2id = chatroom_list[-1]["id"]
+chatroom1id = chatroom_list[-2]["id"]
 
 link = sys.argv[1] + "chatroom/" + str(chatroom1id) + "/"
 print("6. GET & DELETE chatroom detail.")

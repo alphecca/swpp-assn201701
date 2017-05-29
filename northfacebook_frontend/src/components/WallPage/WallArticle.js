@@ -21,25 +21,27 @@ class WallArticle extends React.Component {
         const componentId = "a"+this.props.article.id+"_field"
         const createdId = "a"+this.props.article.id+"_created_field"
         const updatedId = "a"+this.props.article.id+"_updated_field"
+
+        const labelId = "a"+this.props.article.id+"_label"
         const typeLabel = () => {
             const current = window.atob(localStorage['auth']).split(":")[0];
             console.log(current);
             if(this.props.article.owner !== current)
                 return (
                         <div>
-                            <p>{current}가 좋아요한 글입니다.</p>
+                            <p id={labelId}>{current}가 좋아요한 글입니다.</p>
                         </div>
                        )
             else if(this.props.article.depth !== 0)
                 return (
                         <div>
-                            <p>{current}가 작성한 댓글입니다.</p>
+                            <p id={labelId}>{current}가 작성한 댓글입니다.</p>
                         </div>
                        )
             else
                 return (
                         <div>
-                            <p>{current}가 작성한 글입니다.</p>
+                            <p id={labelId}>{current}가 작성한 글입니다.</p>
                         </div>
                        )
         }
