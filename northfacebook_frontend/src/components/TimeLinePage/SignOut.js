@@ -11,6 +11,7 @@ class SignOut extends React.Component {
                    <span id="user_data_field">{this.props.username} 동무 어서오시오!</span>
                    <button id="sign_out" className="SIGNOUT" onClick={this.props.onLogOut}>Sign Out</button>
                    <button id="to_my_wall" className="WALLBUTTON" onClick={() => this.props.onToWall(this.props.username)}>담벼락</button>
+                   <button id="to_my_profile" className="PROFILEBUTTON" onClick={ ()=>this.props.onToProfile(this.props.username) }>내프로필</button>
                    </div>
                 </div>
 
@@ -28,7 +29,8 @@ let mapDispatchToProps = (dispatch) => {
     return {
         onLogOut: () => dispatch(signOut()),
         onBackClick: () => dispatch(postBack()),
-        onToWall: (username) => dispatch(changeUrl('/wall/'+username+"/"))
+        onToWall: (username) => dispatch(changeUrl('/wall/'+username+"/")),
+        onToProfile: (username) => dispatch(changeUrl('/profile/'+username+"/"))
     }
 }
 
