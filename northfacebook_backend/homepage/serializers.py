@@ -4,9 +4,26 @@ from homepage.models import *
 from django.db.models import Sum, Q
 
 class UserSerializer(serializers.ModelSerializer):
+    '''
+    def create(self, validated_data):
+        profile_data = validated_data.pop('profile', None)
+        user = super(UserSerializer, self).create(validated_data)
+        self.update_or_create_profile(user, profile_data)
+        return user 
+    '''
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['password'])
+        instance.save()
+        return instance
+    '''    
+    def update_or_create_profile(self, user, profile_data):
+        Profile.objects.update_or_create(user=user, defaults=profile_data)
+    '''
+
     class Meta:
         model = User
-        fields = ('id','username')
+        #article
+        fields = ('id','username','password')
 
 class LikeSerializer(serializers.ModelSerializer):
     owner=serializers.ReadOnlyField(source='owner.username')
@@ -86,6 +103,7 @@ class NonChatSerializer(serializers.BaseSerializer):
         model = User
 
 
+
 class ChatUserSerializer(serializers.ModelSerializer):
     chatuser = serializers.ReadOnlyField(source='chatuser.username')
     chatroom = serializers.ReadOnlyField(source='chatroom.id')
@@ -93,14 +111,12 @@ class ChatUserSerializer(serializers.ModelSerializer):
         model = ChatUser
         fields = ('id', 'chatroom', 'chatuser')
 
-
 class TextSerializer(serializers.ModelSerializer):
     writer = serializers.ReadOnlyField(source='writer.username')
     room = serializers.ReadOnlyField(source='room.id')
     class Meta:
        model = Text
        fields = ('id','room', 'text', 'writer', 'created_time')
-
 
 class WallSerializer(serializers.BaseSerializer):
     def to_representation(self, obj):
@@ -113,6 +129,11 @@ class WallSerializer(serializers.BaseSerializer):
     class Meta:
         model = User
 
+class ProfileSerializer(serializers.ModelSerializer):
+    user= serializers.ReadOnlyField(source='user.username')
+    class Meta:
+        model = Profile
+        fields = ('user','myname','mybelong','myintro')
 class FriendSerializer(serializers.ModelSerializer):
     friend = serializers.ReadOnlyField(source='friend.username')
     class Meta:
@@ -124,4 +145,3 @@ class SasangSerializer(serializers.ModelSerializer):
     class Meta:
        model = Sasang
        fields = ('first','second','counter')
-
