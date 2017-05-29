@@ -79,7 +79,6 @@ def like_list(request):
         likes = Like.objects.all()
         serializer = LikeSerializer(likes, many=True)
         return Response(serializer.data)
-'''
 @api_view(['GET','DELETE'])
 def like_detail(request, pk):
     try:
@@ -96,7 +95,6 @@ def like_detail(request, pk):
             like.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
-'''
 
 @api_view(['GET', 'POST'])
 def like(request,pk):
@@ -113,6 +111,8 @@ def like(request,pk):
     elif request.method == 'POST':
         serializer = LikeSerializer(data=request.data)
         if like.filter(owner=request.user.id).count()!=0:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        if request.user.id == article.owner.id:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         if serializer.is_valid():
             serializer.save(owner=request.user,parent=article)
@@ -188,7 +188,7 @@ class AuthList(APIView):
         }
         return Response(content)
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST','DELETE'])
 @permission_classes((IsAuthenticatedOrPOSTOnly,))
 def user_list(request):
     if request.method == 'GET':
@@ -215,6 +215,10 @@ def user_list(request):
         user = User.objects.create_user(username, password=pwd)
         user.save()
         return Response(status = status.HTTP_201_CREATED)
+    elif request.method == 'DELETE':
+        # requested data should contain username attribute.
+        request.user.delete()
+        return Response(status = status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET','PUT','DELETE'])
 def user_detail(request, username):
