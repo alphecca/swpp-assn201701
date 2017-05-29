@@ -162,7 +162,7 @@ def likeVerification(driver, article_id, isClicked):
     driver.find_element_by_id(likeId).click()
     sleep(1)
     if isClicked == True:
-        alert(driver, "You already like this post!")
+        alert(driver, "You cannot like this post!")
 
 def replyVerification(driver, article_id, text):
     replyId = "a"+str(article_id)+"_reply_button_field"
