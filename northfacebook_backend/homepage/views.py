@@ -521,13 +521,13 @@ def sasang(request,username):
         serializer=SasangSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(first=user,second=request.user)
-            return Response(serializer.data)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'PUT':
         try:
             sasang = Sasang.objects.get(first=request.user,second=user)
         except Sasang.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = SasangSerializer(sasang,data=request.data)
         if serializer.is_valid():
             serializer.save(first=sasang.second,second=sasang.first,counter=sasang.counter+1)
