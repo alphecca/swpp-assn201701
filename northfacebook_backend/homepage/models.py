@@ -1,13 +1,26 @@
 from django.db import models
+from django.db.models import signals
+from django.contrib.auth.models import User
+
+class Profile(models.Model):
+    user = models.OneToOneField('auth.User', on_delete=models.CASCADE,primary_key=True)
+#    owner= models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    myname = models.TextField()
+    mybelong = models.TextField()
+    myintro = models.TextField()
+ 
+def create_profile(sender, instance, created, **kwargs):
+    #create Profile for every new User model
+    if created:
+        Profile.objects.create(user=instance)
+signals.post_save.connect(create_profile, sender='auth.User', weak=False)
+#, dispatch_uid='models.create_profile'
 
 class Like(models.Model):
     parent = models.ForeignKey('Article',
             on_delete=models.CASCADE)
     owner = models.ForeignKey('auth.User',
             on_delete=models.CASCADE)
-    created_time = models.DateTimeField(auto_now_add=True)
-    class Meta:
-        ordering = ['-created_time']
 
 class Article(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
@@ -43,3 +56,12 @@ class Friend(models.Model):
     me = models.ForeignKey('auth.User', related_name='me', on_delete=models.CASCADE)
     friend = models.ForeignKey('auth.User', related_name='friend', on_delete=models.CASCADE)
     is_mutual = models.BooleanField()
+class Sasang(models.Model):
+    first = models.ForeignKey('auth.User',
+            related_name='first',
+            on_delete=models.CASCADE)
+    second = models.ForeignKey('auth.User',
+            related_name='second',
+            on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=1)
+
