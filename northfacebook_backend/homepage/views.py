@@ -79,7 +79,7 @@ def like_list(request):
         likes = Like.objects.all()
         serializer = LikeSerializer(likes, many=True)
         return Response(serializer.data)
-'''
+
 @api_view(['GET','DELETE'])
 def like_detail(request, pk):
     try:
@@ -96,7 +96,7 @@ def like_detail(request, pk):
             like.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
-'''
+
 
 @api_view(['GET', 'POST'])
 def like(request,pk):
