@@ -11,9 +11,10 @@ import ChattingRoomPage from './ChattingRoomPage/ChattingRoomPage.js';
 import CreateRoomPage from './CreateRoomPage/CreateRoomPage.js';
 import ChattingPage from './ChattingPage/ChattingPage.js';
 import WallPage from './WallPage/WallPage.js';
-//import NoMatchPage from './NoMatchPage/NoMatchPage.js';
+import ProfilePage from './ProfilePage/ProfilePage.js';
+import ChangePWPage from './ProfilePage/ChangePWPage.js';
+import ChangeDescPage from './ProfilePage/ChangeDescPage.js';
 import PropTypes from 'prop-types';
-
 
 
 // Used for controlling multiple pages in one frontend project
@@ -33,6 +34,9 @@ const App = ({store}) => {
                     <Route exact path="/create_room" component={CreateRoomPage} />
                     <Route exact path="/chatting/:id" component={ChattingPage} />
                     <Route path="/wall/:id" component={WallPage} />
+                    <Route path="/profile/:id" component={ProfilePage} />
+                    <Route path="/profile/:id/pwd" component={ChangePWPage} />
+                    <Route path="/profile/:id/desc" component={ChangeDescPage} />
                 </div>
             </BrowserRouter>
         </Provider>

@@ -2,17 +2,23 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from homepage.models import *
 from django.db.models import Sum, Q
-class ProfileSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-    class Meta:
-        model = Profile
-        fields = ('id','owner','myname','mybelong','myintro')
 
 class UserSerializer(serializers.ModelSerializer):
+    '''
+    def create(self, validated_data):
+        profile_data = validated_data.pop('profile', None)
+        user = super(UserSerializer, self).create(validated_data)
+        self.update_or_create_profile(user, profile_data)
+        return user 
+    '''
     def update(self, instance, validated_data):
         instance.set_password(validated_data['password'])
         instance.save()
         return instance
+    '''    
+    def update_or_create_profile(self, user, profile_data):
+        Profile.objects.update_or_create(user=user, defaults=profile_data)
+    '''
 
     class Meta:
         model = User
@@ -111,3 +117,21 @@ class TextSerializer(serializers.ModelSerializer):
     class Meta:
        model = Text
        fields = ('id','room', 'text', 'writer', 'created_time')
+
+class WallSerializer(serializers.BaseSerializer):
+    def to_representation(self, obj):
+        articles = Article.objects.filter(owner=obj)
+        likes = Like.objects.filter(owner=obj)
+        test = Article.objects.filter(id__in= likes.values('parent_id'))
+        total = articles | test
+        serializer = ArticleSerializer(total, many=True)
+        return serializer.data
+    class Meta:
+        model = User
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user= serializers.ReadOnlyField(source='user.username')
+    class Meta:
+        model = Profile
+        fields = ('user','myname','mybelong','myintro')
+

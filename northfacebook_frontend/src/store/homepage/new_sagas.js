@@ -5,7 +5,7 @@ import * as actions from './../../actions'
 var xhr = require('xhr-promise-redux');
 
 //TODO 개인적으로 테스트할 때는 포트번호를 바꾸자. 풀리퀘를 날릴 때는 URL을 확인할 것
-const fixed_url = /*"http://localhost:8000/";*/"http://wlxyzlw.iptime.org:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
+const fixed_url = /*"http://localhost:8000/";*/"http://wlxyzlw.iptime.org:8080/"; //포오오오트으으으버어어어언호오오오 확이이이인
 const auth_check_url = fixed_url+'auth/';
 
 // 이제 backend에서 사용하는 url은 모두 'path_name/'의 형식을 따르고, frontend에서 사용하는 url은 모두 '/path_name/'의 형식을 따릅니다.
@@ -48,7 +48,6 @@ export default function *saga() {
                 case 'edit':
                     yield spawn(editPageSaga, url[2]);
                     break;
-                //TODO 이후 채팅 추가 시 case 'chatting'같은거 추가
                 case 'room':
                     yield spawn(roomPageSaga);
                     break;
@@ -60,6 +59,9 @@ export default function *saga() {
                     break;
                 case 'wall':
                     yield spawn(wallPageSaga);
+                    break;
+                case 'profile':
+                    yield spawn(profilePageSaga);
                     break;
                 default:
                     console.log("default state");
@@ -76,7 +78,7 @@ export default function *saga() {
 // 1. 페이지명을 포함하는 직관적인 이름의 함수를 정의한다.
 //   (ex. 로그인 페이지를 작성할 경우 loginPageSaga)
 // 2. 페이지의 url을 예쁘게(<<<<<중요>>>>>) 정의한다.
-//   (좋은 예: 메인 페이지의 url - '/main/', 나쁜 예: 메인 페이지의 url - '/sogaewonsil_geukhyum/')
+//   (좋은 예: 메인 페이지의 url - '/main/', 나쁜 예: 메인 페이지의 url - '/sogaewonsil_real_geukhyum/')
 // 3. switch문의 케이스에 추가한다.
 //   (ex. 메인페이지 추가 - case '/main/': yield spawn(timeLinePageSaga); break;)
 // 4. 페이지 이동은 yield put(actions.changeUrl('/target_path/'))를 이용하시면 됩니다.
@@ -178,14 +180,22 @@ function *wallPageSaga() {
 }
 
 //TODO 프로필 페이지 만들어주세요 와와
+function *profilePageSaga() {
+    console.log("[ProfilePageSaga]");
+    yield spawn(watchLoginState);
+    yield spawn(watchSignOut);
+    yield spawn(watchGoToMain);
+    yield spawn(watchDescChange);
+    yield spawn(watchPWChange);
+}
 
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
 // watchLoginState: 브라우저에서의 로그인 여부 확인 및 state 업데이트
 // <<주의>> 새로운 Page를 추가할 경우 PageSaga함수에 반드시 추가할 것
 // <<주의>> 새로운 state를 추가할 경우 try-catch문을 이용해 정보를 받아온 후 스테이트에 업데이트 해야 함
 function *watchLoginState() {
-    //console.log("Prev Auth: "+localStorage.getItem("auth"));
-    //console.log("Prev Parent: "+localStorage.getItem("parent"))
+    console.log("Prev Auth: "+localStorage.getItem("auth"));
+    console.log("Prev Parent: "+localStorage.getItem("parent"))
     if(window.location.pathname === '/' || window.location.pathname === '/sign_up/') {
         if(localStorage.getItem("auth") !== null) {
             localStorage.removeItem('parent');
@@ -299,16 +309,17 @@ function *watchLoginState() {
                     // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
                 }));
             }
-            else { // id를 기준으로 backend에 겟을 날리는 경우
-                const id = path.split("/")[2];
+            else { // username또는 id를 기준으로 backend에 겟을 날리는 경우
+                const username = path.split("/")[2];
+                const id = path.split("/")[2];//그냥..
                 let profile_data = null;
-                if (id === undefined) {
+                if (username === undefined) {
                     console.log("404 not found");
                     return;
                 }
                 if (path.split("/")[1] === 'chatting') {
                     localStorage.removeItem('parent');
-                    yield put(actions.updateChatting(id));
+                    yield put(actions.updateChatting(username));
                     // watchUpdateChatting이 뒤를 맡게 되니 여기선 신경쓰지 않아도 됨
                 }
                 else if(path.split("/")[1] === 'wall') {
@@ -316,7 +327,7 @@ function *watchLoginState() {
                     localStorage.removeItem('parent');
                     console.log("asdf");
                     try {
-                        data = yield call(xhr.get, fixed_url+'users/'+id+'/wall/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
+                        data = yield call(xhr.get, fixed_url+'users/'+username+'/wall/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': 'Basic '+ localStorage['auth'],
@@ -353,7 +364,7 @@ function *watchLoginState() {
                         }
                     }
                     try {
-                        profile_data = yield call(xhr.get, fixed_url+'users/'+id+'/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
+                        profile_data = yield call(xhr.get, fixed_url+'users/'+username+'/profile/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': 'Basic '+ localStorage['auth'],
@@ -402,6 +413,53 @@ function *watchLoginState() {
                         //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                     }));
                 }
+                else if(path.split("/")[1] === 'profile'){
+                    //프로필 정보를 get하는 부분
+                    console.log("get profile details...");
+                    try{
+                        profile_data = yield call(xhr.get, fixed_url+'users/'+username+'/profile/',{
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json' 
+                         });
+                         console.log('Get data without exception');
+                    }catch(error){
+                        console.log(error);
+                        //TODO error case 
+                        if(error.statusCode === 403){
+                            alert("Unauthorized user tried to access profile page. Please sign in first");
+                        }else if(error.statusCode ===404){
+                            alert("404 Not Found");
+                            console.log("뉴스프링이 안심하래");
+                            return ;
+                        }else if(error.statusCode === 0){
+                            console.log("Backend server is not accessible");
+                            alert("Temporary Server error. Try reloading");
+                            return;
+                        }else{
+                            alert("Unknown Error Occured");
+                            return;
+                        }
+                    }
+                    console.log("## "+profile_data.body['myname']);
+                    yield put(actions.setState({
+                        authorization: window.atob(localStorage['auth']),
+                        parent_article: null,
+                        articles: [],
+                        rooms: [],
+                        texts: [],
+                        chatting_users: [],
+                        room_id: 0,
+                        profile_data: profile_data.body, 
+                        profile_myname: profile_data.body['myname'] ,
+                        profile_mybelong: profile_data.body['mybelong'],
+                        profile_myintro: profile_data.body['myintro']
+                    }));
+                } 
+ 
                 else {
                     // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
                     try {
@@ -529,6 +587,7 @@ function *watchSignOut() {
 // watchPostSignUp: 회원가입 페이지에서 가입 버튼 클릭 관찰
 function *watchPostSignUp() {
     while(true) {
+
         const data = yield take('POST_SIGN_UP');
         yield call(signUp, data);
     }
@@ -668,9 +727,24 @@ function *watchUpdateChatting(){
 function *watchToProfile() {
     while(true) {
         yield take('TO_PROFILE');
-        console.log("asdf");
         const id = window.location.pathname.split('/')[2];
         yield put(actions.changeUrl('/profile/' + id + '/'));
+    }
+}
+function *watchDescChange(){
+    while(true){
+        yield take('TO_DESC_CHANGE');
+        console.log("get desc change action");
+        const username = window.location.pathname.split('/')[2];
+        yield put(actions.changeUrl('/profile/' + username + '/desc/'));
+
+    }
+}
+function *watchPWChange(){
+    while(true){
+        yield take('TO_PW_CHANGE');
+        const username = window.location.pathname.split('/')[2];
+        yield put(actions.changeUrl('/profile/'+username+'/pwd/'));
     }
 }
 
@@ -744,11 +818,14 @@ function *signUp(data) {
             alert("Parent Article Does Not Exist");
             console.log("parent article removed");
         }
+        else if(error.statusCode === 405) {
+           alert("This username already exists");
+           console.log("duplicate username");
+        }
         else if(Object.keys(error).length === 0) {
             console.log("post article succeed 3");
             localStorage.setItem("auth", window.btoa(data.username + ":" + data.password));
             yield put(actions.changeUrl('/main/'));
-
         }
         else {
             alert("Unknown Error Occurred");

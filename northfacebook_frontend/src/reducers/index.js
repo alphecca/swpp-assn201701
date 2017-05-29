@@ -7,7 +7,9 @@ const homepageInitialState = {
     texts: [],
     chatting_users: [],
     profile_user: null,
-    room_id: 0
+    room_id: 0,
+    profile_data: [],
+    profile_myname: null,
 };
 
 const homepage = (state = homepageInitialState, action) => {
@@ -17,7 +19,8 @@ const homepage = (state = homepageInitialState, action) => {
                 authorization: window.atob(action.auth),
                 articles: state.articles,
                 parent_article: state.parent_article,
-                profile_user: state.profile_user
+                profile_data: state.profile_data,
+                profile_myname: state.profile_myname
             })
         }
         case 'SIGN_OUT': {
@@ -28,7 +31,6 @@ const homepage = (state = homepageInitialState, action) => {
             return state
         }
         case 'SET_STATE': {
-            console.log(action.state.profile_user);
             return Object.assign({}, state, {
                 authorization: action.state.authorization,
                 articles: action.state.articles,
@@ -37,7 +39,8 @@ const homepage = (state = homepageInitialState, action) => {
                 texts: action.state.texts,
                 chatting_users: action.state.chatting_users,
                 room_id: action.state.room_id,
-                profile_user: action.state.profile_user
+                profile_data: action.state.profile_data,
+                profile_myname: action.state.profile_myname
             })
         }
         case 'ARTICLE_DETAIL': {

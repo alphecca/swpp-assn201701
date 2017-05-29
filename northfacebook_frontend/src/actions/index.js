@@ -157,3 +157,14 @@ export const updateChatting = (room_id) => {
 	room_id: room_id
     }
 }
+export const toChangeDesc = ()=>{
+    return {
+         type: 'TO_DESC_CHANGE',
+         
+    }
+}
+export const toChangePW = () => {
+    return{
+        type: 'TO_PW_CHANGE',
+    }
+} 
