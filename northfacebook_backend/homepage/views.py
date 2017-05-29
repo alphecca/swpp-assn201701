@@ -1,4 +1,5 @@
 from django.shortcuts import render
+
 from django.contrib.auth.models import User
 from django.db.models import Q
 from homepage.models import *
@@ -11,8 +12,9 @@ from homepage.serializers import *
 from homepage.permissions import IsAuthenticatedOrPOSTOnly
 
 from base64 import b64decode as decode
-
+import re
 # Create your views here.
+
 @api_view(['GET', 'POST'])
 def main_list(request):
     if request.user.id == None:
@@ -77,7 +79,6 @@ def like_list(request):
         likes = Like.objects.all()
         serializer = LikeSerializer(likes, many=True)
         return Response(serializer.data)
-
 @api_view(['GET','DELETE'])
 def like_detail(request, pk):
     try:
@@ -119,9 +120,9 @@ def like(request,pk):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def user_nowchat(request,pk): #TODO pk => username 버전으로 수정하기
+def user_nowchat(request,username):
     try:
-        user = User.objects.get(pk=pk)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.user.id == None:
@@ -131,9 +132,9 @@ def user_nowchat(request,pk): #TODO pk => username 버전으로 수정하기
         return Response(serializer.data)
 
 @api_view(['GET'])
-def user_nonchat(request,pk): #TODO pk => username 버전으로 수정하기
+def user_nonchat(request,username):
     try:
-        user = User.objects.get(pk=pk)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.user.id == None:
@@ -151,6 +152,7 @@ def article_article(request,pk):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     articlearticle = Article.objects.filter(parent=article.id)
+    print(articlearticle)
     if request.method == 'GET':
         serializer = ArticleSerializer(articlearticle,many=True)
         return Response(serializer.data)
@@ -186,7 +188,7 @@ class AuthList(APIView):
         }
         return Response(content)
 
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'POST','DELETE'])
 @permission_classes((IsAuthenticatedOrPOSTOnly,))
 def user_list(request):
     if request.method == 'GET':
@@ -198,7 +200,10 @@ def user_list(request):
         try: # if request is bad request, return 400
             username = auth['username']
             pwd = auth['password']
-            if (username == '' or pwd == ''):
+            if len(username)<4 or len(username)>20:
+                return Response(status = status.HTTP_400_BAD_REQUEST)
+            p = re.compile('\W+')
+            if (p.search(username) != None or pwd == ''):
                 return Response(status = status.HTTP_400_BAD_REQUEST)
         except KeyError:
             return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -215,7 +220,7 @@ def user_list(request):
         request.user.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET','DELETE'])
+@api_view(['GET','PUT','DELETE'])
 def user_detail(request, username):
     try:
         user = User.objects.get(username=username)
@@ -226,12 +231,26 @@ def user_detail(request, username):
     if request.method == 'GET':
         serializer = UserSerializer(user)
         return Response(serializer.data)
+    elif request.method == 'PUT':
+        if user!=request.user:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        serializer = UserSerializer(user,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST) 
     elif request.method == 'DELETE':
         if user == request.user:
             user.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
 
+"""
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+# permission_classes = ()
+"""
 # for CHATTING
 @api_view(['GET', 'POST'])
 def chatroom_list(request):
@@ -242,6 +261,13 @@ def chatroom_list(request):
         serializer = ChatRoomSerializer(chat, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
+        rd = request.data
+        try:
+            assert rd['room_name']!=None
+            assert rd['room_name']!=''
+            assert len(rd['room_name'])<60
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = ChatRoomSerializer(data=request.data)
         if serializer.is_valid():
             chatroom = serializer.save()
@@ -249,7 +275,6 @@ def chatroom_list(request):
             if serializer.is_valid():
                 serializer.save(chatroom=chatroom, chatuser=request.user)
                 return Response(status=status.HTTP_201_CREATED)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'DELETE'])
@@ -351,6 +376,44 @@ def wall(request, username):
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['GET'])
+def profile_list(request):
+    if request.user.id==None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    serializer = ProfileSerializer(Profile.objects.all(), many=True)
+    if request.method == 'GET':
+        return Response(serializer.data)
+    '''
+    if request.method == 'POST':
+        my_serializer = ProfileSerializer(data=request.data)
+        if Profile.objects.filter(owner=request.user).count()!=0:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        if my_serializer.is_valid():
+            my_serializer.save(owner=request.user)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    '''
+@api_view(['GET','PUT'])
+def profile(request, username):
+    if request.user.id == None:
+        return Response(status= status.HTTP_403_FORBIDDEN)
+    try:
+        user= User.objects.get(username=username)
+        profile=Profile.objects.get(user=user)
+    except Profile.DoesNotExist:
+        return Response(status= status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer=ProfileSerializer(profile)
+        return Response(serializer.data)
+    if request.method == 'PUT':
+        if profile.user!= request.user:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        serializer = ProfileSerializer(profile,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_403_FORBIDDEN)
 # 동무 목록
 @api_view(['GET'])
 def friend_list(request, username):
@@ -362,7 +425,7 @@ def friend_list(request, username):
     if request.method == 'GET':
         if request.user != user:
             return Response(status=status.HTTP_403_FORBIDDEN)
-        friends = Friend.objects.filter(me=user, is_mutual=True) 
+        friends = Friend.objects.filter(me=user, is_mutual=True)
         serializer = FriendSerializer(friends, many=True)
         return Response(serializer.data)
 
@@ -432,3 +495,41 @@ def add_friend(request, username, friendname):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+
+@api_view(['GET','POST','PUT'])
+def sasang(request,username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.user.username == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    if request.method == 'GET':
+        if request.user== user:
+            sasang = Sasang.objects.filter(Q(first=user)|Q(second=user))
+            serializer = SasangSerializer(sasang, many=True)
+            return Response(serializer.data)
+        else:
+            sasang = Sasang.objects.filter(Q(first=user,second=request.user)|Q(first=request.user,second=user))
+            serializer = SasangSerializer(sasang,many=True)
+            return Response(serializer.data)
+    if request.method == 'POST':
+        if request.user==user or Sasang.objects.filter(Q(first=user,second=request.user)|Q(first=request.user,second=user)).exists() == True:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer=SasangSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(first=user,second=request.user)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'PUT':
+        try:
+            sasang = Sasang.objects.get(first=request.user,second=user)
+        except Sasang.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer = SasangSerializer(sasang,data=request.data)
+        if serializer.is_valid():
+            serializer.save(first=sasang.second,second=sasang.first,counter=sasang.counter+1)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
