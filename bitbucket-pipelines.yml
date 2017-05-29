@@ -34,7 +34,7 @@ pipelines:
           - npm install
           - npm test -- --coverage
           - cd ..
-#        image: python:3.5.1
+        image: python:3.5.1
 #        script: # Modify the commands below to build your repository.
           - cd progress
 #          - apt-get update && apt-get install tmux
