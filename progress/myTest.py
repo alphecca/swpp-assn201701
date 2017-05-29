@@ -5,7 +5,7 @@ import requests
 import sys
 from time import sleep
 from random import randint
-from backend import *
+from backend_ import *
 
 ####FRONTEND용 패키지들
 from frontend import *

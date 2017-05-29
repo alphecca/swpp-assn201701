@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
 
-from backend import *
+from backend_ import *
 
 # 특정 id를 가진 컴퍼넌트가 존재하는지 확인
 def check(driver, name):
