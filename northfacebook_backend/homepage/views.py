@@ -199,7 +199,6 @@ def user_list(request):
         try: # if request is bad request, return 400
             username = auth['username']
             pwd = auth['password']
-
             if len(username)<4 or len(username)>20:
                 return Response(status = status.HTTP_400_BAD_REQUEST)
             p = re.compile('\W+')
