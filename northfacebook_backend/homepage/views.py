@@ -1,4 +1,5 @@
 from django.shortcuts import render
+
 from django.contrib.auth.models import User
 from django.db.models import Q
 from homepage.models import *
@@ -198,9 +199,8 @@ def user_list(request):
         try: # if request is bad request, return 400
             username = auth['username']
             pwd = auth['password']
-
             if len(username)<4 or len(username)>20:
-                return Response(status = status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
+                return Response(status = status.HTTP_400_BAD_REQUEST)
             p = re.compile('\W+')
             if (p.search(username) != None or pwd == ''):
                 return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -247,10 +247,12 @@ def chatroom_list(request):
         return Response(serializer.data)
     elif request.method == 'POST':
         rd = request.data
-        if rd['noom_name']=='':
-            rd['room_name']=request.user.username
-        elif len(rd['noom_name'])>60:
-            return Response(suatus=status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE)
+        try:
+            assert rd['room_name']!=None
+            assert rd['room_name']!=''
+            assert len(rd['room_name'])<60
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = ChatRoomSerializer(data=request.data)
         if serializer.is_valid():
             chatroom = serializer.save()
@@ -258,7 +260,6 @@ def chatroom_list(request):
             if serializer.is_valid():
                 serializer.save(chatroom=chatroom, chatuser=request.user)
                 return Response(status=status.HTTP_201_CREATED)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'DELETE'])
