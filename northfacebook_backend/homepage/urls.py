@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^article/(?P<pk>[0-9]+)/article/$',views.article_article),
     url(r'^article/(?P<pk>[0-9]+)/total/$',views.total_article),
     url(r'^like/$',views.like_list),
-#    url(r'^like/(?P<pk>[0-9]+)/$',views.like_detail),
+    url(r'^like/(?P<pk>[0-9]+)/$',views.like_detail),
     url(r'^article/(?P<pk>[0-9]+)/like/$',views.like),
     url(r'^mainpage/$',views.main_list),
     url(r'^chatroom/$',views.chatroom_list),
