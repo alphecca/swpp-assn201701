@@ -114,6 +114,8 @@ def like(request,pk):
         serializer = LikeSerializer(data=request.data)
         if like.filter(owner=request.user.id).count()!=0:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        if request.user.id == article.owner.id:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         if serializer.is_valid():
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)
