@@ -18,8 +18,8 @@ def main_list(request):
     if request.user.id==None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
-        articles = Article.objects.filter(parent=0)
-        serializer = ArticleSerializer(articles, many=True)
+        articles = Article.objects.filter(parent=0).order_by("-updated_time")
+        serializer = ArticleSerializer(articles[0:5], many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
         serializer = ArticleSerializer(data=request.data)
