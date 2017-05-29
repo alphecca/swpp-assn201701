@@ -6,7 +6,7 @@ import requests
 import sys
 from time import sleep
 from random import randint
-from backend import *
+from backend_ import *
 from frontend import *
 
 from selenium import webdriver
@@ -16,8 +16,8 @@ from selenium.webdriver.common.alert import Alert
 delayTime = 1 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫자를 늘려보자
 
 if len(sys.argv) != 3:
-    print("myTest.py <backend_url> <frontend_url>")
-    print("Example: myTest.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/") #TODO change port num
+    print("frontend_walltest.py <backend_url> <frontend_url>")
+    print("Example: frontend_walltest.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/") #TODO change port num
     exit(1)
 # 백엔드 주소
 backend_link = sys.argv[1]
