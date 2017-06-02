@@ -656,6 +656,10 @@ function *watchEdit(){
         console.log("in edit article");
         const data = yield take('EDIT_ARTICLE');
         //TODO user data GET해서 forbidden or not
+        if(data.username !== window.atob(localStorage['auth']).split(':')[0]) {
+            alert("This is not your article!");
+            continue;
+        }
         yield put(actions.changeUrl('/edit/'+data.id+'/'));     
     } 
 }

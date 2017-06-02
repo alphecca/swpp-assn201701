@@ -23,6 +23,10 @@ class SignUpPage extends React.Component {
                 </div>
                 <div className="box">
                     <button id="to_main" className="to_main" onClick={this.props.onToLogin}/>
+                    <form onSubmit={e => {
+                        e.preventDefault()
+                        onCreateSubmit()
+                    }}>
                     아이디<input type="text" ref={ node => {this.username = node;}} id="username_field" className="field" />
                     <br />
                     비밀번호<input type="password" ref={ node => {this.password = node;}} id="password_field" className="field" />
@@ -30,6 +34,7 @@ class SignUpPage extends React.Component {
                     비밀번호 확인<input type="password" ref={ node => {this.pwdverification = node;}} id="pwdverification_field" className="field" />
                     <br />
                     <button type="submit" id="sign_up"  onClick={onCreateSubmit} >반갑소 동무!</button>
+                    </form>
                 </div>
               </div>
         );
