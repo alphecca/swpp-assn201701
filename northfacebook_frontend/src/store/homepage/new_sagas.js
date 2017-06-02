@@ -417,7 +417,6 @@ function *watchLoginState() {
                         chatting_users: [],
                         room_id: 0,
                         profile_user: profile_data.body,
-                        profile_data: []
                         //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                     }));
                 }
@@ -452,7 +451,6 @@ function *watchLoginState() {
                             return;
                         }
                     }
-                    console.log("## "+profile_data.body['myname']);
                     yield put(actions.setState({
                         authorization: window.atob(localStorage['auth']),
                         parent_article: null,
@@ -461,11 +459,8 @@ function *watchLoginState() {
                         texts: [],
                         chatting_users: [],
                         room_id: 0,
-                        profile_data: profile_data.body, 
-                        profile_myname: profile_data.body['myname'] ,
-                        profile_mybelong: profile_data.body['mybelong'],
-                        profile_myintro: profile_data.body['myintro']
-                    }));
+                        profile_user: profile_data.body,
+                                        }));
                 } 
  
                 else {
