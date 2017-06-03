@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {editArticle, deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
+import { toProfile,editArticle, deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
 
 class Article extends React.Component {
     render() {
@@ -21,10 +21,12 @@ class Article extends React.Component {
         const componentId = "a"+this.props.article.id+"_field"
         const createdId = "a"+this.props.article.id+"_created_field"
         const updatedId = "a"+this.props.article.id+"_updated_field"
-
+        const onPostClick = ()=>{
+            this.props.onPostClick(username);
+        }
         return (
                 <div id={componentId} className="Article">
-                    <p id={writerId}>id: {username}</p>
+                    <button id={writerId} onClick={onPostClick}>id: {username}</button>
                     <hr />
                     <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}</div>
                     <hr />
@@ -67,11 +69,12 @@ let mapDispatchToProps = (dispatch) => {
         onEditClick: (id,text,time) => dispatch(editArticle(id,text)), 
         onReplyClick: (id) => dispatch(writeArticle(id)),
         onLikeClick: (id, auth) => dispatch(postLike(id, auth)),
-        onDetailClick: (id) => dispatch(articleDetail(id))
+        onDetailClick: (id) => dispatch(articleDetail(id)),
+        onPostClick: (profuser) =>dispatch(toProfile(profuser)),
+
+
     }
 }
-
-//Article = connect(undefined, mapDispatchToProps)(Article)
 
 Article = connect(mapStateToProps, mapDispatchToProps)(Article)
 

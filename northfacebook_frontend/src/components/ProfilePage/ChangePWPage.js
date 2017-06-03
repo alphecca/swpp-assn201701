@@ -5,6 +5,7 @@ import { toChangePW } from '../../actions/index.js';
 class ChangePWPage extends React.Component {
     render() {
         const onChangeSubmit = () => {
+            console.log("####"+this.props.profile_pw);
             if(this.currpw.value === "")
                 alert("Enter the current password");
             else if(this.newpw.value === "")
@@ -13,7 +14,9 @@ class ChangePWPage extends React.Component {
                 alert("Enter the new password verification");
             else if(this.newpw.value !== this.newpwre.value)
                 alert("New password does not match");
-            else this.props.onClick(this.currpw.value, this.newpw.value)
+            else if(this.props.profile_pw !== this.currpw.value)
+                alert("Old password is not correct!");
+            else this.props.onClick(this.props.profile_user,this.currpw.value, this.newpw.value)
         } 
         return (
                 <div>
@@ -36,18 +39,19 @@ class ChangePWPage extends React.Component {
 let mapStateToProps = (state) => {
     return {
         profile_user:Object.assign(state.authorization).split(":")[0],
+        profile_pw : Object.assign(state.authorization).split(":")[1],
     }
 }
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        onClick: (oldpw, newpw) => {
+        onClick: (profuser, oldpw, newpw) => {
             console.log("ask for pw change");
-            dispatch(toChangePW(oldpw, newpw));
+            dispatch(toChangePW(profuser,oldpw, newpw));
         }
     }
 }
 
 
-export default ChangePWPage = connect(mapStateToProps)(ChangePWPage);
+export default ChangePWPage = connect(mapStateToProps,mapDispatchToProps)(ChangePWPage);
 
