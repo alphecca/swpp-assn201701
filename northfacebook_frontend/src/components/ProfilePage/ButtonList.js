@@ -1,54 +1,104 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { toChangePW, toChangeDesc } from '../../actions/index.js'
+import { gotoFriend,addFriend,gotoWall } from '../../actions/index.js'
+import ChangeIntroPage from './ChangeIntroPage.js';
+import ChangePWPage from './ChangePWPage.js'; 
+import EscapePage from './EscapePage.js';
 
 class ButtonList extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+           showComponent1 : false,
+           showComponent2 : false,
+           showComponent3 : false,
+       };
+    }
     render(){
         let curruser= this.props.curruser;
         let profuser= this.props.profuser;
-        const onPostClick1 = (curruser, profuser)=> {
-            console.log("[1]curruser: "+curruser+"profuser"+profuser);
-            if(curruser !== profuser)
+        console.log("[ButtonList.js] curruser: "+curruser+"\n     profuser:"+profuser);
+        const onPostClick1 = ()=> {
+            if(curruser != profuser)
                alert("You cannot change other's password");
-            else
-                this.props.onClick1()
+            else{
+        //        this.props.onClick1();
+                if(this.state.showComponent1) this.setState({showComponent1 : false,});
+                else this.setState({showComponent1 : true,});
+            }
         }
-        const onPostClick2 = (curruser, profuser)=> {
-             console.log("[2]curruser: "+curruser+"profuser"+profuser);
-             if(curruser !== profuser )
+        const onPostClick2 = ()=> {
+             if(curruser != profuser )
                  alert("You cannot change other's details");
-             else
-                 this.props.onClick2()
+             else{
+          //       this.props.onClick2()
+                 if(this.state.showComponent2) this.setState({showComponent2 : false,});
+                 else this.setState({showComponent2 : true,});
+             }
+        }
+        const onPostClick3 = ()=>{
+            if(curruser!=profuser)
+                alert("탈Book할거면 너나해ㅡㅡ");
+            else{
+           //     this.props.onClick3()
+                if(this.state.showComponent3) this.setState({showComponent3 : false,});
+                else this.setState({showComponent3: true,});
+            }
+        }
+        const onPostClick4 = ()=>{
+            this.props.onClick4(profuser);
+        }
+        const onPostClick5 = ()=>{
+            this.props.onClick5(profuser);
         } 
+        const onPostClick6 = ()=>{
+            this.props.onClick6(profuser);
+        }
         return(
             <div>
-               <button id="change_pw_button_field" onClick={onPostClick1}>비밀번호 바꾸기</button>
-               <button id="change_detail_button_field" onClick={onPostClick2}>소개글 바꾸기</button>
+               <div id="profile_photo_field">
+                   *TODO :profile_photo_field @ButtonList.js
+               </div>
+               <div id="change_pw_field">
+                   <button id="change_pw_button_field" onClick={onPostClick1}>비밀번호 바꾸기!</button>
+                   {this.state.showComponent1 ? <ChangePWPage />: null }
+               </div>
+               <div id="change_detail_field">
+                   <button id="change_detail_button_field" onClick={onPostClick2}>소개글 바꾸기!</button>
+                   {this.state.showComponent2 ? <ChangeIntroPage />: null }
+               </div>
+               <div id="escape_account_field">
+                   <button id="escape_account_button_field" onClick={onPostClick3}>이곳을 나가겠소!</button>
+                   {this.state.showComponent3 ? <EscapePage /> : null }
+               </div>
+               <div id="friend_list_field">
+                   <button id="friend_list_button_field" onClick={onPostClick4}>나의 동지들★</button>
+                   <button id="friend_add_button_field" onClick={onPostClick5}>동무요청</button>
+               </div>
+               <div id="goto_wall_field">
+                   <button id="goto_wall_button_field" onClick={onPostClick6}>담벼락보기</button>
+               </div>
             </div>
         ); 
     }
 }
 
-//               <button id="change_photo_button_field" onClick={()=>alert("PHOTO")}>사진 바꾸기</button>
-//               <button id="add_article_button_field" onClick={}>글작성하기</button>
-//               <button id="remove_account_button_field" onClick={}>탈북하겠소</button>
-//               <button id="friends_list_button_field" onClick={}>동무 목록</button>
-//               <button id="friends_add_button_field" onClick={}>동무 요청</button>
-//               <button id="friends_cancel_button_field" onClick={}>동무 해제</button>
-
 let mapStateToProps = (state) => {
     return{
         curruser: Object.assign(state.authorization).split(":")[0],
-        profuser: Object.assign(state.authorization).split(":")[0]//TODO 
+        profuser: state.profile_user !== null? Object.assign(state.profile_user.user) : null
     }
 }
 
 let mapDispatchToProps = (dispatch) => {
     return{
-        onClick1: () => dispatch(toChangePW()),
-        onClick2: () => dispatch(toChangeDesc())
+//        onClick1: () => dispatch(toChangePW()),
+//        onClick2: () => dispatch(toChangeIntro()),
+//        onClick3: () => dispatch(toEscape()),
+        onClick4: (profuser) => dispatch(gotoFriend(profuser)),
+        onClick5: (profuser) => dispatch(addFriend(profuser)),
+        onClick6: (profuser) => dispatch(gotoWall(profuser))
     }
 }
-
-export default ButtonList = connect(undefined, mapDispatchToProps)(ButtonList)
+export default ButtonList = connect(mapStateToProps, mapDispatchToProps)(ButtonList)
 

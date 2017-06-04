@@ -236,6 +236,10 @@ def user_detail(request, username):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         serializer = UserSerializer(user,data=request.data)
         if serializer.is_valid():
+            # if password is bad, return 400
+            pwd=request.data['password']
+            if(pwd==''):
+                return Response(status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             return Response(serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST) 

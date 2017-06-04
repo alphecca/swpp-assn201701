@@ -113,7 +113,8 @@ function *mainPageSaga() {
     yield spawn(watchGoToMain);
     yield spawn(watchEdit);
     yield spawn(watchDelete);
-    yield spawn(watchChattingRoom)
+    yield spawn(watchChattingRoom);
+    yield spawn(watchToProfile);
     //TODO 시간 남으면 더 보기 기능 부탁해요
 }
 
@@ -127,6 +128,7 @@ function *articleDetailPageSaga() {
     yield spawn(watchSignOut);
     yield spawn(watchEdit);
     yield spawn(watchDelete);
+    yield spawn(watchToProfile);
 }
 
 function *writePageSaga() {
@@ -186,14 +188,17 @@ function *wallPageSaga() {
     yield spawn(watchToProfile);
 }
 
-//TODO 프로필 페이지 만들어주세요 와와
 function *profilePageSaga() {
     console.log("[ProfilePageSaga]");
     yield spawn(watchLoginState);
     yield spawn(watchSignOut);
     yield spawn(watchGoToMain);
-    yield spawn(watchDescChange);
     yield spawn(watchPWChange);
+    yield spawn(watchIntroChange);
+    yield spawn(watchEscape);
+    yield spawn(watchGoToFriend);
+    yield spawn(watchAddFriend);
+    yield spawn(watchGoToWall);
 }
 
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
@@ -733,28 +738,49 @@ function *watchUpdateChatting(){
 
 function *watchToProfile() {
     while(true) {
-        yield take('TO_PROFILE');
-        const id = window.location.pathname.split('/')[2];
-        yield put(actions.changeUrl('/profile/' + id + '/'));
+        const data=yield take('TO_PROFILE');
+        yield put(actions.changeUrl('/profile/' + data.profuser + '/'));
     }
 }
-function *watchDescChange(){
+function *watchIntroChange(){
     while(true){
-        yield take('TO_DESC_CHANGE');
-        console.log("get desc change action");
-        const username = window.location.pathname.split('/')[2];
-        yield put(actions.changeUrl('/profile/' + username + '/desc/'));
-
+        const data = yield take('TO_INTRO_CHANGE');
+        console.log("##"+data.user);
+        yield call(updateIntro, data.user, data.myname, data.mybelong, data.myintro);
     }
 }
 function *watchPWChange(){
     while(true){
-        yield take('TO_PW_CHANGE');
-        const username = window.location.pathname.split('/')[2];
-        yield put(actions.changeUrl('/profile/'+username+'/pwd/'));
+        const data = yield take('TO_PW_CHANGE');
+        console.log("**get PW change action");
+        yield call(updatePW, data.profuser, data.newpw);
     }
 }
-
+function *watchEscape(){
+    while(true){
+        const data = yield take('TO_ESCAPE');
+        console.log("**get excape action");
+        yield call(escapeBook, data.profuser);
+    }
+}
+function *watchGoToFriend(){
+    while(true){
+        const data=yield take('TO_FRIEND');
+        yield put(actions.changeUrl('/profile/'+data.profuser+'/friend/'));
+    }
+}
+function *watchAddFriend(){
+    while(true){
+        const data=yield take('ADD_FRIEND');
+        yield put(actions.changeUrl('/profile/'+data.profuser+'/addfriend/'));
+    }
+}
+function *watchGoToWall(){
+    while(true){
+        const data=yield take('TO_WALL');
+        yield put(actions.changeUrl('/wall/'+data.profuser+'/'));
+    }
+}
 ///// Page별 saga함수에서 쓸 saga함수 (그 외)
 // signIn: 백엔드에 get을 날리는 함수
 function *signIn(data) {
@@ -820,6 +846,10 @@ function *signUp(data) {
         else if(error.statusCode === 0) {
             alert("Backend server not available");
             console.log("Check backend server");
+        }
+        else if(error.statusCode === 400){
+            alert("Length of username must be 4~20\nEnter all text box correctly");
+            console.log("Put correct username & password");
         }
         else if(error.statusCode === 404) {
             alert("Parent Article Does Not Exist");
@@ -1237,4 +1267,97 @@ function *updateChatting(room_id) {
 function *createUpdateChatting(room_id){
     yield delay(500);
     yield put(actions.updateChatting(room_id))
+}
+// 비밀번호 바꾼 걸 put 요청 보내는 함수
+function *updatePW(profuser, newpw){
+    const backPath = 'users/'+profuser+'/';
+    try{
+        yield call(xhr.send, fixed_url+backPath, {
+            method: 'PUT',
+            headers: {
+                "Authorization": "Basic "+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json',
+            },
+            responseType:'json',
+            body: JSON.stringify({"username": profuser, "password": newpw})
+        });
+        console.log("put password succeed ");
+        //auto sign out
+        localStorage.removeItem('auth');
+        yield put(actions.changeUrl('/main/'));
+    }catch(error){
+        if(error.statusCode === 405){
+            console.log("You're not this user");
+        }else if(error.statusCode === 400){
+            console.log("Bad password");
+            return;
+        }else if(error.statusCode === 0){
+            console.log("Backend is not accessible");
+            alert("Temporary Server Error");
+            return;
+        }else{
+            console.log("Unknown Error occured :"+error.statusCode);
+            alert("Unknown Error occured");
+            return;
+        }
+    }
+}
+// profile을 수정한걸 post요청보내는 함수
+function *updateIntro(profuser, myname, mybelong, myintro){
+    const backPath = 'users/'+profuser+'/profile/';
+    try{
+        yield call(xhr.send, fixed_url+backPath, {
+            method : 'PUT',
+            headers: {
+                "Authorization": "Basic "+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept : 'application/json',
+            },
+            responseType: 'json',
+            body: JSON.stringify({"user":profuser,"myname":myname, "mybelong": mybelong, "myintro": myintro})
+        });
+        console.log("put profile succeed");
+        yield put(actions.changeUrl('/profile/'+profuser+'/'))
+    }catch(error){
+        console.log("error code: "+error.statusCode);
+        if(error.statusCode === 400){
+            console.log("Wrong json input format");
+        }else if(error.statusCode === 403 ){
+            console.log("You cannot change other's profile");
+        }else{
+            console.log("Unknown error occurs");
+            return ;
+        }
+    }
+}
+function *escapeBook(profuser){
+    const backPath = 'users/'+profuser+'/';
+    try{
+        yield call(xhr.send, fixed_url+backPath,{
+            method : 'DELETE',
+            headers:{
+                'Authorization': 'Basic '+localStorage['auth'],
+                Accept: 'application/json'
+            },
+            responseType: 'json',
+        });
+        console.log("delete account succeed!");
+        localStorage.removeItem('auth');
+        yield put(actions.changeUrl('/main/'));
+    }catch(error){
+         console.log("error: "+error.statusCode);
+         if(error.statusCode === 204){
+             console.log("delete account succeed!");
+             localStorage.removeItem('parent');
+             yield put(actions.changeUrl('/main/'));
+        }else if(error.statusCode === 403){
+             alert("This account is not yours");
+        }else{
+             console.log("delete account succeed!");
+             localStorage.removeItem('parent');
+             yield put(actions.changeUrl('/main/'));
+           return ;
+        }
+    }
 }

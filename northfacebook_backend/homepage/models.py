@@ -8,7 +8,8 @@ class Profile(models.Model):
     myname = models.TextField()
     mybelong = models.TextField()
     myintro = models.TextField()
- 
+
+# 클래스 밖에 정의된 함수입니다 
 def create_profile(sender, instance, created, **kwargs):
     #create Profile for every new User model
     if created:
