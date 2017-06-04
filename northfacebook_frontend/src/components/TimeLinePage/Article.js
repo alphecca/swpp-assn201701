@@ -40,7 +40,7 @@ class Article extends React.Component {
                     <button id={writerId} onClick={onPostClick}>id: {username}</button>
                     <hr />
                     <div id={imgId}>
-                    {images !== undefined ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img.image} alt="" /></span>)} ) : null}
+                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={"data:image;base64,"+img} alt="" /></span>)} ) : null}
                     </div>
                     <div id={textId} className="article_text">
                     {articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}

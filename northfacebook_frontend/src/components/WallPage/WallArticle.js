@@ -29,7 +29,10 @@ class WallArticle extends React.Component {
         const updated_date = updated_[0].split('-');
         const updated_time = updated_[1].split(':');
 
-        const labelId = "a"+this.props.article.id+"_label"
+        const imgId = 'a'+this.props.article.id+'_images';
+        const images = this.props.article.images
+
+        const labelId = "a"+this.props.article.id+"_label";
         const typeLabel = () => {
             const current = window.atob(localStorage['auth']).split(":")[0];
             console.log(current);
@@ -57,6 +60,9 @@ class WallArticle extends React.Component {
                     {typeLabel()}
                     <p id={writerId}>id: {username}</p>
                     <hr />
+                    <div id={imgId}>
+                    {images.map((img) => <img key={"img"+imgId} src={'data:image;base64,'+img} alt=""/>)}
+                    </div>
                     <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}</div>
                     <hr />
                     <p id={createdId}>작성일: {created_date[0]}년 {created_date[1]}월 {created_date[2]}일 {created_time[0]}시 {created_time[1]}분 {created_time[2].split('.')[0]}초</p>

@@ -24,6 +24,7 @@ def main_list(request):
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
+        print(request.data)
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
@@ -537,3 +538,4 @@ def sasang(request,username):
             serializer.save(first=sasang.second,second=sasang.first,counter=sasang.counter+1)
             return Response(serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
