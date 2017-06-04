@@ -114,11 +114,7 @@ function *mainPageSaga() {
     yield spawn(watchEdit);
     yield spawn(watchDelete);
     yield spawn(watchChattingRoom);
-<<<<<<< HEAD
-=======
     yield spawn(watchToProfile);
-    //TODO 시간 남으면 더 보기 기능 부탁해요
->>>>>>> upstream/master
 }
 
 function *articleDetailPageSaga() {
@@ -439,12 +435,12 @@ function *watchLoginState() {
                                 'Authorization': 'Basic '+localStorage['auth'],
                             Accept: 'application/json'
                             },
-                            responseType: 'json' 
+                            responseType: 'json'
                          });
                          console.log('Get data without exception');
                     }catch(error){
                         console.log(error);
-                        //TODO error case 
+                        //TODO error case
                         if(error.statusCode === 403){
                             alert("Unauthorized user tried to access profile page. Please sign in first");
                         }else if(error.statusCode ===404){
@@ -470,8 +466,8 @@ function *watchLoginState() {
                         room_id: 0,
                         profile_user: profile_data.body,
                                         }));
-                } 
- 
+                }
+
                 else {
                     // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
                     try {

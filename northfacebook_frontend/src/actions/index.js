@@ -157,7 +157,6 @@ export const updateChatting = (room_id) => {
 	room_id: room_id
     }
 }
-<<<<<<< HEAD
 
 export const moreArticle = () => {
   return {
@@ -174,7 +173,6 @@ export const lessChat = () => {
     type: "LESS_CHAT"
   }
 }
-=======
 export const toProfile = (profile_user) =>{
     return {
         type: 'TO_PROFILE',
