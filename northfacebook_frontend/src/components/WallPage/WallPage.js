@@ -20,7 +20,7 @@ class WallPage extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
-        profile_user: state.profile_user !== null ? Object.assign(state.profile_user.username) : null
+        profile_user: state.profile_user !== null ? Object.assign(state.profile_user.username) : null //TODO 이후 프로필 전체 구현 끝나면 수정 예정
     }
 }
 

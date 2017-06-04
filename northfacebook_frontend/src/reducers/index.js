@@ -33,7 +33,6 @@ const homepage = (state = homepageInitialState, action) => {
                 authorization: window.atob(action.auth),
                 articles: state.articles,
                 parent_article: state.parent_article,
-                profile_user: state.profile_user
             })
         }
         case 'SIGN_OUT': {

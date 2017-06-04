@@ -3,7 +3,7 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: python:3.5.1
+# image: python:3.5.1
 
 pipelines:
 #  custom:
@@ -26,8 +26,18 @@ pipelines:
 #            - pip install -r requirements.txt
 #            - python3 inittest.py http://wlxyzlw.iptime.org:8000/
 #            - python3 signUpChecker.py http://wlxyzlw.iptime.org:3000/
-  default:
+  custom:
+    frontend:
     - step:
+        image: node:6.9.4
+        script:
+          - cd northfacebook_frontend
+          - npm install
+          - npm test -- --coverage
+          - cd ..
+    backend:
+    - step:
+        image: python:3.5.1
         script: # Modify the commands below to build your repository.
           - cd progress
 #          - apt-get update && apt-get install tmux

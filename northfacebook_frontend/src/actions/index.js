@@ -157,6 +157,7 @@ export const updateChatting = (room_id) => {
 	room_id: room_id
     }
 }
+<<<<<<< HEAD
 
 export const moreArticle = () => {
   return {
@@ -172,4 +173,52 @@ export const lessChat = () => {
   return {
     type: "LESS_CHAT"
   }
+}
+=======
+export const toProfile = (profile_user) =>{
+    return {
+        type: 'TO_PROFILE',
+        profuser: profile_user,
+    }
+}
+export const toChangeIntro = (user,name,belong,intro)=>{
+    return {
+         type: 'TO_INTRO_CHANGE',
+         user: user,
+         myname: name,
+         mybelong: belong,
+         myintro: intro,
+    }
+}
+export const toChangePW = (profile_user, oldpw, newpw) => {
+    return{
+        type: 'TO_PW_CHANGE',
+        profuser: profile_user,
+        oldpw : oldpw,
+        newpw : newpw,
+    }
+}
+export const toEscape = (profile_user)=>{
+    return{
+        type: 'TO_ESCAPE',
+        profuser: profile_user,
+    }
+}
+export const gotoFriend = (profile_user) =>{
+    return{
+        type: 'TO_FRINED',
+        profuser: profile_user
+    }
+}
+export const addFriend = (profile_user) =>{
+    return{
+        type: 'ADD_FRIEND',
+        profuser: profile_user
+    }
+}
+export const gotoWall = (profile_user) =>{
+    return{
+        type: 'TO_WALL',
+        profuser: profile_user
+    }
 }
