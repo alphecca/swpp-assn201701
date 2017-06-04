@@ -35,7 +35,8 @@ const App = ({store}) => {
                     <Route exact path="/chatting/:id" component={ChattingPage} />
                     <Route path="/wall/:id" component={WallPage} />
                     <Route path="/profile/:id" component={ProfilePage} />
-                    <Route path="/profile/:id/addfriend" component={FriendPage} />
+                    <Route path="/friend/:id" component={FriendPage} />
+                    <Route path="/addfriend/:id" component={AddFriendPage} />
                 </div>
             </BrowserRouter>
         </Provider>

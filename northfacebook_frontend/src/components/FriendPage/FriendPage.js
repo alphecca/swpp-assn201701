@@ -10,6 +10,7 @@ class FriendPage extends React.Component {
         return (
                 <div>
                     <SignOut />
+                    <br /> <br /> <br /> <br /> <br /> <br />
                     <button id="add_friend_button_field" onClick={() => {this.props.onClick(profuser)}}>새 동무 추가</button>
                     <hr />
                     <FriendList />

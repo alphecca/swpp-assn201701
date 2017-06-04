@@ -11,7 +11,7 @@ class Friend extends React.Component {
 
         return (
                 <div id={componentId} className="Friend">
-                    <a id={friendNameId} onClick={() => this.props.onFriendClick(this.props.friend.friend)}>{friendName}</a>
+                    <a id={friendNameId} onClick={() => this.props.onFriendClick(this.props.friend.friend)}><u>{friendName}</u></a>
                 </div>
                )
     }

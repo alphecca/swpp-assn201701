@@ -8,6 +8,7 @@ const homepageInitialState = {
     chatting_users: [],
     profile_user: null,
     room_id: 0,
+    friends: [],
 };
 
 const homepage = (state = homepageInitialState, action) => {
@@ -35,7 +36,8 @@ const homepage = (state = homepageInitialState, action) => {
                 texts: action.state.texts,
                 chatting_users: action.state.chatting_users,
                 room_id: action.state.room_id,
-                profile_user: action.state.profile_user
+                profile_user: action.state.profile_user,
+		friends: action.state.friends,
             })
         }
         case 'ARTICLE_DETAIL': {

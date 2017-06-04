@@ -63,6 +63,12 @@ export default function *saga() {
                 case 'profile':
                     yield spawn(profilePageSaga);
                     break;
+                case 'friend':
+                    yield spawn(friendPageSaga);
+                    break;
+                case 'addfriend':
+                    yield spawn(addFriendPageSaga);
+                    break;
                 default:
                     console.log("default state");
                     alert("Oops, page not found");             
@@ -199,6 +205,23 @@ function *profilePageSaga() {
     yield spawn(watchGoToFriend);
     yield spawn(watchAddFriend);
     yield spawn(watchGoToWall);
+}
+
+function *friendPageSaga() {
+    yield spawn(watchLoginState);
+    yield spawn(watchSignOut);
+    yield spawn(watchGoToMain);
+    yield spawn(watchAddFriend);
+    yield spawn(watchToProfile);
+}
+
+function *addFriendPageSaga() {
+    yield spawn(watchLoginState);
+    yield spawn(watchSignOut);
+    yield spawn(watchGoToMain);
+    yield spawn(watchGoToFriend);
+    yield spawn(watchToProfile);
+    // TODO add something else
 }
 
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
@@ -467,7 +490,49 @@ function *watchLoginState() {
                         profile_user: profile_data.body,
                                         }));
                 } 
- 
+                else if(path.split("/")[1] === 'friend' || path.split("/")[1] === 'addfriend'){
+                    //프로필 정보를 get하는 부분
+                    console.log("get friend list...");
+                    try{
+                        data = yield call(xhr.get, fixed_url+'users/'+username+'/friends/',{
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json' 
+                         });
+                         console.log('Get data without exception');
+                    } catch(error) {
+                        console.log(error);
+                        //TODO error case 
+                        if (error.statusCode === 403) {
+                            alert("Unauthorized user tried to access profile page. Please sign in first");
+                        } else if(error.statusCode === 404) {
+                            alert("404 Not Found");
+                            console.log("안단티노가 안심하래");
+                            return;
+                        } else if(error.statusCode === 0) {
+                            console.log("Backend server is not accessible");
+                            alert("Temporary Server error. Try reloading");
+                            return;
+                        } else {
+                            alert("Unknown Error Occured");
+                            return;
+                        }
+                    }
+                    yield put(actions.setState({
+                        authorization: window.atob(localStorage['auth']),
+                        parent_article: null,
+                        articles: [],
+                        rooms: [],
+                        texts: [],
+                        chatting_users: [],
+                        room_id: 0,
+                        profile_user: { user: username },
+                        friends: data.body,
+                                        }));
+                } 
                 else {
                     // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
                     try {
@@ -761,14 +826,15 @@ function *watchEscape(){
 }
 function *watchGoToFriend(){
     while(true){
-        const data=yield take('TO_FRIEND');
-        yield put(actions.changeUrl('/profile/'+data.profuser+'/friend/'));
+        const data = yield take('TO_FRIEND');
+        console.log("동무목록 액션 잡았쓰");
+        yield put(actions.changeUrl('/friend/'+data.profuser+'/'));
     }
 }
 function *watchAddFriend(){
     while(true){
-        const data=yield take('ADD_FRIEND');
-        yield put(actions.changeUrl('/profile/'+data.profuser+'/addfriend/'));
+        const data = yield take('ADD_FRIEND');
+        yield put(actions.changeUrl('/addfriend/'+data.profuser+'/'));
     }
 }
 function *watchGoToWall(){

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { gotoFriend,addFriend,gotoWall } from '../../actions/index.js'
+import { gotoFriend, addFriend, gotoWall } from '../../actions'
 import ChangeIntroPage from './ChangeIntroPage.js';
 import ChangePWPage from './ChangePWPage.js'; 
 import EscapePage from './EscapePage.js';
@@ -18,8 +18,8 @@ class ButtonList extends React.Component{
         let curruser= this.props.curruser;
         let profuser= this.props.profuser;
         console.log("[ButtonList.js] curruser: "+curruser+"\n     profuser:"+profuser);
-        const onPostClick1 = ()=> {
-            if(curruser != profuser)
+        const onPostClick1 = () => {
+            if(curruser !== profuser)
                alert("You cannot change other's password");
             else{
         //        this.props.onClick1();
@@ -27,8 +27,8 @@ class ButtonList extends React.Component{
                 else this.setState({showComponent1 : true,});
             }
         }
-        const onPostClick2 = ()=> {
-             if(curruser != profuser )
+        const onPostClick2 = () => {
+             if(curruser !== profuser )
                  alert("You cannot change other's details");
              else{
           //       this.props.onClick2()
@@ -36,8 +36,8 @@ class ButtonList extends React.Component{
                  else this.setState({showComponent2 : true,});
              }
         }
-        const onPostClick3 = ()=>{
-            if(curruser!=profuser)
+        const onPostClick3 = () => {
+            if(curruser !== profuser)
                 alert("탈Book할거면 너나해ㅡㅡ");
             else{
            //     this.props.onClick3()
@@ -45,13 +45,14 @@ class ButtonList extends React.Component{
                 else this.setState({showComponent3: true,});
             }
         }
-        const onPostClick4 = ()=>{
+        const onPostClick4 = () => {
+            alert("동무목록 눌렸어");
             this.props.onClick4(profuser);
         }
-        const onPostClick5 = ()=>{
+        const onPostClick5 = () => {
             this.props.onClick5(profuser);
         } 
-        const onPostClick6 = ()=>{
+        const onPostClick6 = () => {
             this.props.onClick6(profuser);
         }
         return(
@@ -72,11 +73,11 @@ class ButtonList extends React.Component{
                    {this.state.showComponent3 ? <EscapePage /> : null }
                </div>
                <div id="friend_list_field">
-                   <button id="friend_list_button_field" onClick={onPostClick4}>나의 동지들★</button>
-                   <button id="friend_add_button_field" onClick={onPostClick5}>동무요청</button>
+                   <button id="friend_list_button_field" onClick={onPostClick4}>나의 동무들★</button>
+                   <button id="friend_add_button_field" onClick={onPostClick5}>동무 추가 요청</button>
                </div>
                <div id="goto_wall_field">
-                   <button id="goto_wall_button_field" onClick={onPostClick6}>담벼락보기</button>
+                   <button id="goto_wall_button_field" onClick={onPostClick6}>담벼락 보기</button>
                </div>
             </div>
         ); 
@@ -86,7 +87,7 @@ class ButtonList extends React.Component{
 let mapStateToProps = (state) => {
     return{
         curruser: Object.assign(state.authorization).split(":")[0],
-        profuser: state.profile_user !== null? Object.assign(state.profile_user.user) : null
+        profuser: state.profile_user !== null ? Object.assign(state.profile_user.user) : null
     }
 }
 

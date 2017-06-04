@@ -180,25 +180,26 @@ export const toChangePW = (profile_user, oldpw, newpw) => {
         newpw : newpw,
     }
 }
-export const toEscape = (profile_user)=>{
+export const toEscape = (profile_user) => {
     return{
         type: 'TO_ESCAPE',
         profuser: profile_user,
     }
 }
-export const gotoFriend = (profile_user) =>{
+export const gotoFriend = (profile_user) => {
+    console.log("동무목록 액션 생겼쓰")
     return{
-        type: 'TO_FRINED',
+        type: 'TO_FRIEND',
         profuser: profile_user
     }
 }
-export const addFriend = (profile_user) =>{
+export const addFriend = (profile_user) => {
     return{
         type: 'ADD_FRIEND',
         profuser: profile_user
     }
 }
-export const gotoWall = (profile_user) =>{
+export const gotoWall = (profile_user) => {
     return{
         type: 'TO_WALL',
         profuser: profile_user
