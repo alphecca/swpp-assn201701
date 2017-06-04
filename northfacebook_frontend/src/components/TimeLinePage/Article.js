@@ -29,6 +29,9 @@ class Article extends React.Component {
         const updated_date = updated_[0].split('-');
         const updated_time = updated_[1].split(':');
 
+        const imgId = 'a'+this.props.article.id+'_images';
+        const images = this.props.article.images
+
         const onPostClick = ()=>{
             this.props.onPostClick(username);
         }
@@ -36,7 +39,12 @@ class Article extends React.Component {
                 <div id={componentId} className="Article">
                     <button id={writerId} onClick={onPostClick}>id: {username}</button>
                     <hr />
-                    <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}</div>
+                    <div id={imgId}>
+                    {images !== undefined ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img} alt="" /></span>)} ) : null}
+                    </div>
+                    <div id={textId} className="article_text">
+                    {articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}
+                    </div>
                     <hr />
                     <p id={createdId}>작성일: {created_date[0]}년 {created_date[1]}월 {created_date[2]}일 {created_time[0]}시 {created_time[1]}분 {created_time[2].split('.')[0]}초</p>
                     <p id={updatedId}>최근 수정일: {updated_date[0]}년 {updated_date[1]}월 {updated_date[2]}일 {updated_time[0]}시 {updated_time[1]}분 {updated_time[2].split('.')[0]}초</p>
