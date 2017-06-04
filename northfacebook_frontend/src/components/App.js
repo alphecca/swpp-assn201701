@@ -12,8 +12,6 @@ import CreateRoomPage from './CreateRoomPage/CreateRoomPage.js';
 import ChattingPage from './ChattingPage/ChattingPage.js';
 import WallPage from './WallPage/WallPage.js';
 import ProfilePage from './ProfilePage/ProfilePage.js';
-import ChangePWPage from './ProfilePage/ChangePWPage.js';
-import ChangeDescPage from './ProfilePage/ChangeDescPage.js';
 import PropTypes from 'prop-types';
 
 
@@ -35,8 +33,6 @@ const App = ({store}) => {
                     <Route exact path="/chatting/:id" component={ChattingPage} />
                     <Route path="/wall/:id" component={WallPage} />
                     <Route path="/profile/:id" component={ProfilePage} />
-                    <Route path="/profile/:id/pwd" component={ChangePWPage} />
-                    <Route path="/profile/:id/desc" component={ChangeDescPage} />
                 </div>
             </BrowserRouter>
         </Provider>

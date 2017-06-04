@@ -24,7 +24,6 @@ class ProfilePage extends React.Component {
 }
 
 let mapStateToProps = (state) => {
-    console.log("IEOFJEF")
     return {
         profile_user : state.profile_user !== null ? Object.assign(state.profile_user.user) : null,
 //        profile_user:state.profile_data['user'],//TODO 나중에 내프로필이 아닌 남의 프로필 클릭하면 이거면 안됨
