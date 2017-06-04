@@ -11,7 +11,8 @@ const initState = {
     texts: [],
     chatting_users: [],
     room_id: 0,
-    profile_user: null
+    profile_user: null,
+    load: 0
 }
 
 
@@ -29,7 +30,8 @@ describe('homepage reducer', () => {
             texts: [],
             chatting_users: [],
             room_id: 0,
-            profile_user: null
+            profile_user: null,
+            load: 0
         })
     })
     it('should return the signout state', () => {
@@ -45,7 +47,9 @@ describe('homepage reducer', () => {
             "text": "asdfasdf",
             "children_num": 0,
             "created_time": "2017-05-29T05:35:59.021455Z",
-            "updated_time": "2017-05-29T05:35:59.021566Z"
+            "updated_time": "2017-05-29T05:35:59.021566Z",
+            "image0": null,
+            "images": []
         }]
         const parent_article = null
         const rooms = [], texts=[], chatting_users = []
@@ -60,7 +64,8 @@ describe('homepage reducer', () => {
             room_id: room_id,
             texts: texts,
             chatting_users: chatting_users,
-            profile_user: null
+            profile_user: null,
+            load: 0
         }
 
         expect(homepageApp(undefined, actions.setState(state))).toEqual(state)
@@ -74,7 +79,9 @@ describe('homepage reducer', () => {
             "text": "asdfasdf",
             "children_num": 0,
             "created_time": "2017-05-29T05:35:59.021455Z",
-            "updated_time": "2017-05-29T05:35:59.021566Z"
+            "updated_time": "2017-05-29T05:35:59.021566Z",
+            "image0": null,
+            "images": []
         }
         expect(homepageApp(undefined, actions.articleDetail(parent_article))).toEqual(Object.assign({}, initState, {
             parent_article: parent_article
