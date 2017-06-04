@@ -920,7 +920,6 @@ function *postLike(id) {
 // postArticle: 새로운 글/댓글을 쓰는 함수
 function *postArticle(text, images) {
     console.log(images);
-    alert("asdf");
     let form = new FormData();
     form.append('text', text);
     if(images === null || images === undefined)
