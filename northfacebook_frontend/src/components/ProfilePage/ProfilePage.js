@@ -24,11 +24,13 @@ class ProfilePage extends React.Component {
 }
 
 let mapStateToProps = (state) => {
+    console.log("IEOFJEF")
     return {
-        profile_user:state.profile_data['user'],//TODO 나중에 내프로필이 아닌 남의 프로필 클릭하면 이거면 안됨
-        profile_myname: state.profile_data['myname'],
-        profile_mybelong: state.profile_data['mybelong'],
-        profile_myintro: state.profile_data['myintro']
+        profile_user : state.profile_user !== null ? Object.assign(state.profile_user.user) : null,
+//        profile_user:state.profile_data['user'],//TODO 나중에 내프로필이 아닌 남의 프로필 클릭하면 이거면 안됨
+        profile_myname: state.profile_user !== null? Object.assign(state.profile_user.myname): null, 
+        profile_mybelong: state.profile_user !== null? Object.assign(state.profile_user.mybelong):null, 
+        profile_myintro: state.profile_user !== null? Object.assign(state.profile_user.myintro): null 
     }
 }
 

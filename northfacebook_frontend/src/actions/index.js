@@ -56,10 +56,11 @@ export const writeArticle = (id) => {
         id
     }
 }
-export const editArticle = (id) => {
+export const editArticle = (id, username) => {
     return {
         type: 'EDIT_ARTICLE',
         id: id,
+        username: username
     }
 }
 export const putArticle = (text) =>{

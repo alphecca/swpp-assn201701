@@ -1,4 +1,5 @@
 import React from 'react'
+//import { Image } from 'react-naive'
 import {connect} from 'react-redux'
 import {addArticle} from '../../actions'
 
@@ -23,6 +24,7 @@ class AddArticle extends React.Component{
 }
 
 let mapStateToProps = (state) => {
+    console.log(window.location.pathname)
   return {
      id: state.parent_article,
      textId: "post_text_field",
