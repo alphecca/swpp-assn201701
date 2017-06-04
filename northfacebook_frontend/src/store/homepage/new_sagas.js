@@ -63,7 +63,7 @@ export default function *saga() {
                     break;
                 default:
                     console.log("default state");
-                    alert("Oops, page not found");             
+                    alert("Oops, page not found");
                     if(localStorage.getItem("auth") === null) {
                         localStorage.removeItem('parent');
                         yield put(actions.changeUrl('/'));
@@ -111,8 +111,7 @@ function *mainPageSaga() {
     yield spawn(watchGoToMain);
     yield spawn(watchEdit);
     yield spawn(watchDelete);
-    yield spawn(watchChattingRoom)
-    //TODO 시간 남으면 더 보기 기능 부탁해요
+    yield spawn(watchChattingRoom);
 }
 
 function *articleDetailPageSaga() {
@@ -161,7 +160,6 @@ function *chattingPageSaga(id){
     yield spawn(watchChattingRoom);
     yield spawn(watchSendText);
     yield spawn(watchUpdateChatting);
-//  yield spawn(watchLoadMoreText); // 더 보기 기능
 }
 
 function *createRoomPageSaga(){
@@ -253,7 +251,8 @@ function *watchLoginState() {
                     rooms: [],
                     texts: [],
                     chatting_users: [],
-                    room_id: 0
+                    room_id: 0,
+                    //load : 0
                     //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                 }));
             }
@@ -302,7 +301,8 @@ function *watchLoginState() {
                     texts: [],
                     chatting_users: [],
                     room_id: 0,
-                    profile_user: null
+                    profile_user: null,
+                    // load: 0,
                     // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
                 }));
             }
@@ -595,15 +595,16 @@ function *watchDelete() {
     }
 }
 
-// watchEdit: 메인페이지 또는 세부페이지에서 수정 버튼 클릭 관찰 
+// watchEdit: 메인페이지 또는 세부페이지에서 수정 버튼 클릭 관찰
 function *watchEdit(){
     while(true){
         console.log("in edit article");
         const data = yield take('EDIT_ARTICLE');
         //TODO user data GET해서 forbidden or not
-        yield put(actions.changeUrl('/edit/'+data.id+'/'));     
-    } 
+        yield put(actions.changeUrl('/edit/'+data.id+'/'));
+    }
 }
+
 
 // watchPutArticle: 글 수정 페이지에서 EDIT 버튼 클릭 관찰
 function *watchPutArticle(id){
@@ -873,7 +874,7 @@ function *deleteArticle(id){
         }
         else if(error.statusCode === 403){
             alert("This is not your article");
-        }  
+        }
         else yield put(actions.changeUrl('/main/'));
     }
 }
@@ -885,7 +886,7 @@ function *putArticle(id, text){
     try {
         yield call(xhr.send, fixed_url+path, {
             method: 'PUT',
-            headers: { 
+            headers: {
                 "Authorization": "Basic "+localStorage['auth'],
                 "Content-Type": 'application/json',
                 Accept: 'application/json'

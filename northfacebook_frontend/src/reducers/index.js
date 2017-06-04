@@ -7,11 +7,27 @@ const homepageInitialState = {
     texts: [],
     chatting_users: [],
     profile_user: null,
-    room_id: 0
+    room_id: 0,
+    load : 0
 };
 
 const homepage = (state = homepageInitialState, action) => {
     switch (action.type) {
+         case 'MORE_ARTICLE': {
+            return Object.assign({}, state, {
+              load:state.load+5
+            })
+        }
+        case 'MORE_CHAT': {
+            return Object.assign({}, state, {
+              load:state.load+10
+            })
+        }
+         case 'LESS_CHAT': {
+            return Object.assign({}, state, {
+              load:state.load>0?state.load-10:state.load
+            })
+        }
         case 'AUTHENTICATE': {
             return Object.assign({}, state, {
                 authorization: window.atob(action.auth),
@@ -36,7 +52,7 @@ const homepage = (state = homepageInitialState, action) => {
                 texts: action.state.texts,
                 chatting_users: action.state.chatting_users,
                 room_id: action.state.room_id,
-                profile_user: action.state.profile_user
+                profile_user: action.state.profile_user,
             })
         }
         case 'ARTICLE_DETAIL': {
