@@ -157,6 +157,22 @@ export const updateChatting = (room_id) => {
 	room_id: room_id
     }
 }
+
+export const moreArticle = () => {
+  return {
+    type: "MORE_ARTICLE"
+  }
+}
+export const moreChat = () => {
+  return {
+    type: "MORE_CHAT"
+  }
+}
+export const lessChat = () => {
+  return {
+    type: "LESS_CHAT"
+  }
+}
 export const toProfile = (profile_user) =>{
     return {
         type: 'TO_PROFILE',
@@ -203,4 +219,4 @@ export const gotoWall = (profile_user) =>{
         type: 'TO_WALL',
         profuser: profile_user
     }
-} 
+}
