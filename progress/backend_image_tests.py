@@ -50,7 +50,7 @@ print("3. GET & POST image reply")
 articleId = str(data[0]["id"])
 post_image_or_error(article_link+articleId+'/article/', {"image0": ('testImage.png', open('testImage.png', 'rb'))}, {"text": "test"}, user_pairs[0][0], user_pairs[0][1])
 get_json_or_error(article_link+articleId+'/article/', 'test2', 'test2passwd')
-"""
+
 print("Final. Deleting all data that test has created.")
 for user in user_pairs:
-    delete_or_error(user_link, user[0], user[1])"""
+    delete_or_error(user_link, user[0], user[1])
