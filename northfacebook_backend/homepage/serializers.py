@@ -148,11 +148,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class FriendSerializer(serializers.ModelSerializer):
     friend = serializers.ReadOnlyField(source='friend.username')
-    me = serializers.ReadOnlyField(source='me.username')
-    is_mutual = serializers.ReadOnlyField()
     class Meta:
         model = Friend
-        fields = ('friend','me', 'is_mutual')
+        fields = ('friend',)
 
 class SasangSerializer(serializers.ModelSerializer):
     first=serializers.ReadOnlyField(source='first.username')
