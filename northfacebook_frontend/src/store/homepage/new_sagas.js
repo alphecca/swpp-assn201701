@@ -610,7 +610,7 @@ function *watchLoginState() {
                     // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
                     try {
                         localStorage.setItem('parent', id);
-                        data = yield call(xhr.get, fixed_url+'article/'+id+'/article/', {
+                        data = yield call(xhr.get, fixed_url+'article/'+id+'/total/', {
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': 'Basic '+ localStorage['auth'],
@@ -803,8 +803,8 @@ function *watchEdit(){
             alert("This is not your article!");
             continue;
         }
-        yield put(actions.changeUrl('/edit/'+data.id+'/'));     
-    } 
+        yield put(actions.changeUrl('/edit/'+data.id+'/'));
+    }
 }
 
 
@@ -1079,7 +1079,8 @@ function *postArticle(text, images) {
             body: form
         });
         console.log("post article succeed 1");
-        yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+        //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+        yield put(actions.changeUrl('/main/'));
     }
     catch(error) {
         if(error.statusCode === 201) {

@@ -47,13 +47,13 @@ print("Frontend initializer ran successfully!")
 ##########################FRONTEND TEST START##############################
 driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
-'''
+
 # 본격적인 프론트엔드 테스트 시작
 # 로그인 및 로그아웃 테스트
 print("1. sign in/out test")
 sleep(delayTime)
 signInVerification(driver, user_list[0][0], user_list[0][1]) # sign in
-sleep(delayTime)
+sleep(delayTime*2)
 signOutVerification(driver, user_list[0][0]) # sign out
 
 # 회원가입 테스트
@@ -64,7 +64,7 @@ signUpVerification(driver, 5)
 sleep(delayTime)
 signUpVerification(driver, 10)
 sleep(delayTime)
-signOutVerification(driver, "test10")
+signOutVerification(driver, 'test10')
 
 # 메인페이지 테스트
 print("3. main page test")
@@ -107,13 +107,14 @@ mainPageVerification(driver, data[0:5])
 # like test
 print("5. like test")
 article_link = backend_link + 'article/' + str(data[0]["id"]) + '/'
-likeVerification(driver, data[0]["id"], False)
 sleep(delayTime)
-likeVerification(driver, data[0]["id"], True)
+likeVerification(driver, data[0]["id"], user_list[0][0] == data[0]["owner"])
 tmp = data[0]["like_num"]
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
+if user_list[0][0] != data[0]['owner']:
+    tmp = tmp + 1
 ## 좋아요 수 증가 확인
-if data[0]["like_num"] == tmp + 1:
+if data[0]["like_num"] == tmp:
     pass
 else:
     print("Like fail")
@@ -129,10 +130,14 @@ data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 if(data[0]["text"] != "edit test"):
     print("Edit fail")
     exit(1)
-mainPageVerification(driver, data[0:5])
+sleep(1)
+articleVerification(driver, data[0])
+sleep(1)
+driver.find_element_by_id('to_main_page_field').click()
 
 # reply test
 print("7. reply test")
+sleep(1)
 replyVerification(driver, data[0]["id"], "reply test")
 sleep(delayTime)
 reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
@@ -171,7 +176,7 @@ replyVerification(driver, data[0]["id"], "reply test on detail page")
 sleep(delayTime)
 reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-likeVerification(driver, reply_data[0]["id"], False)
+likeVerification(driver, reply_data[0]["id"], True)
 sleep(delayTime)
 reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
@@ -194,7 +199,15 @@ sleep(delayTime)
 deleteErrorVerification(driver, data[0]["id"])
 sleep(delayTime)
 editErrorVerification(driver, data[0]["id"])
-'''
+
+sleep(delayTime)
+driver.quit()
+
+sleep(delayTime*3)
+driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
+driver.get(frontend_link)
+
+
 ## 채팅 테스트
 print("Frontend chatting test is running...")
 print("[test for person A]")
@@ -220,7 +233,7 @@ sendTextVerification(driver, backend_link, "test1", "test1passwd", roomId)
 # sign out
 sleep(delayTime)
 print("5. sign out...")
-signOutVerification(driver)
+signOutVerification(driver, 'test1')
 
 # for the other user
 print("[test for person B]")
@@ -235,7 +248,7 @@ print("3. sen/get message")
 B_sendTextVerification(driver, backend_link, "test2", "test2passwd", roomId)
 sleep(delayTime)
 print("4. sign out...")
-signOutVerification(driver)
+signOutVerification(driver, 'test2')
 
 ##########################FRONTEND TEST FINISHED###########################
 driver.quit()

@@ -18,8 +18,8 @@ class TimeLine extends React.Component {
         };
       return(
          <div className="TimeLine">
-                    <button id="write_button_field" onClick={this.props.onWriteClick}>Write</button>
-                    <button id="chat_button_field" onClick={this.props.onChatClick}>Chat</button>
+                    <button id="write_button_field" onClick={this.props.onWriteClick}>글쓰기</button>
+                    <button id="chat_button_field" onClick={this.props.onChatClick}>수다방</button>
                     <hr />
                     <ArticleList />
         </div>

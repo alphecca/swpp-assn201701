@@ -19,9 +19,9 @@ class Room extends React.Component {
                     <div className="divider"/>
                     <span id={roomNameId}>{roomName}</span>
                     <div className="divider"/>
-                    <button id={joinButtonId} onClick={() => this.props.onJoinClick(this.props.room.id)}>Join</button>
+                    <button id={joinButtonId} onClick={() => this.props.onJoinClick(this.props.room.id)}>함께하기</button>
                     <div className="divider"/>
-                    <button id={chatButtonId} onClick={() => this.props.onChatClick(this.props.room.id)}>Chat</button>
+                    <button id={chatButtonId} onClick={() => this.props.onChatClick(this.props.room.id)}>끼어들기</button>
                 </div>
         )
     }
