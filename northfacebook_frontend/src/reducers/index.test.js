@@ -12,6 +12,8 @@ const initState = {
     chatting_users: [],
     room_id: 0,
     profile_user: null,
+    friends: [],
+    friend_requests: [],
     load: 0
 }
 
@@ -31,6 +33,8 @@ describe('homepage reducer', () => {
             chatting_users: [],
             room_id: 0,
             profile_user: null,
+            friends: [],
+            friend_requests: [],
             load: 0
         })
     })
@@ -65,6 +69,8 @@ describe('homepage reducer', () => {
             texts: texts,
             chatting_users: chatting_users,
             profile_user: null,
+            friends: [],
+            friend_requests: [],
             load: 0
         }
 
