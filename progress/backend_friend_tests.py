@@ -81,7 +81,7 @@ test3pw = "test3passwd"
 link = sys.argv[1] + "users/test1/friends/"
 print("5. GET friend list.")
 forbidden_or_error_anon("GET", link)
-forbidden_or_error("GET", link, test2, test2pw)
+get_json_or_error(link, test2, test2pw)
 get_json_or_error(link, test1, test1pw)
 not_found_or_error(sys.argv[1] + "users/test4/friends/", test1, test1pw)
 
