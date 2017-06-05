@@ -406,7 +406,9 @@ def profile(request, username):
         user= User.objects.get(username=username)
         profile=Profile.objects.get(user=user)
     except Profile.DoesNotExist:
-        return Response(status= status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         serializer=ProfileSerializer(profile)
         return Response(serializer.data)
@@ -428,8 +430,6 @@ def friend_list(request, username):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
-        if request.user != user:
-            return Response(status=status.HTTP_403_FORBIDDEN)
         friends = Friend.objects.filter(me=user, is_mutual=True)
         serializer = FriendSerializer(friends, many=True)
         return Response(serializer.data)
