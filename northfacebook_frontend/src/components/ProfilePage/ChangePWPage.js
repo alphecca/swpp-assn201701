@@ -27,7 +27,7 @@ class ChangePWPage extends React.Component {
                         <br />
                         바꿀 비밀번호<input type="new_pw" ref={ node=> {this.newpw = node;}} id="new_pw" className="field" />
                         <br />
-                        비밀번호 확인<input type="new_pw_RE" ref = { node =>{this.newpwre = node;} } id="new_pw_RE" className="field" />
+                        비밀번호 확인<input type="new_pw_RE" ref={ node =>{this.newpwre = node;} } id="new_pw_RE" className="field" />
                         <br />
                         <button type="submit" id="change_pw" onClick={onChangeSubmit}>바꾼다!</button>
                     </div>
