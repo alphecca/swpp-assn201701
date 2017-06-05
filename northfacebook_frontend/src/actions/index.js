@@ -187,7 +187,6 @@ export const toEscape = (profile_user) => {
     }
 }
 export const gotoFriend = (profile_user) => {
-    console.log("동무목록 액션 생겼쓰")
     return{
         type: 'TO_FRIEND',
         profuser: profile_user

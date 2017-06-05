@@ -46,7 +46,6 @@ class ButtonList extends React.Component{
             }
         }
         const onPostClick4 = () => {
-            alert("동무목록 눌렸어");
             this.props.onClick4(profuser);
         }
         const onPostClick5 = () => {

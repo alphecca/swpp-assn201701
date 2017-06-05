@@ -827,7 +827,6 @@ function *watchEscape(){
 function *watchGoToFriend(){
     while(true){
         const data = yield take('TO_FRIEND');
-        console.log("동무목록 액션 잡았쓰");
         yield put(actions.changeUrl('/friend/'+data.profuser+'/'));
     }
 }
