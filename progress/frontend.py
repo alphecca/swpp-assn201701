@@ -70,6 +70,7 @@ def signUpPageVerification(driver):
     check(driver, 'username_field')
     check(driver, 'password_field')
     check(driver, 'pwdverification_field')
+    check(driver, 'to_main')
 
 def signUpAlertVerification(driver, username, password):
     # no username
@@ -93,22 +94,24 @@ def signUpAlertVerification(driver, username, password):
     alert(driver, "Password does not match")
 
 def signUpVerification(driver, testNum):
+    signUpPageVerification(driver)
     username='test'+str(testNum)
     password = username + 'passwd'
     driver.find_element_by_id('username_field').clear()
     driver.find_element_by_id('password_field').clear()
     driver.find_element_by_id('pwdverification_field').clear()
     signUpAlertVerification(driver, username, password)
-    driver.find_element_by_id('username_field').clear()
-    driver.find_element_by_id('password_field').clear()
-    driver.find_element_by_id('pwdverification_field').clear()
+    driver.find_element_by_id('to_main').click()
+    sleep(1)
+    driver.find_element_by_id('sign_up').click()
+    sleep(1)
     driver.find_element_by_id('username_field').send_keys(username)
     driver.find_element_by_id('password_field').send_keys(password)
     driver.find_element_by_id('pwdverification_field').send_keys(password)
     driver.find_element_by_id('sign_up').click()
     sleep(1)
     if testNum < 10:
-        alert(driver, "Unknown Error Occurred")
+        alert(driver, "This username already exists")
 
 #####MAIN PAGE#####
 # article view verification
@@ -227,7 +230,42 @@ def detailPageVerification(driver, article, replies):
     check(driver, "to_main_page_field")
     check(driver, "reply_list_field")
     for reply in replies:
-        articleVerification(driver, reply)
+        replyArticleVerification(driver, reply)
+
+def replyArticleVerification(driver, article):
+    articleId = "a"+str(article["id"])+"_field"
+    writerId = "a"+str(article["id"])+"_writer_field"
+    textId = "a"+str(article["id"])+"_text_field"
+    createdId = "a"+str(article["id"])+"_created_field"
+    updatedId = "a"+str(article["id"])+"_updated_field"
+    likeId = "a"+str(article["id"])+"_like_field"
+    likeButtonId = "a"+str(article["id"])+"_like_button_field"
+    replyId = "a"+str(article["id"])+"_reply_field"
+    replyButtonId = "a"+str(article["id"])+"_reply_button_field" # ids in article component
+    check(driver, articleId)
+    check(driver, writerId)
+    check(driver, textId)
+    check(driver, createdId)
+    check(driver, updatedId)
+    check(driver, likeId)
+    check(driver, replyId)
+    check(driver, likeButtonId)
+    check(driver, replyButtonId)
+    #Contents checking
+    if driver.find_element_by_id(writerId).text != "id: "+article["owner"]:
+        print("Owner not match on article %d" % article["id"])
+        exit(1)
+    elif driver.find_element_by_id(textId).text != article["text"]:
+        print("Text not match on article %d" % article["id"])
+        print(driver.find_element_by_id(textId).text)
+        print(article["text"])
+        exit(1)
+    elif driver.find_element_by_id(likeId).text != str(article["like_num"]):
+        print("Like num not match on article %d" % article["id"])
+        exit(1)
+    elif driver.find_element_by_id(replyId).text != str(article["children_num"]):
+        print("Reply num not match on article %d" % article["id"])
+        exit(1)
 
 #####WALL PAGE#####
 def wallPageVerification(driver, articles, username):
