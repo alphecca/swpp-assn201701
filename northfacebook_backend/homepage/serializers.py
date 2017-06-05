@@ -9,13 +9,13 @@ class UserSerializer(serializers.ModelSerializer):
         profile_data = validated_data.pop('profile', None)
         user = super(UserSerializer, self).create(validated_data)
         self.update_or_create_profile(user, profile_data)
-        return user 
+        return user
     '''
     def update(self, instance, validated_data):
         instance.set_password(validated_data['password'])
         instance.save()
         return instance
-    '''    
+    '''
     def update_or_create_profile(self, user, profile_data):
         Profile.objects.update_or_create(user=user, defaults=profile_data)
     '''
@@ -27,14 +27,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class LikeSerializer(serializers.ModelSerializer):
     owner=serializers.ReadOnlyField(source='owner.username')
-    parent=serializers.ReadOnlyField(source='article.id')
+    serializers.ReadOnlyField(source='article.id')
     class Meta:
         model = Like
         fields = ('id','parent','owner')
 
 class ArticleSerializer(serializers.ModelSerializer):
     owner=serializers.ReadOnlyField(source='owner.username')
-    parent=serializers.ReadOnlyField(source='article.id')
+    serializers.ReadOnlyField(source='article.id')
     children_num = serializers.SerializerMethodField()
     depth = serializers.SerializerMethodField()
     like_num = serializers.SerializerMethodField()

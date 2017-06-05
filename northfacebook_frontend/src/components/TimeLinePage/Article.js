@@ -24,11 +24,16 @@ class Article extends React.Component {
         const onPostClick = ()=>{
             this.props.onPostClick(username);
         }
+        var depth=this.props.article.depth;
+        if(depth===0){
         return (
                 <div id={componentId} className="Article">
                     <button id={writerId} onClick={onPostClick}>id: {username}</button>
                     <hr />
-                    <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}</div>
+                    <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (
+                        <span key={'line'+textId}>{line}<br/></span>
+                      )})}
+                    </div>
                     <hr />
                     <p id={createdId}>Created: {this.props.article.created_time}</p>
                     <p id={updatedId}>Last update: {this.props.article.updated_time}</p>
@@ -49,7 +54,62 @@ class Article extends React.Component {
                     <br />
                     </div>
                 </div>
-               )
+        )
+        }
+        else if(depth==1){
+        return (
+                <div id={componentId} className="ArticleArticle">
+                    <button id={writerId} onClick={onPostClick}>id: {username}</button>
+                    <hr />
+                    <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (
+                        <span key={'line'+textId}>{line}<br/></span>
+                      )})}
+                    </div>
+                    <hr />
+                    <p id={createdId}>Created: {this.props.article.created_time}</p>
+                    <p id={updatedId}>Last update: {this.props.article.updated_time}</p>
+                    <div className="Tags">
+                    좋아요: <span id={likeNumId}>{likeNum}</span>
+                    <div className="divider"/>
+                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>Like</button>
+                    <div className="divider"/>
+                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id,this.props.article.text)}>Edit</button>
+                    <div className="divider"/>
+                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>Delete</button>
+                    <br />
+                    댓글:<span id={replyNumId}>{replyNum}</span>
+                    <div className="divider"/>
+                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>Reply</button>
+                    <br />
+                    </div>
+                </div>
+        )
+        }
+        else{
+        return (
+                <div id={componentId} className="ArticleArticleArticle">
+                    <button id={writerId} onClick={onPostClick}>id: {username}</button>
+                    <hr />
+                    <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (
+                        <span key={'line'+textId}>{line}<br/></span>
+                      )})}
+                    </div>
+                    <hr />
+                    <p id={createdId}>Created: {this.props.article.created_time}</p>
+                    <p id={updatedId}>Last update: {this.props.article.updated_time}</p>
+                    <div className="Tags">
+                    좋아요: <span id={likeNumId}>{likeNum}</span>
+                    <div className="divider"/>
+                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>Like</button>
+                    <div className="divider"/>
+                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id,this.props.article.text)}>Edit</button>
+                    <div className="divider"/>
+                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>Delete</button>
+                    <br />
+                    </div>
+                </div>
+        )
+        }
     }
 }
 
@@ -65,8 +125,8 @@ Article.propTypes = {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        onDeleteClick: (id) => dispatch(deleteArticle(id)), 
-        onEditClick: (id,text,time) => dispatch(editArticle(id,text)), 
+        onDeleteClick: (id) => dispatch(deleteArticle(id)),
+        onEditClick: (id,text,time) => dispatch(editArticle(id,text)),
         onReplyClick: (id) => dispatch(writeArticle(id)),
         onLikeClick: (id, auth) => dispatch(postLike(id, auth)),
         onDetailClick: (id) => dispatch(articleDetail(id)),
