@@ -47,6 +47,9 @@
   font-family: 궁서;
   background-color: rgb(237,30,39);
 }
+.Link{
+  cursor: pointer;
+}
 /* AddArticle & EditArticle css */
 .AddArticle{
   position: absolute;

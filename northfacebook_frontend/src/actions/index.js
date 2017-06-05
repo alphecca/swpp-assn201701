@@ -191,7 +191,7 @@ export const toChangeIntro = (user,name,belong,intro)=>{
     }
 }
 export const toChangePW = (profile_user, oldpw, newpw) => {
-    return{
+    return {
         type: 'TO_PW_CHANGE',
         profuser: profile_user,
         oldpw : oldpw,
@@ -199,26 +199,38 @@ export const toChangePW = (profile_user, oldpw, newpw) => {
     }
 }
 export const toEscape = (profile_user) => {
-    return{
+    return {
         type: 'TO_ESCAPE',
         profuser: profile_user,
     }
 }
 export const gotoFriend = (profile_user) => {
-    return{
+    return {
         type: 'TO_FRIEND',
         profuser: profile_user
     }
 }
 export const addFriend = (profile_user) => {
-    return{
+    return {
         type: 'ADD_FRIEND',
         profuser: profile_user
     }
 }
 export const gotoWall = (profile_user) => {
-    return{
+    return {
         type: 'TO_WALL',
+        profuser: profile_user
+    }
+}
+export const postAddFriend = (profile_user) => {
+    return {
+	type: 'POST_ADD_FRIEND',
+	profuser: profile_user
+    }
+}
+export const deleteAddFriend = (profile_user) => {
+    return {
+	type: 'DELETE_ADD_FRIEND',
         profuser: profile_user
     }
 }

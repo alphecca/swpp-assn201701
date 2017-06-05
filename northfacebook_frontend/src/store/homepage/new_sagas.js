@@ -490,9 +490,9 @@ function *watchLoginState() {
                         profile_user: profile_data.body,
                                         }));
                 } 
-                else if(path.split("/")[1] === 'friend' || path.split("/")[1] === 'addfriend'){
+                else if(path.split("/")[1] === 'friend'){
                     //프로필 정보를 get하는 부분
-                    console.log("get friend list...");
+                    console.log("get addfriend list...");
                     try{
                         data = yield call(xhr.get, fixed_url+'users/'+username+'/friends/',{
                             headers: {
@@ -533,6 +533,49 @@ function *watchLoginState() {
                         friends: data.body,
                                         }));
                 } 
+                else if(path.split("/")[1] === 'addfriend'){
+                    //프로필 정보를 get하는 부분
+                    console.log("get friend list...");
+                    try{
+                        data = yield call(xhr.get, fixed_url+'users/'+username+'/addfriend/',{
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json' 
+                         });
+                         console.log('Get data without exception');
+                    } catch(error) {
+                        console.log(error);
+                        //TODO error case 
+                        if (error.statusCode === 403) {
+                            alert("Unauthorized user tried to access profile page. Please sign in first");
+                        } else if(error.statusCode === 404) {
+                            alert("404 Not Found");
+                            console.log("안단티노가 안심하래");
+                            return;
+                        } else if(error.statusCode === 0) {
+                            console.log("Backend server is not accessible");
+                            alert("Temporary Server error. Try reloading");
+                            return;
+                        } else {
+                            alert("Unknown Error Occured");
+                            return;
+                        }
+                    }
+                    yield put(actions.setState({
+                        authorization: window.atob(localStorage['auth']),
+                        parent_article: null,
+                        articles: [],
+                        rooms: [],
+                        texts: [],
+                        chatting_users: [],
+                        room_id: 0,
+                        profile_user: { user: username },
+                        friends: data.body,
+                                        }));
+                }
                 else {
                     // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
                     try {
