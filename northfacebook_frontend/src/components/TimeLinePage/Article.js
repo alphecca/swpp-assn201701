@@ -58,15 +58,15 @@ class Article extends React.Component {
                     <div className="divider"/>
                     <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
                     <div className="divider"/>
-                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id, username)}>수정</button>
+                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id, username)}>바꾸기</button>
                     <div className="divider"/>
-                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>삭제</button>
+                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>지우기</button>
                     <br />
                     붙임글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>자세히 보기</button>
+                    <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>자세히</button>
                     <div className="divider"/>
-                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>댓글</button>
+                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>붙이기</button>
                     <br />
                     </div>
                 </div>
@@ -74,8 +74,8 @@ class Article extends React.Component {
         }
         else if(depth===1){
         return (
-                <div id={componentId} className="ArticleArticle">
-                    <button id={writerId} onClick={onPostClick}>id: {username}</button>
+              <div id={componentId} className="ArticleArticle">
+                <button id={writerId} onClick={onPostClick}>id: {username}</button>
                     <hr />
 
                     <div id={imgId}>
@@ -87,20 +87,20 @@ class Article extends React.Component {
                     </div>
 
                     <hr />
-                    <p id={createdId}>쓴날: {this.props.article.created_time}</p>
-                    <p id={updatedId}>바꾼날: {this.props.article.updated_time}</p>
+                    <p id={createdId}>쓴날: {created_date[0]}년 {created_date[1]}월 {created_date[2]}일 {created_time[0]}시 {created_time[1]}분 {created_time[2].split('.')[0]}초</p>
+                    <p id={updatedId}>바꾼날: {updated_date[0]}년 {updated_date[1]}월 {updated_date[2]}일 {updated_time[0]}시 {updated_time[1]}분 {updated_time[2].split('.')[0]}초</p>
                     <div className="Tags">
                     좋소: <span id={likeNumId}>{likeNum}</span>
                     <div className="divider"/>
-                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>Like</button>
+                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
                     <div className="divider"/>
-                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id,this.props.article.text)}>Edit</button>
+                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id, username)}>바꾸기</button>
                     <div className="divider"/>
-                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>Delete</button>
+                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>지우기</button>
                     <br />
-                    붙임글: <span id={replyNumId}>{replyNum}</span>
+                    붙임글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>Reply</button>
+                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>붙이기</button>
                     <br />
                     </div>
                 </div>
@@ -121,16 +121,16 @@ class Article extends React.Component {
                     </div>
 
                     <hr />
-                    <p id={createdId}>작성일: {this.props.article.created_time}</p>
-                    <p id={updatedId}>최근 수정일:  {this.props.article.updated_time}</p>
+                    <p id={createdId}>쓴날: {created_date[0]}년 {created_date[1]}월 {created_date[2]}일 {created_time[0]}시 {created_time[1]}분 {created_time[2].split('.')[0]}초</p>
+                    <p id={updatedId}>바꾼날: {updated_date[0]}년 {updated_date[1]}월 {updated_date[2]}일 {updated_time[0]}시 {updated_time[1]}분 {updated_time[2].split('.')[0]}초</p>
                     <div className="Tags">
                     좋소: <span id={likeNumId}>{likeNum}</span>
                     <div className="divider"/>
-                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>Like</button>
+                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
                     <div className="divider"/>
-                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id,this.props.article.text)}>Edit</button>
+                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id, username)}>바꾸기</button>
                     <div className="divider"/>
-                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>Delete</button>
+                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>지우기</button>
                     <br />
                     </div>
                 </div>

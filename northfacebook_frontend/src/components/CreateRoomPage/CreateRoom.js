@@ -20,9 +20,9 @@ class CreateRoom extends React.Component{
                     Room name
                     <div className="divider" />
                     <input type="text" ref={ node => {this.roomName = node;} } id='input_room_name_field' className='field'></input><br />
-                    <button type='submit' id='post_room_button_field' className='PostRoomButton'>Create room</button>
+                    <button type='submit' id='post_room_button_field' className='PostRoomButton'>만들기</button>
                     </form>
-                    <button id="cancel_button_field" className='CancelButton' onClick={this.props.onCancelClick}>Cancel</button>
+                    <button id="cancel_button_field" className='CancelButton' onClick={this.props.onCancelClick}>그만두기</button>
                 </div>
                 </div>
                )
