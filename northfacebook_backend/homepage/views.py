@@ -24,7 +24,6 @@ def main_list(request):
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        print(request.data)
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
@@ -153,7 +152,6 @@ def article_article(request,pk):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     articlearticle = Article.objects.filter(parent=article.id)
-    print(articlearticle)
     if request.method == 'GET':
         serializer = ArticleSerializer(articlearticle,many=True)
         return Response(serializer.data)
@@ -243,7 +241,7 @@ def user_detail(request, username):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             return Response(serializer.data)
-        return Response(status=status.HTTP_400_BAD_REQUEST) 
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
         if user == request.user:
             user.delete()

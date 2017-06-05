@@ -9,9 +9,11 @@ from selenium.common.exceptions import NoSuchElementException, NoAlertPresentExc
 from selenium.webdriver.common.alert import Alert
 
 from backend_ import *
+from frontend import *
 
 delayTime=1
 # general checker whether id exists
+"""
 def check(driver, name):
     try:
         itm = driver.find_element_by_id(name)
@@ -39,7 +41,7 @@ def signInVerification(driver, uname, upwd):
     sleep(2)
     alert(driver, "Succeed to sign in! :)")
     sleep(delayTime)
-
+"""
 def chatRoomVerification(driver, link, uname, upwd):
     sleep(delayTime)
     check(driver, "chat_button_field")
@@ -168,10 +170,10 @@ def sendTextVerification(driver, link, uname, upwd, roomId):
     elif driver.find_element_by_id("t"+str(textId)+"_writer_field").text != uname:
         print("Text writer isn't match!")
         exit(1)
-
+"""
 def signOutVerification(driver):
     check(driver, "sign_out")
-    driver.find_element_by_id("sign_out").click()
+    driver.find_element_by_id("sign_out").click()"""
 
 def B_chatRoomVerification(driver, roomId):
     # in the ~/main/

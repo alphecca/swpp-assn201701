@@ -33,7 +33,7 @@ class SignUpPage extends React.Component {
                     <br />
                     비밀번호 확인<input type="password" ref={ node => {this.pwdverification = node;}} id="pwdverification_field" className="field" />
                     <br />
-                    <button type="submit" id="sign_up"  onClick={onCreateSubmit} >반갑소 동무!</button>
+                    <button type="submit" id="sign_up">반갑소 동무!</button>
                     </form>
                 </div>
               </div>

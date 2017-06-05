@@ -17,8 +17,8 @@ class ChattingPage extends React.Component {
                 <SignOut />
                 <div className="Chatting">
                 <div className="divider" />
-                <button id="change_room_button_field" onClick={this.props.onChangeRoomClick}>Change room</button>
-                <p>Chatting user list</p>
+                <button id="change_room_button_field" onClick={this.props.onChangeRoomClick}>모든방</button>
+                <p>떠든 사람</p>
                 <ChattingUserList />
                 <button id="more_chat_button_field" onClick={this.props.onMoreClick}>더!</button>
                 <button id="less_chat_button_field" onClick={this.props.onLessClick}>덜!</button>
@@ -32,7 +32,7 @@ class ChattingPage extends React.Component {
                 <div className="Text-Field">
                     <input type="text" ref={ node => {this.message = node;} } id='input_text_field' className='field'></input>
                     <div className="divider" />
-                    <button type="submit" id='post_text_button_field' className="PostTextButton">Send</button>
+                    <button type="submit" id='post_text_button_field' className="PostTextButton">한마디!</button>
                 </div>
                 </form>
                 </div>

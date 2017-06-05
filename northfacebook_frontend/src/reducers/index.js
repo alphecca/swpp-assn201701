@@ -25,7 +25,7 @@ const homepage = (state = homepageInitialState, action) => {
         }
          case 'LESS_CHAT': {
             return Object.assign({}, state, {
-              load:state.load>10?state.load-10:state.load
+              load:state.load>0?state.load-10:state.load
             })
         }
         case 'AUTHENTICATE': {
