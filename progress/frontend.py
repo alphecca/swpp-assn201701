@@ -269,7 +269,6 @@ def replyArticleVerification(driver, article):
 
 #####WALL PAGE#####
 def wallPageVerification(driver, articles, username):
-    check(driver, "back_to_profile")
     check(driver, "wall_info")
     if driver.find_element_by_id('wall_info').text != username+"의 담벼락":
         print("username not match")
