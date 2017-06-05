@@ -219,6 +219,8 @@ function *addFriendPageSaga() {
     yield spawn(watchGoToMain);
     yield spawn(watchGoToFriend);
     yield spawn(watchToProfile);
+    yield spawn(watchPostAddFriend);
+    yield spawn(watchDeleteAddFriend);
     // TODO add something else
 }
 
@@ -532,6 +534,7 @@ function *watchLoginState() {
                         room_id: 0,
                         profile_user: { user: username },
                         friends: data.body,
+                        friend_requests: [],
                                         }));
                 } 
                 else if(path.split("/")[1] === 'addfriend'){
@@ -920,6 +923,21 @@ function *watchGoToWall(){
         yield put(actions.changeUrl('/wall/'+data.profuser+'/'));
     }
 }
+
+function *watchPostAddFriend() {
+    while(true) {
+        const data = yield take('POST_ADD_FRIEND');
+        yield call(postAddFriend, data.profuser);
+    }
+}
+
+function *watchDeleteAddFriend() {
+    while(true) {
+        const data = yield take('DELETE_ADD_FRIEND');
+        yield call(deleteAddFriend, data.profuser);
+    }
+}
+
 ///// Page별 saga함수에서 쓸 saga함수 (그 외)
 // signIn: 백엔드에 get을 날리는 함수
 function *signIn(data) {
@@ -1023,13 +1041,13 @@ function *postLike(id) {
             },
             contentType:'json'
         });
-        console.log("post article succeed 1");
+        console.log("post like succeed 1");
         yield put(actions.changeUrl(window.location.pathname));
     }
     catch(error) {
         console.log(error);
         if(error.statusCode === 201) {
-            console.log("post article succeed 2");
+            console.log("post like succeed 2");
             yield put(actions.changeUrl(window.location.pathname));
         }
         else if(error.statusCode === 0) {
@@ -1045,7 +1063,7 @@ function *postLike(id) {
             console.log("double like");
         }
         else if(Object.keys(error).length === 0) {
-            console.log("post article succeed 3");
+            console.log("post like succeed 3");
             yield put(actions.changeUrl(window.location.pathname));
 
         }
@@ -1508,6 +1526,109 @@ function *escapeBook(profuser){
              localStorage.removeItem('parent');
              yield put(actions.changeUrl('/main/'));
            return ;
+        }
+    }
+}
+
+
+// postAddFriend: profuser에게 자신 명의로 동무 추가 요청을 날리는 함수
+function *postAddFriend(profuser) {
+    const path = 'users/'+profuser+'/addfriend/';
+    try {
+        yield call(xhr.post, fixed_url + path, {
+            headers: {
+                "Authorization": "Basic " + localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType:'json'
+        });
+        console.log("post addfriend succeed 1");
+        yield put(actions.changeUrl(window.location.pathname));
+    }
+    catch(error) {
+        console.log(error);
+        if(error.statusCode === 201) {
+            console.log("post addfriend succeed 2");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else if(error.statusCode === 0) {
+            alert("Backend server not available");
+            console.log("Check backend server");
+        }
+        else if(error.statusCode === 404) {
+            alert("The User Does Not Exist");
+            console.log("User removed");
+        }
+        else if(error.statusCode === 405) {
+            alert("You already have sent request to add this user as your friend!");
+            console.log("Double request or You cannot add yourself");
+        }
+        else if(Object.keys(error).length === 0) {
+            console.log("post addfriend succeed 3");
+            yield put(actions.changeUrl(window.location.pathname));
+
+        }
+        else {
+            alert("Unknown Error Occurred");
+            console.log(error);
+        }
+    }
+}
+
+// deleteAddFriend: 자신이 보냈거나 자신에게 온 동무 추가 요청을 지우는 함수
+function *deleteAddFriend(profuser) {
+    let getUsername = yield select((state) => state.authorization);
+    let username = getUsername !== null ? Object.assign(getUsername).split(":")[0] : null;
+    const path = 'users/'+profuser+'/addfriend/'+username+'/';
+    try{
+        yield call(xhr.send, fixed_url+path,{
+            method: 'DELETE',
+            headers:{
+                'Authorization': 'Basic '+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType:'json'
+        });
+    console.log("delete addfriend succeed!!!");
+    yield put(actions.changeUrl(window.location.pathname));
+    }catch(error){
+        console.log(error);
+        if(error.statusCode === 204){
+            console.log("delete addfriend succeedd!!");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else if(error.statusCode === 403){
+            alert("This is not your request");
+        }
+        else if(error.statusCode === 404) {
+            const path2 = 'users/'+username+'/addfriend/'+profuser+'/';
+            try{
+                yield call(xhr.send, fixed_url+path2,{
+                    method: 'DELETE',
+                    headers:{
+                        'Authorization': 'Basic '+localStorage['auth'],
+                        "Content-Type": 'application/json',
+                        Accept: 'application/json'
+                    },
+                    contentType:'json'
+                });
+            console.log("delete addfriend succeed!!!");
+            yield put(actions.changeUrl(window.location.pathname));
+            }catch(error){
+                console.log(error);
+                if(error.statusCode === 204){
+                    console.log("delete addfriend succeedd!!");
+                    yield put(actions.changeUrl(window.location.pathname));
+                }
+                else {
+                    yield put(actions.changeUrl(window.location.pathname));
+                }
+            }
+        }
+        else {
+            yield put(actions.changeUrl(window.location.pathname));
         }
     }
 }
