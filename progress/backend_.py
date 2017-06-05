@@ -260,3 +260,16 @@ def check_key(homepage_json, key):
     if key not in homepage_json:
         print("{0} not in {1}.".format((key, homepage_json)))
         exit(1)
+
+# image article post
+def post_image_or_error(link, img, data, uname, upwd):
+    sleep(0.05)
+    try:
+        res = requests.post(link, files=img, data=data, auth=(uname, upwd))
+        if res.status_code != 201:
+            print("ERROR: Cannot post {0} : {1}, id = {2}, pwd = {3}".format(link, res.status_code, uname, upwd))
+            exit(1)
+    except Exception:
+        print("ERROR: Cannot post {0}".format(link))
+        exit(1)
+
