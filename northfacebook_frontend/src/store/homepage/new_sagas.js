@@ -665,8 +665,8 @@ function *watchEdit(){
             alert("This is not your article!");
             continue;
         }
-        yield put(actions.changeUrl('/edit/'+data.id+'/'));     
-    } 
+        yield put(actions.changeUrl('/edit/'+data.id+'/'));
+    }
 }
 
 
@@ -941,7 +941,8 @@ function *postArticle(text, images) {
             body: form
         });
         console.log("post article succeed 1");
-        yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+        //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+        yield put(actions.changeUrl('/main/'));
     }
     catch(error) {
         if(error.statusCode === 201) {
