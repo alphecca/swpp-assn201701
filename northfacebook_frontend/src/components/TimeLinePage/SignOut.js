@@ -27,7 +27,7 @@ let mapStateToProps = (state) => {
 let mapDispatchToProps = (dispatch) => {
     return {
         onLogOut: () => dispatch(signOut()),
-        onBackClick: () => dispatch(postBack()),
+        onBackClick: () => dispatch(changeUrl('/main/')),
         onToWall: (username) => dispatch(changeUrl('/wall/'+username+"/")),
         onToProfile: (username) => dispatch(changeUrl('/profile/'+username+"/"))
     }
