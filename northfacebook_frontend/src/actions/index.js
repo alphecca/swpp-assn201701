@@ -32,10 +32,11 @@ export const signOut = () => {
     }
 }
 export const SIGN_OUT = 'SIGN_OUT'
-export function addArticle (id, text){
+export function addArticle (id, text, images){
     return {
       type: 'ADD_ARTICLE',
       text,
+      images,
       id
     }
 }
@@ -56,10 +57,11 @@ export const writeArticle = (id) => {
         id
     }
 }
-export const editArticle = (id) => {
+export const editArticle = (id, username) => {
     return {
         type: 'EDIT_ARTICLE',
         id: id,
+        username: username
     }
 }
 export const putArticle = (text) =>{
@@ -157,6 +159,22 @@ export const updateChatting = (room_id) => {
 	room_id: room_id
     }
 }
+
+export const moreArticle = () => {
+  return {
+    type: "MORE_ARTICLE"
+  }
+}
+export const moreChat = () => {
+  return {
+    type: "MORE_CHAT"
+  }
+}
+export const lessChat = () => {
+  return {
+    type: "LESS_CHAT"
+  }
+}
 export const toProfile = (profile_user) =>{
     return {
         type: 'TO_PROFILE',
@@ -203,4 +221,4 @@ export const gotoWall = (profile_user) => {
         type: 'TO_WALL',
         profuser: profile_user
     }
-} 
+}

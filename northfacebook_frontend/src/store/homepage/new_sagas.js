@@ -71,7 +71,7 @@ export default function *saga() {
                     break;
                 default:
                     console.log("default state");
-                    alert("Oops, page not found");             
+                    alert("Oops, page not found");
                     if(localStorage.getItem("auth") === null) {
                         localStorage.removeItem('parent');
                         yield put(actions.changeUrl('/'));
@@ -121,7 +121,6 @@ function *mainPageSaga() {
     yield spawn(watchDelete);
     yield spawn(watchChattingRoom);
     yield spawn(watchToProfile);
-    //TODO 시간 남으면 더 보기 기능 부탁해요
 }
 
 function *articleDetailPageSaga() {
@@ -171,7 +170,6 @@ function *chattingPageSaga(id){
     yield spawn(watchChattingRoom);
     yield spawn(watchSendText);
     yield spawn(watchUpdateChatting);
-//  yield spawn(watchLoadMoreText); // 더 보기 기능
 }
 
 function *createRoomPageSaga(){
@@ -291,7 +289,8 @@ function *watchLoginState() {
                     rooms: [],
                     texts: [],
                     chatting_users: [],
-                    room_id: 0
+                    room_id: 0,
+                    //load : 0
                     //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                 }));
             }
@@ -340,7 +339,8 @@ function *watchLoginState() {
                     texts: [],
                     chatting_users: [],
                     room_id: 0,
-                    profile_user: null
+                    profile_user: null,
+                    // load: 0,
                     // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
                 }));
             }
@@ -458,12 +458,12 @@ function *watchLoginState() {
                                 'Authorization': 'Basic '+localStorage['auth'],
                             Accept: 'application/json'
                             },
-                            responseType: 'json' 
+                            responseType: 'json'
                          });
                          console.log('Get data without exception');
                     }catch(error){
                         console.log(error);
-                        //TODO error case 
+                        //TODO error case
                         if(error.statusCode === 403){
                             alert("Unauthorized user tried to access profile page. Please sign in first");
                         }else if(error.statusCode ===404){
@@ -708,7 +708,7 @@ function *watchGoToMain() {
 function *watchPostArticle() {
     while(true) {
         const data = yield take('ADD_ARTICLE');
-        yield call(postArticle, data.text);
+        yield call(postArticle, data.text, data.images);
     }
 }
 
@@ -720,15 +720,20 @@ function *watchDelete() {
     }
 }
 
-// watchEdit: 메인페이지 또는 세부페이지에서 수정 버튼 클릭 관찰 
+// watchEdit: 메인페이지 또는 세부페이지에서 수정 버튼 클릭 관찰
 function *watchEdit(){
     while(true){
         console.log("in edit article");
         const data = yield take('EDIT_ARTICLE');
         //TODO user data GET해서 forbidden or not
+        if(data.username !== window.atob(localStorage['auth']).split(':')[0]) {
+            alert("This is not your article!");
+            continue;
+        }
         yield put(actions.changeUrl('/edit/'+data.id+'/'));     
     } 
 }
+
 
 // watchPutArticle: 글 수정 페이지에서 EDIT 버튼 클릭 관찰
 function *watchPutArticle(id){
@@ -979,17 +984,26 @@ function *postLike(id) {
 }
 
 // postArticle: 새로운 글/댓글을 쓰는 함수
-function *postArticle(text) {
+function *postArticle(text, images) {
+    console.log(images);
+    let form = new FormData();
+    form.append('text', text);
+    if(images === null || images === undefined)
+        console.log("No image")
+    else
+        form.append('image0', images[0]); //TODO 이후에는 여러개 처리 가능하도록
     const path = localStorage['parent'] === null || localStorage['parent'] === undefined ? 'mainpage/' : 'article/'+localStorage['parent']+'/article/';
     try {
         yield call(xhr.post, fixed_url + path, {
             headers: {
                 "Authorization": "Basic " + localStorage['auth'],
-                "Content-Type": 'application/json',
-                Accept: 'application/json'
             },
-            contentType:'json',
-            body: JSON.stringify({"text": text})
+            async: true,
+            crossDomain: true,
+            processData: false,
+            contentType: false,
+            mimeType: "multipart/form-data",
+            body: form
         });
         console.log("post article succeed 1");
         yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
@@ -1041,19 +1055,20 @@ function *deleteArticle(id){
         }
         else if(error.statusCode === 403){
             alert("This is not your article");
-        }  
+        }
         else yield put(actions.changeUrl('/main/'));
     }
 }
 
 // putArticle: 자신이 쓴 글을 수정하는 함수
+// TODO 업로드된 사진 수정 가능하게 만들기
 function *putArticle(id, text){
     const path = 'article/'+id+'/';
     console.log("in editArticle[path]: "+path);
     try {
         yield call(xhr.send, fixed_url+path, {
             method: 'PUT',
-            headers: { 
+            headers: {
                 "Authorization": "Basic "+localStorage['auth'],
                 "Content-Type": 'application/json',
                 Accept: 'application/json'

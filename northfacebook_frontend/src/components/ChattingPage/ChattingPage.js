@@ -2,29 +2,27 @@ import React from 'react'
 import ChattingUserList from './ChattingUserList.js'
 import TextList from './TextList.js'
 import SignOut from '../TimeLinePage/SignOut.js'
-import { postBack, showChattingRoom, postText } from '../../actions'
+import { moreChat,lessChat, postBack, showChattingRoom, postText } from '../../actions'
 import { connect } from 'react-redux'
 
 class ChattingPage extends React.Component {
     render() {
-        // TODO <br />
         const onSubmit = () => {
             if (this.message !== undefined) {
                 this.props.onSendClick(this.props.room.room_id, this.message.value)
             }
         };
-        return (
+      return (
                 <div >
                 <SignOut />
-                <br /> <br /> <br /> <br /> <br /> <br />
                 <div className="Chatting">
                 <div className="divider" />
                 <button id="change_room_button_field" onClick={this.props.onChangeRoomClick}>Change room</button>
                 <p>Chatting user list</p>
                 <ChattingUserList />
-                <br />
+                <button id="more_chat_button_field" onClick={this.props.onMoreClick}>더!</button>
+                <button id="less_chat_button_field" onClick={this.props.onLessClick}>덜!</button>
                 <hr />
-                <br />
                 <TextList />
                 <form onSubmit={e => {
                     e.preventDefault()
@@ -43,6 +41,7 @@ class ChattingPage extends React.Component {
     }
 }
 
+//<button id='more_button_field' onClick={()=>this.props.onMoreClick()}>더!</button>
 let mapStateToProps = (state) => {
     return {
         room: Object.assign(state)
@@ -56,7 +55,9 @@ let mapDispatchToProps = (dispatch) => {
         onSendClick: (room_id, message) => {
             dispatch(postText(room_id, message));
             document.getElementById("input_text_field").value = "";
-        }
+        },
+        onMoreClick: () => dispatch(moreChat()),
+        onLessClick: () => dispatch(lessChat())
     }
 }
 
