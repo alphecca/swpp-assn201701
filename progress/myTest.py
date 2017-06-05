@@ -163,7 +163,7 @@ if data[0] == tmp:
 mainPageVerification(driver, data[0:5])
 
 article_link = backend_link + 'article/' + str(data[0]["id"]) + '/'
-
+"""
 # detail button test
 print("9. detail test")
 sleep(delayTime)
@@ -188,7 +188,7 @@ sleep(delayTime)
 data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 sleep(delayTime)
 mainPageVerification(driver, data[0:5])
-
+"""
 # edit / delete error test
 print("10. edit / delete error test")
 sleep(delayTime)

@@ -745,8 +745,9 @@ function *watchWrite() {
         const data = yield take('WRITE_ARTICLE');
         if(data.id === null)
             yield put(actions.changeUrl('/write/'));
-        else
+        else {
             yield put(actions.changeUrl('/write/'+data.id.id+'/'));
+        }
     }
 
 }
@@ -1057,6 +1058,7 @@ function *postLike(id) {
 }
 
 // postArticle: 새로운 글/댓글을 쓰는 함수
+// TODO 임시로 메인페이지로 돌아가게 만들었는데 이거 나중에 로컬스토리지에 어트리뷰트 하나 추가해서 구현하심 될 듯
 function *postArticle(text, images) {
     console.log(images);
     let form = new FormData();
@@ -1085,7 +1087,8 @@ function *postArticle(text, images) {
     catch(error) {
         if(error.statusCode === 201) {
             console.log("post article succeed 2");
-            yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+            //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+            yield put(actions.changeUrl('/main/'));
         }
         else if(error.statusCode === 0) {
             alert("Backend server not available");
@@ -1097,7 +1100,8 @@ function *postArticle(text, images) {
         }
         else if(Object.keys(error).length === 0) {
             console.log("post article succeed 3");
-            yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+            //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+            yield put(actions.changeUrl('/main/'));
         }
         else {
             alert("Unknown Error Occurred");
