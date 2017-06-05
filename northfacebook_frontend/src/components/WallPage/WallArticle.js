@@ -22,7 +22,17 @@ class WallArticle extends React.Component {
         const createdId = "a"+this.props.article.id+"_created_field"
         const updatedId = "a"+this.props.article.id+"_updated_field"
 
-        const labelId = "a"+this.props.article.id+"_label"
+        const created_ = this.props.article.created_time.split('T');
+        const created_date = created_[0].split('-');
+        const created_time = created_[1].split(':');
+        const updated_ = this.props.article.created_time.split('T');
+        const updated_date = updated_[0].split('-');
+        const updated_time = updated_[1].split(':');
+
+        const imgId = 'a'+this.props.article.id+'_images';
+        const images = this.props.article.images
+
+        const labelId = "a"+this.props.article.id+"_label";
         const typeLabel = () => {
             const current = window.atob(localStorage['auth']).split(":")[0];
             console.log(current);
@@ -50,24 +60,27 @@ class WallArticle extends React.Component {
                     {typeLabel()}
                     <p id={writerId}>id: {username}</p>
                     <hr />
+                    <div id={imgId}>
+                    {images.map((img) => <img key={"img"+imgId} src={'data:image;base64,'+img} alt=""/>)}
+                    </div>
                     <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}</div>
                     <hr />
-                    <p id={createdId}>Created: {this.props.article.created_time}</p>
-                    <p id={updatedId}>Last update: {this.props.article.updated_time}</p>
-                    <div className="Tags">
-                    좋아요: <span id={likeNumId}>{likeNum}</span>
+                    <p id={createdId}>작성일: {created_date[0]}년 {created_date[1]}월 {created_date[2]}일 {created_time[0]}시 {created_time[1]}분 {created_time[2].split('.')[0]}초</p>
+                    <p id={updatedId}>최근 수정일: {updated_date[0]}년 {updated_date[1]}월 {updated_date[2]}일 {updated_time[0]}시 {updated_time[1]}분 {updated_time[2].split('.')[0]}초</p>
+                     <div className="Tags">
+                    좋소: <span id={likeNumId}>{likeNum}</span>
                     <div className="divider"/>
-                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>Like</button>
+                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
                     <div className="divider"/>
-                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id,this.props.article.text)}>Edit</button>
+                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id,this.props.article.text)}>수정</button>
                     <div className="divider"/>
-                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>Delete</button>
+                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>삭제</button>
                     <br />
                     댓글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>Detail</button>
+                    <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>자세히 보기</button>
                     <div className="divider"/>
-                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>Reply</button>
+                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>댓글</button>
                     <br />
                     </div>
                 </div>

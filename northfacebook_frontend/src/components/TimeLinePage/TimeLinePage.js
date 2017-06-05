@@ -3,7 +3,8 @@ import TimeLine from './TimeLine.js'
 import SignOut from './SignOut.js'
 
 class TimeLinePage extends React.Component {
-    render() {
+
+  render() {
         return (
                 <div >
                     <SignOut />
@@ -12,5 +13,4 @@ class TimeLinePage extends React.Component {
                )
     }
 }
-
 export default TimeLinePage;

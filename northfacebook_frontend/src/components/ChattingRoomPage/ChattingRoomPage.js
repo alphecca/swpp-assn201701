@@ -6,11 +6,9 @@ import { connect } from 'react-redux'
 
 class ChattingRoomPage extends React.Component {
     render() {
-        // TODO <br />들은 나중에 지워주세요.
         return (
                 <div >
                 <SignOut />
-                <br /> <br /> <br /> <br /> <br /> <br /> 
                 <div className="ChattingRoom">
                 <div className="divider" />
                 <button id="new_room_button_field" onClick={this.props.onNewRoomClick}>New room</button>
