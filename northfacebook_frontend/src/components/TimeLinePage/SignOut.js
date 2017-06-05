@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {signOut, postBack, changeUrl} from '../../actions'
+import {signOut, changeUrl} from '../../actions'
 
 class SignOut extends React.Component {
     render() {

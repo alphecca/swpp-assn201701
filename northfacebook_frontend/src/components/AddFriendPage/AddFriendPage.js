@@ -7,16 +7,23 @@ import { connect } from 'react-redux'
 class AddFriendPage extends React.Component {
     render() {
         const profuserNameId = "fr_profuser_name_field";
-        function checkFriend(obj) {
-            return (obj.friend == this.props.username);
+        function checkFriend(objList, username) {
+            var i;
+            for (i=0; i<objList.length; i++) {
+                // eslint-disable-next-line
+                if (objList[i].friend.friend == username) return username;
+            }
+            return undefined;
         }
+        console.log(this.props.username);
         if (this.props.profile_user === null) {
             return (
                     <div>Now loading...</div>
                     )
         }
+        // eslint-disable-next-line
         else if (this.props.username == this.props.profile_user) { // warning이 뜨지만 == 으로 써야 합니다.
-            console.log("yes");
+//            console.log("yes");
             return (
                     <div>
                     <SignOut />
@@ -25,10 +32,11 @@ class AddFriendPage extends React.Component {
                     <span id="fr_message_field"><a id={profuserNameId} className="Link" onClick={() => this.props.onProfuserClick(this.props.profile_user)}><u>{this.props.profile_user}</u></a>와 동무가 되고 싶어하는 인민들이라우.</span>
                     </div>
                     <FriendRequestList />
+                    <button id={"fr_"+this.props.profile_user+"_back_button_field"} onClick={() => this.props.onBackClick(this.props.profile_user)}>돌아가기</button>
                     </div>
                    )
         }
-        else if (this.props.friend_requests.length === 0 && this.props.friends.find(checkFriend) === undefined) {
+        else if (this.props.friend_requests.length === 0 && checkFriend(this.props.friends, this.props.username) === undefined) {
             return (
                     <div>
                     <SignOut />
@@ -42,7 +50,8 @@ class AddFriendPage extends React.Component {
                     </div>
                     )
         }
-        else if (this.props.friend_request.length !== 0) {
+        else if (this.props.friend_requests.length !== 0) {
+            console.log(this.props.friend_requests);
             return (
                     <div>
                     <SignOut />

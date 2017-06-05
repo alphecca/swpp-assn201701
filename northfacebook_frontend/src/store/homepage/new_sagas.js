@@ -348,6 +348,7 @@ function *watchLoginState() {
                 const username = path.split("/")[2];
                 const id = path.split("/")[2];//그냥..
                 let profile_data = null;
+                let friend_data = null;
                 if (username === undefined) {
                     console.log("404 not found");
                     return;
@@ -564,6 +565,34 @@ function *watchLoginState() {
                             return;
                         }
                     }
+                    try{
+                        friend_data = yield call(xhr.get, fixed_url+'users/'+username+'/friends/',{
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json' 
+                         });
+                         console.log('Get data without exception');
+                    } catch(error) {
+                        console.log(error);
+                        //TODO error case 
+                        if (error.statusCode === 403) {
+                            alert("Unauthorized user tried to access profile page. Please sign in first");
+                        } else if(error.statusCode === 404) {
+                            alert("404 Not Found");
+                            console.log("안단티노가 안심하래");
+                            return;
+                        } else if(error.statusCode === 0) {
+                            console.log("Backend server is not accessible");
+                            alert("Temporary Server error. Try reloading");
+                            return;
+                        } else {
+                            alert("Unknown Error Occured");
+                            return;
+                        }
+                    }
                     yield put(actions.setState({
                         authorization: window.atob(localStorage['auth']),
                         parent_article: null,
@@ -573,7 +602,8 @@ function *watchLoginState() {
                         chatting_users: [],
                         room_id: 0,
                         profile_user: { user: username },
-                        friends: data.body,
+                        friends: friend_data.body,
+                        friend_requests: data.body,
                                         }));
                 }
                 else {

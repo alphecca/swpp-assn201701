@@ -446,7 +446,7 @@ def add_friend_list(request, username):
         if request.user == user:
             add_friends = Friend.objects.filter(me=user, is_mutual=False)
         else:
-            add_friends = Friend.objects.filter(friend=request.user, is_mutual=False)
+            add_friends = Friend.objects.filter(friend=request.user, me=user, is_mutual=False)
         serializer = FriendSerializer(add_friends, many=True)
         return Response(serializer.data)
 
