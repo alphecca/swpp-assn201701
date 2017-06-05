@@ -87,4 +87,20 @@ describe('homepage reducer', () => {
             parent_article: parent_article
         }))
     })
+    it('should return the more load value', () => {
+        expect(homepageApp(undefined, actions.moreArticle())).toEqual(Object.assign({}, initState, {
+            load: initState.load+5
+        }))
+    })
+    it('should return the more load value2', () => {
+        expect(homepageApp(undefined, actions.moreChat())).toEqual(Object.assign({}, initState, {
+            load: initState.load+10
+        }))
+    })
+    it('should return the less load value', () => {
+        expect(homepageApp(undefined, actions.lessChat())).toEqual(Object.assign({}, initState, {
+            load: initState.load
+        }))
+    })
+
 })
