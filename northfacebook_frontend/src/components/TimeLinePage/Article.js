@@ -151,13 +151,11 @@ Article.propTypes = {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-<<<<<<< HEAD
-        onDeleteClick: (id) => dispatch(deleteArticle(id)),
+      /*
         onEditClick: (id,text,time) => dispatch(editArticle(id,text)),
-=======
+      */
         onDeleteClick: (id) => dispatch(deleteArticle(id)),
         onEditClick: (id, username) => dispatch(editArticle(id, username)),
->>>>>>> upstream/master
         onReplyClick: (id) => dispatch(writeArticle(id)),
         onLikeClick: (id, auth) => dispatch(postLike(id, auth)),
         onDetailClick: (id) => dispatch(articleDetail(id)),
