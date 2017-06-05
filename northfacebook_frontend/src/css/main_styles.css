@@ -97,6 +97,23 @@
   padding-right: 20px;
   padding-bottom: 5px;
 }
+.ArticleArticle{
+  text-align: center;
+  background-color: rgba(237,156,237,0.5);
+  font-size: 18px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+}
+.ArticleArticleArticle{
+  text-align: center;
+  background-color: rgba(237,237,237,0.125);
+  font-size: 18px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+}
+
 .article_text{
   font-weight: bold;
   font-size: 23px;
@@ -150,7 +167,7 @@
   height: 1.5em;
   color: white;
   font-size: 30px;
-  background-color:rgb(237,30,39); 
+  background-color:rgb(237,30,39);
   font-size: 20px;
   font-family: 궁서;
   width: 120px;
@@ -161,7 +178,7 @@
   height: 1.5em;
   color: white;
   font-size: 30px;
-  background-color:rgb(237,30,39); 
+  background-color:rgb(237,30,39);
   font-size: 20px;
   font-family: 궁서;
   width: 200px;
@@ -175,7 +192,7 @@
   font-family: 궁서;
   color: white;
   font-size: 30px;
-  background-color:rgb(237,30,39); 
+  background-color:rgb(237,30,39);
 }
 .box{
     position: static;
