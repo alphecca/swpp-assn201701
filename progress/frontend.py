@@ -142,12 +142,6 @@ def articleVerification(driver, article):
         print(driver.find_element_by_id(textId).text)
         print(article["text"])
         exit(1)
-    elif driver.find_element_by_id(createdId).text != "Created: "+article["created_time"]:
-        print("Created time not match on article %d" % article["id"])
-        exit(1)
-    elif driver.find_element_by_id(updatedId).text != "Last update: "+article["updated_time"]:
-        print("Updated time not match on article %d" % article["id"])
-        exit(1)
     elif driver.find_element_by_id(likeId).text != str(article["like_num"]):
         print("Like num not match on article %d" % article["id"])
         exit(1)
@@ -199,12 +193,7 @@ def editErrorVerification(driver, article_id):
     check(driver, editId)
     driver.find_element_by_id(editId).click()
     sleep(1)
-    check(driver, "edit_article_field")
-    check(driver, "edit_text_field")
-    check(driver, "edit_button_field")
-    driver.find_element_by_id("edit_button_field").click()
-    sleep(1)
-    alert(driver, "This article is not yours")
+    alert(driver, "This is not your article!")
 
 def deleteErrorVerification(driver, article_id):
     deleteId = "a"+str(article_id)+"_delete_button_field"

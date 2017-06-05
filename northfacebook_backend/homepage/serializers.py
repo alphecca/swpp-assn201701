@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from homepage.models import *
 from django.db.models import Sum, Q
+import base64
 
 class UserSerializer(serializers.ModelSerializer):
     '''
@@ -19,7 +20,6 @@ class UserSerializer(serializers.ModelSerializer):
     def update_or_create_profile(self, user, profile_data):
         Profile.objects.update_or_create(user=user, defaults=profile_data)
     '''
-
     class Meta:
         model = User
         #article
@@ -38,6 +38,17 @@ class ArticleSerializer(serializers.ModelSerializer):
     children_num = serializers.SerializerMethodField()
     depth = serializers.SerializerMethodField()
     like_num = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField()
+    def get_images(self, obj):
+        imgs = []
+        if obj.image0 == None: #TODO 이후 최대 이미지 3장까지 올릴 수 있도록 + 프론트에서 이미지 불러오는 식으로 하고 싶은데 그거 삽질 한 이후에 수정하기
+            return imgs
+        try:
+            img = open(obj.image0.path, 'rb')
+            imgs.append(base64.b64encode(img.read()))
+            return imgs
+        except ValueError:
+            return []
     def get_children_num(self,obj):
         article=Article.objects.filter(parent=obj.id)
         s=article.count()
@@ -60,7 +71,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         model = Article
         fields = ('id','parent','owner',
         'like_num','depth','text','children_num',
-        'created_time','updated_time')
+        'created_time','updated_time', 'images', 'image0')
 
 # for CHATTING
 class ChatRoomSerializer(serializers.ModelSerializer):
@@ -145,3 +156,4 @@ class SasangSerializer(serializers.ModelSerializer):
     class Meta:
        model = Sasang
        fields = ('first','second','counter')
+

@@ -32,10 +32,11 @@ export const signOut = () => {
     }
 }
 export const SIGN_OUT = 'SIGN_OUT'
-export function addArticle (id, text){
+export function addArticle (id, text, images){
     return {
       type: 'ADD_ARTICLE',
       text,
+      images,
       id
     }
 }
@@ -56,10 +57,11 @@ export const writeArticle = (id) => {
         id
     }
 }
-export const editArticle = (id) => {
+export const editArticle = (id, username) => {
     return {
         type: 'EDIT_ARTICLE',
         id: id,
+        username: username
     }
 }
 export const putArticle = (text) =>{
