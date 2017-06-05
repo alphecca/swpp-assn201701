@@ -10,8 +10,8 @@ const initState = {
     rooms: [],
     texts: [],
     chatting_users: [],
-    room_id: 0,
     profile_user: null,
+    room_id: 0,
     friends: [],
     friend_requests: [],
     load: 0
@@ -31,8 +31,8 @@ describe('homepage reducer', () => {
             rooms: [],
             texts: [],
             chatting_users: [],
-            room_id: 0,
             profile_user: null,
+            room_id: 0,
             friends: [],
             friend_requests: [],
             load: 0
