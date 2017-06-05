@@ -134,7 +134,7 @@ sleep(1)
 articleVerification(driver, data[0])
 sleep(1)
 driver.find_element_by_id('to_main_page_field').click()
-
+"""
 # reply test
 print("7. reply test")
 sleep(1)
@@ -150,7 +150,7 @@ sleep(delayTime)
 detailPageVerification(driver, data[0], reply_data)
 sleep(delayTime)
 driver.find_element_by_id("to_main_page_field").click()
-
+"""
 # delete test
 print("8. delete test")
 sleep(delayTime)
