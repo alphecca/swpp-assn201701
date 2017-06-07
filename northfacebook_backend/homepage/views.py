@@ -79,6 +79,7 @@ def like_list(request):
         likes = Like.objects.all()
         serializer = LikeSerializer(likes, many=True)
         return Response(serializer.data)
+
 @api_view(['GET','DELETE'])
 def like_detail(request, pk):
     try:

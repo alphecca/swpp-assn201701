@@ -27,14 +27,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class LikeSerializer(serializers.ModelSerializer):
     owner=serializers.ReadOnlyField(source='owner.username')
-    serializers.ReadOnlyField(source='article.id')
+    parent=serializers.ReadOnlyField(source='parent.id')
     class Meta:
         model = Like
         fields = ('id','parent','owner')
 
 class ArticleSerializer(serializers.ModelSerializer):
     owner=serializers.ReadOnlyField(source='owner.username')
-    serializers.ReadOnlyField(source='article.id')
+    parent=serializers.ReadOnlyField(source='parent.id')
     children_num = serializers.SerializerMethodField()
     depth = serializers.SerializerMethodField()
     like_num = serializers.SerializerMethodField()
