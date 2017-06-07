@@ -105,7 +105,7 @@
   font-family: 궁서;
   text-align: center;
   background-color: rgba(237,156,237,0.5);
-  font-size: 15px;
+  font-size: 18px;
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 5px;
@@ -114,7 +114,7 @@
   font-family: 궁서;
   text-align: center;
   background-color: rgba(237,237,237,0.5);
-  font-size: 12px;
+  font-size: 18px;
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 5px;
@@ -243,4 +243,7 @@ body{
   -webkit-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+img{
+  width: 700px;
 }
