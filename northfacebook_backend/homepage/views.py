@@ -32,6 +32,7 @@ def main_list(request):
 
 @api_view(['GET', 'POST'])
 def article_list(request):
+    print(request.data)
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
@@ -162,6 +163,7 @@ def article_article(request,pk):
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET'])
 def total_article(request,pk):
     try:
