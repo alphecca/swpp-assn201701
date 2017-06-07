@@ -231,6 +231,11 @@ function *addFriendPageSaga() {
 function *watchLoginState() {
     console.log("Prev Auth: "+localStorage.getItem("auth"));
     console.log("Prev Parent: "+localStorage.getItem("parent"))
+    console.log(window.location.pathname[window.location.pathname.length-1]);
+    if(window.location.pathname[window.location.pathname.length-1] !== '/') {
+        yield put(actions.changeUrl(window.location.pathname+'/'));
+        return;
+    }
     if(window.location.pathname === '/' || window.location.pathname === '/sign_up/') {
         if(localStorage.getItem("auth") !== null) {
             localStorage.removeItem('parent');
@@ -271,6 +276,16 @@ function *watchLoginState() {
                         localStorage.removeItem('auth');
                         localStorage.removeItem('parent');
                         yield put(actions.changeUrl('/'));
+                    }
+                    else if (error.statusCode === 404) {
+                        alert("Oops, page not found");
+                        if(localStorage.getItem("auth") === null) {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
+                        } else {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/main/'));
+                        }
                     }
                     else if(error.statusCode === 0) {
                         console.log("Backend is not accessible");
@@ -322,6 +337,16 @@ function *watchLoginState() {
                         localStorage.removeItem('parent');
                         yield put(actions.changeUrl('/'));
                     }
+                    else if (error.statusCode === 404) {
+                        alert("Oops, page not found");
+                        if(localStorage.getItem("auth") === null) {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
+                        } else {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/main/'));
+                        }
+                    }
                     else if(error.statusCode === 0) {
                         console.log("Backend is not available");
                         alert("Temporary Server Error");
@@ -351,8 +376,16 @@ function *watchLoginState() {
                 const id = path.split("/")[2];//그냥..
                 let profile_data = null;
                 let friend_data = null;
-                if (username === undefined) {
+                if (username === undefined || username === '') {
                     console.log("404 not found");
+                    alert("Oops, page not found");
+                    if(localStorage.getItem("auth") === null) {
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
+                    } else {
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/main/'));
+                    }
                     return;
                 }
                 if (path.split("/")[1] === 'chatting') {
@@ -386,8 +419,16 @@ function *watchLoginState() {
                             localStorage.removeItem('parent');
                         }
                         else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            console.log("404 Not Found");
                             console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            alert("Oops, page not found");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         }
                         else if(error.statusCode === 0) {
@@ -423,8 +464,16 @@ function *watchLoginState() {
                             localStorage.removeItem('parent');
                         }
                         else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            console.log("404 Not Found");
                             console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            alert("Oops, page not found");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         }
                         else if(error.statusCode === 0) {
@@ -469,9 +518,17 @@ function *watchLoginState() {
                         //TODO error case
                         if(error.statusCode === 403){
                             alert("Unauthorized user tried to access profile page. Please sign in first");
-                        }else if(error.statusCode ===404){
-                            alert("404 Not Found");
+                        }else if(error.statusCode === 404){
+                            console.log("404 Not Found");
                             console.log("뉴스프링이 안심하래");
+                            alert("Oops, page not found");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return ;
                         }else if(error.statusCode === 0){
                             console.log("Backend server is not accessible");
@@ -512,8 +569,16 @@ function *watchLoginState() {
                         if (error.statusCode === 403) {
                             alert("Unauthorized user tried to access profile page. Please sign in first");
                         } else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            console.log("404 Not Found");
                             console.log("안단티노가 안심하래");
+                            alert("Oops, page not found");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         } else if(error.statusCode === 0) {
                             console.log("Backend server is not accessible");
@@ -556,8 +621,16 @@ function *watchLoginState() {
                         if (error.statusCode === 403) {
                             alert("Unauthorized user tried to access profile page. Please sign in first");
                         } else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            console.log("404 Not Found");
                             console.log("안단티노가 안심하래");
+                            alert("Oops, page not found");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         } else if(error.statusCode === 0) {
                             console.log("Backend server is not accessible");
@@ -584,8 +657,16 @@ function *watchLoginState() {
                         if (error.statusCode === 403) {
                             alert("Unauthorized user tried to access profile page. Please sign in first");
                         } else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            console.log("404 Not Found");
                             console.log("안단티노가 안심하래");
+                            alert("Oops, page not found");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         } else if(error.statusCode === 0) {
                             console.log("Backend server is not accessible");
@@ -634,8 +715,16 @@ function *watchLoginState() {
                             localStorage.removeItem('parent');
                         }
                         else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            console.log("404 Not Found");
                             console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            alert("Oops, page not found");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         }
                         else if(error.statusCode === 0) {
@@ -672,8 +761,16 @@ function *watchLoginState() {
                             console.log('whyyyyyyyy');
                         }
                         else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            console.log("404 Not Found");
                             console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            alert("Oops, page not found");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         }
                         else if(error.statusCode === 0) {
@@ -953,14 +1050,14 @@ function *signIn(data) {
             responseType: 'json'
         })
         console.log("Login Success without exception");
-        alert("Succeed to sign in! :)");
+        //alert("Succeed to sign in! :)");
         localStorage.setItem("auth", encodedData);
         yield put(actions.changeUrl('/main/'));
     }
     catch(error) {
         if(error.statusCode === 200) {
             console.log('Login Success');
-            alert("Succeed to sign in! :)");
+            //alert("Succeed to sign in! :)");
             localStorage.setItem("auth", encodedData);
             yield put(actions.changeUrl('/main/'));
         }
@@ -1361,7 +1458,15 @@ function *updateChatting(room_id) {
             yield put(actions.changeUrl('/'));
         }
         else if(error.statusCode === 404) {
-            alert("404 Not Found");
+            console.log("404 Not Found");
+            alert("Oops, page not found");
+            if(localStorage.getItem("auth") === null) {
+                localStorage.removeItem('parent');
+                yield put(actions.changeUrl('/'));
+            } else {
+                localStorage.removeItem('parent');
+                yield put(actions.changeUrl('/main/'));
+            }
             console.log("안심하세요! 이 에러는 Unknown Error가 아닙니다.");
             return;
         }
@@ -1399,7 +1504,15 @@ function *updateChatting(room_id) {
             yield put(actions.changeUrl('/'));
         }
         else if(error.statusCode === 404) {
-            alert("404 Not Found");
+            console.log("404 Not Found");
+            alert("Oops, page not found");
+            if(localStorage.getItem("auth") === null) {
+                localStorage.removeItem('parent');
+                yield put(actions.changeUrl('/'));
+            } else {
+                localStorage.removeItem('parent');
+                yield put(actions.changeUrl('/main/'));
+            }
             console.log("안심하세요! 이 에러는 Unknown Error가 아닙니다.");
             return;
         }
