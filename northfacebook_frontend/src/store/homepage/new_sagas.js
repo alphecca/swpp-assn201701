@@ -550,7 +550,7 @@ function *watchLoginState() {
                 }
                 else if(path.split("/")[1] === 'friend'){
                     //프로필 정보를 get하는 부분
-                    console.log("get addfriend list...");
+                    console.log("get friend list...");
                     try{
                         data = yield call(xhr.get, fixed_url+'users/'+username+'/friends/',{
                             headers: {
@@ -597,11 +597,12 @@ function *watchLoginState() {
                         profile_user: { user: username },
                         friends: data.body,
                         friend_requests: [],
+                        my_requests: [],
                                         }));
                 }
                 else if(path.split("/")[1] === 'addfriend'){
                     //프로필 정보를 get하는 부분
-                    console.log("get friend list...");
+                    console.log("get addfriend list...");
                     try{
                         data = yield call(xhr.get, fixed_url+'users/'+username+'/addfriend/',{
                             headers: {
@@ -618,6 +619,7 @@ function *watchLoginState() {
                         if (error.statusCode === 403) {
                             console.log("Unauthorized user tried to access profile page. Please sign in first");
                             alert("당신은 자격이 없소.");
+                            return;
                         } else if(error.statusCode === 404) {
                             alert("없는 장소");
                             console.log("안단티노가 안심하래");
@@ -653,6 +655,43 @@ function *watchLoginState() {
                         //TODO error case
                         if (error.statusCode === 403) {
                             alert("려권을 볼 자격이 없소");
+                            return;
+                        } else if(error.statusCode === 404) {
+                            alert("없는 장소");
+                            console.log("안단티노가 안심하래");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
+                            return;
+                        } else if(error.statusCode === 0) {
+                            console.log("Backend server is not accessible");
+                            alert("나라에 사정이 있소.");
+                            return;
+                        } else {
+                            alert("1조를 찾아주시오.");
+                            return;
+                        }
+                    }
+                    try{
+                        friend_data = yield call(xhr.get, fixed_url+'myaddfriend/',{
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json'
+                         });
+                         console.log('Get data without exception');
+                    } catch(error) {
+                        console.log(error);
+                        //TODO error case
+                        if (error.statusCode === 403) {
+                            alert("려권을 볼 자격이 없소");
+                            return;
                         } else if(error.statusCode === 404) {
                             alert("없는 장소");
                             console.log("안단티노가 안심하래");
@@ -684,6 +723,7 @@ function *watchLoginState() {
                         profile_user: { user: username },
                         friends: friend_data.body,
                         friend_requests: data.body,
+                        my_requests: my_data.body,
                                         }));
                 }
                 else {
