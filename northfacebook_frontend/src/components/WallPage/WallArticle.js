@@ -34,8 +34,8 @@ class WallArticle extends React.Component {
 
         const labelId = "a"+this.props.article.id+"_label";
         const typeLabel = () => {
-            const current = window.atob(localStorage['auth']).split(":")[0];
-            console.log(current);
+            const current = this.props.current
+            console.log(current)
             if(this.props.article.owner !== current)
                 return (
                         <div>
@@ -90,7 +90,8 @@ class WallArticle extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
-        authorization: Object.assign(state.authorization)
+        authorization: Object.assign(state.authorization),
+        current: state.propfile_user !== null ? Object.assign(state.profile_user.username) : null
     }
 }
 
