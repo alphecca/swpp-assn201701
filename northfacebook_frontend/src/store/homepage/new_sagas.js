@@ -375,6 +375,7 @@ function *watchLoginState() {
                 const id = path.split("/")[2];//그냥..
                 let profile_data = null;
                 let friend_data = null;
+                let my_data = null;
                 if (username === undefined || username === '') {
                     console.log("404 not found");
                     alert("없는 장소");
@@ -677,7 +678,7 @@ function *watchLoginState() {
                         }
                     }
                     try{
-                        friend_data = yield call(xhr.get, fixed_url+'myaddfriend/',{
+                        my_data = yield call(xhr.get, fixed_url+'myaddfriend/',{
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': 'Basic '+localStorage['auth'],

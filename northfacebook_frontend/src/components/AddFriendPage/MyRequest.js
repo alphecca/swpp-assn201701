@@ -1,13 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { postAddFriend, deleteAddFriend, changeUrl } from '../../actions'
+import { deleteAddFriend, changeUrl } from '../../actions'
 
 class MyRequest extends React.Component {
     render() {
         const friendName = this.props.friend.me;
         const friendNameId = "mr_"+this.props.friend.me+"_name_field";
-        const OKButtonId = "mr_"+this.props.friend.me+"_ok_button_field";
         const declineButtonId = "mr_"+this.props.friend.me+"_decline_button_field";
         const componentId = "mr_"+this.props.friend.me+"_field";
 
