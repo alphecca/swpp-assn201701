@@ -7,6 +7,7 @@ from selenium.webdriver.common.alert import Alert
 
 from backend_ import *
 
+delayTime = 1
 # 특정 id를 가진 컴퍼넌트가 존재하는지 확인
 def check(driver, name):
     try:
@@ -43,16 +44,16 @@ def signInVerification(driver, username, password):
     driver.find_element_by_id("username_field").clear() # reset username field
     driver.find_element_by_id("password_field").clear() # reset password field
     driver.find_element_by_id("sign_in").click()
-    sleep(1)
+    sleep(delayTime)
     alert(driver, "User not exist!")
     driver.find_element_by_id("username_field").send_keys(username)
     driver.find_element_by_id("sign_in").click()
-    sleep(1)
+    sleep(delayTime)
     alert(driver, "User not exist!")
     driver.find_element_by_id("password_field").send_keys(password)
     driver.find_element_by_id("sign_in").click()
-    sleep(1)
-    alert(driver, "Succeed to sign in! :)")
+    sleep(delayTime)
+#alert(driver, "Succeed to sign in! :)")
 
 #####SIGN OUT CHECK#####
 def signOutVerification(driver, username):
@@ -62,7 +63,7 @@ def signOutVerification(driver, username):
         print("username does not match!")
         exit(1)
     driver.find_element_by_id("sign_out").click()
-    sleep(1)
+    sleep(delayTime)
     signInPageVerification(driver)
 
 #####SIGN UP CHECK#####
@@ -75,22 +76,22 @@ def signUpPageVerification(driver):
 def signUpAlertVerification(driver, username, password):
     # no username
     driver.find_element_by_id('sign_up').click()
-    sleep(1)
+    sleep(delayTime)
     alert(driver, "Enter the username")
     # no password
     driver.find_element_by_id('username_field').send_keys('test')
     driver.find_element_by_id('sign_up').click()
-    sleep(1)
+    sleep(delayTime)
     alert(driver, "Enter the password")
     # no pwd verification
     driver.find_element_by_id('password_field').send_keys('testpasswd')
     driver.find_element_by_id('sign_up').click()
-    sleep(1)
+    sleep(delayTime)
     alert(driver, "Enter the password verification")
     # password not matching
     driver.find_element_by_id('pwdverification_field').send_keys('testpasswd_diff')
     driver.find_element_by_id('sign_up').click()
-    sleep(1)
+    sleep(delayTime)
     alert(driver, "Password does not match")
 
 def signUpVerification(driver, testNum):
@@ -102,14 +103,14 @@ def signUpVerification(driver, testNum):
     driver.find_element_by_id('pwdverification_field').clear()
     signUpAlertVerification(driver, username, password)
     driver.find_element_by_id('to_main').click()
-    sleep(1)
+    sleep(delayTime)
     driver.find_element_by_id('sign_up').click()
-    sleep(1)
+    sleep(delayTime)
     driver.find_element_by_id('username_field').send_keys(username)
     driver.find_element_by_id('password_field').send_keys(password)
     driver.find_element_by_id('pwdverification_field').send_keys(password)
     driver.find_element_by_id('sign_up').click()
-    sleep(1)
+    sleep(delayTime)
     if testNum < 10:
         alert(driver, "This username already exists")
 
@@ -157,7 +158,7 @@ def likeVerification(driver, article_id, isClicked):
     likeId = "a"+str(article_id)+"_like_button_field"
     check(driver, likeId)
     driver.find_element_by_id(likeId).click()
-    sleep(1)
+    sleep(delayTime)
     if isClicked == True:
         alert(driver, "You cannot like this post!")
 
@@ -165,14 +166,14 @@ def replyVerification(driver, article_id, text):
     replyId = "a"+str(article_id)+"_reply_button_field"
     check(driver, replyId)
     driver.find_element_by_id(replyId).click()
-    sleep(1)
+    sleep(delayTime)
     writePageVerification(driver, text)
 
 def editVerification(driver, article_id, text):
     editId = "a"+str(article_id)+"_edit_button_field"
     check(driver, editId)
     driver.find_element_by_id(editId).click()
-    sleep(1)
+    sleep(delayTime)
     check(driver, "edit_article_field")
     check(driver, "edit_text_field")
     check(driver, "edit_button_field")
@@ -188,26 +189,26 @@ def detailVerification(driver, article_id):
     detailId = "a"+str(article_id)+"_detail_button_field"
     check(driver, detailId)
     driver.find_element_by_id(detailId).click()
-    sleep(1)
+    sleep(delayTime)
 
 ## error checking functions for edit and delete
 def editErrorVerification(driver, article_id):
     editId = "a"+str(article_id)+"_edit_button_field"
     check(driver, editId)
     driver.find_element_by_id(editId).click()
-    sleep(1)
+    sleep(delayTime)
     alert(driver, "This is not your article!")
 
 def deleteErrorVerification(driver, article_id):
     deleteId = "a"+str(article_id)+"_delete_button_field"
     check(driver, deleteId)
     driver.find_element_by_id(deleteId).click()
-    sleep(1)
+    sleep(delayTime)
     alert(driver, "This is not your article")
 
 ## main page rendering test
 def mainPageVerification(driver, articles):
-    sleep(1)
+    sleep(delayTime)
     check(driver, "article_list_field")
     check(driver, "write_button_field")
     check(driver, "to_my_wall")
@@ -217,7 +218,7 @@ def mainPageVerification(driver, articles):
 #####WRITE PAGE#####
 # write page verification (article, not reply)
 def writePageVerification(driver, text):
-    sleep(1)
+    sleep(delayTime)
     check(driver, "add_article_field")
     check(driver, "post_text_field")
     check(driver, "post_button_field") # check rendering

@@ -1,21 +1,21 @@
 import React from 'react'
-import FriendRequest from './FriendRequest.js'
+import MyRequest from './MyRequest.js'
 import { connect } from 'react-redux'
 
-class FriendRequestList extends React.Component {
+class MyRequestList extends React.Component {
     render() {
-        const list = this.props.friend_requests;
+        const list = this.props.my_requests;
         console.log(list);
         if (list.length === 0) {
             return (
                     <div id="mr_list_field" className="MyRequestList">
-                    아, 자네에게 온 요청이 없다우.
+                    아, 자네는 아무에게도 요청을 보내지 않았다우.
                     </div>
                    )
         }
         return (
-                <div id="fr_list_field" className="FriendRequestList">
-                {list.map(friend => <FriendRequest key={friend.name} {...friend}/>)}
+                <div id="mr_list_field" className="MyRequestList">
+                {list.map(friend => <MyRequest key={friend.name} {...friend}/>)}
                 </div>
                )
     }
@@ -23,7 +23,7 @@ class FriendRequestList extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
-        friend_requests: Object.assign(state.friend_requests).map(friend => JSON.parse(JSON.stringify(
+        my_requests: Object.assign(state.my_requests).map(friend => JSON.parse(JSON.stringify(
                                  {
                                     friend: friend,
                                     name: friend.name
@@ -33,6 +33,6 @@ let mapStateToProps = (state) => {
     }
 }
 
-FriendRequestList = connect(mapStateToProps)(FriendRequestList)
+MyRequestList = connect(mapStateToProps)(MyRequestList)
 
-export default FriendRequestList
+export default MyRequestList
