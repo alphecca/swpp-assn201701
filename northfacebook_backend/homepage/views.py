@@ -32,7 +32,6 @@ def main_list(request):
 
 @api_view(['GET', 'POST'])
 def article_list(request):
-    print(request.data)
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
