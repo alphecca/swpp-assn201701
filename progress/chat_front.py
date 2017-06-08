@@ -9,9 +9,11 @@ from selenium.common.exceptions import NoSuchElementException, NoAlertPresentExc
 from selenium.webdriver.common.alert import Alert
 
 from backend_ import *
+from frontend_ import *
 
 delayTime=1
 # general checker whether id exists
+"""
 def check(driver, name):
     try:
         itm = driver.find_element_by_id(name)
@@ -36,10 +38,10 @@ def signInVerification(driver, uname, upwd):
     driver.find_element_by_id('username_field').send_keys(uname)
     driver.find_element_by_id('password_field').send_keys(upwd)
     driver.find_element_by_id('sign_in').click()
-    sleep(2)
-    alert(driver, "Succeed to sign in! :)")
+    sleep(delayTime*2)
+    #alert(driver, "Succeed to sign in! :)")
     sleep(delayTime)
-
+"""
 def chatRoomVerification(driver, link, uname, upwd):
     sleep(delayTime)
     check(driver, "chat_button_field")
@@ -72,7 +74,7 @@ def chatRoomVerification(driver, link, uname, upwd):
         check(driver, "input_room_name_field")
         driver.find_element_by_id("input_room_name_field").send_keys(roomName)
         driver.find_element_by_id('post_room_button_field').click()
-        sleep(2)
+        sleep(delayTime*2)
    
     print("2-4.check # of people in the room & room name") 
     for t in range(1,4):
@@ -148,7 +150,7 @@ def sendTextVerification(driver, link, uname, upwd, roomId):
     textCont= "text1"
     driver.find_element_by_id("input_text_field").send_keys(textCont)
     driver.find_element_by_id("post_text_button_field").click()
-    sleep(0.6)
+    sleep(delayTime)
     try:
         res = requests.get(link+"chatroom/"+roomId+"/text/", auth=(uname, upwd)) 
         if res.status_code != 200:
@@ -168,10 +170,10 @@ def sendTextVerification(driver, link, uname, upwd, roomId):
     elif driver.find_element_by_id("t"+str(textId)+"_writer_field").text != uname:
         print("Text writer isn't match!")
         exit(1)
-
+"""
 def signOutVerification(driver):
     check(driver, "sign_out")
-    driver.find_element_by_id("sign_out").click()
+    driver.find_element_by_id("sign_out").click()"""
 
 def B_chatRoomVerification(driver, roomId):
     # in the ~/main/
@@ -188,7 +190,7 @@ def B_chatRoomVerification(driver, roomId):
     driver.find_element_by_id('post_text_button_field').click()
     sleep(delayTime)
     alert(driver, "You didn't join in this room. Please join in first.") 
-    sleep(2)
+    sleep(delayTime*2)
     print("2-1. join the room")
     # at room list 
     check(driver, "room"+roomId+"_join_field")
@@ -225,7 +227,7 @@ def B_sendTextVerification(driver, link, uname, upwd, roomId ):
     textCont= "text2"
     driver.find_element_by_id("input_text_field").send_keys(textCont)
     driver.find_element_by_id("post_text_button_field").click()
-    sleep(0.6)
+    sleep(delayTime)
     try:
         res = requests.get(link+"chatroom/"+roomId+"/text/", auth=(uname, upwd)) 
         if res.status_code != 200:

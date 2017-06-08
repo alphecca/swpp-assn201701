@@ -10,13 +10,13 @@ class UserSerializer(serializers.ModelSerializer):
         profile_data = validated_data.pop('profile', None)
         user = super(UserSerializer, self).create(validated_data)
         self.update_or_create_profile(user, profile_data)
-        return user 
+        return user
     '''
     def update(self, instance, validated_data):
         instance.set_password(validated_data['password'])
         instance.save()
         return instance
-    '''    
+    '''
     def update_or_create_profile(self, user, profile_data):
         Profile.objects.update_or_create(user=user, defaults=profile_data)
     '''
@@ -27,14 +27,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class LikeSerializer(serializers.ModelSerializer):
     owner=serializers.ReadOnlyField(source='owner.username')
-    parent=serializers.ReadOnlyField(source='article.id')
+    parent=serializers.ReadOnlyField(source='parent.id')
     class Meta:
         model = Like
         fields = ('id','parent','owner')
 
 class ArticleSerializer(serializers.ModelSerializer):
     owner=serializers.ReadOnlyField(source='owner.username')
-    parent=serializers.ReadOnlyField(source='article.id')
+    parent=serializers.ReadOnlyField(source='parent.id')
     children_num = serializers.SerializerMethodField()
     depth = serializers.SerializerMethodField()
     like_num = serializers.SerializerMethodField()
@@ -145,11 +145,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('user','myname','mybelong','myintro')
+
 class FriendSerializer(serializers.ModelSerializer):
     friend = serializers.ReadOnlyField(source='friend.username')
+    me = serializers.ReadOnlyField(source='me.username')
     class Meta:
         model = Friend
-        fields = ('friend',)
+        fields = ('friend','me',)
+
 class SasangSerializer(serializers.ModelSerializer):
     first=serializers.ReadOnlyField(source='first.username')
     second=serializers.ReadOnlyField(source='second.username')

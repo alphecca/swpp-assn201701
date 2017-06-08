@@ -63,9 +63,15 @@ export default function *saga() {
                 case 'profile':
                     yield spawn(profilePageSaga);
                     break;
+                case 'friend':
+                    yield spawn(friendPageSaga);
+                    break;
+                case 'addfriend':
+                    yield spawn(addFriendPageSaga);
+                    break;
                 default:
                     console.log("default state");
-                    alert("Oops, page not found");
+                    alert("없는 장소");
                     if(localStorage.getItem("auth") === null) {
                         localStorage.removeItem('parent');
                         yield put(actions.changeUrl('/'));
@@ -199,6 +205,25 @@ function *profilePageSaga() {
     yield spawn(watchGoToWall);
 }
 
+function *friendPageSaga() {
+    yield spawn(watchLoginState);
+    yield spawn(watchSignOut);
+    yield spawn(watchGoToMain);
+    yield spawn(watchAddFriend);
+    yield spawn(watchToProfile);
+}
+
+function *addFriendPageSaga() {
+    yield spawn(watchLoginState);
+    yield spawn(watchSignOut);
+    yield spawn(watchGoToMain);
+    yield spawn(watchGoToFriend);
+    yield spawn(watchToProfile);
+    yield spawn(watchPostAddFriend);
+    yield spawn(watchDeleteAddFriend);
+    // TODO add something else
+}
+
 ///// Page별 saga함수에서 쓸 saga함수들 (watch 함수 편)
 // watchLoginState: 브라우저에서의 로그인 여부 확인 및 state 업데이트
 // <<주의>> 새로운 Page를 추가할 경우 PageSaga함수에 반드시 추가할 것
@@ -206,6 +231,11 @@ function *profilePageSaga() {
 function *watchLoginState() {
     console.log("Prev Auth: "+localStorage.getItem("auth"));
     console.log("Prev Parent: "+localStorage.getItem("parent"))
+    console.log(window.location.pathname[window.location.pathname.length-1]);
+    if(window.location.pathname[window.location.pathname.length-1] !== '/') {
+        yield put(actions.changeUrl(window.location.pathname+'/'));
+        return;
+    }
     if(window.location.pathname === '/' || window.location.pathname === '/sign_up/') {
         if(localStorage.getItem("auth") !== null) {
             localStorage.removeItem('parent');
@@ -241,24 +271,33 @@ function *watchLoginState() {
                         data = error;
                     }
                     else if(error.statusCode === 403) {
-                        alert("Unauthorized user tried to access mainpage. Please sign in first!");
+                        alert("BooK에 가려면 려권을 보여주게나.");
                         console.log('whyyyyyyyy');
                         localStorage.removeItem('auth');
                         localStorage.removeItem('parent');
                         yield put(actions.changeUrl('/'));
                     }
+                    else if (error.statusCode === 404) {
+                        alert("없는 장소");
+                        if(localStorage.getItem("auth") === null) {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
+                        } else {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/main/'));
+                        }
+                    }
                     else if(error.statusCode === 0) {
                         console.log("Backend is not accessible");
-                        alert("Temporary Server Error");
+                        alert("나라에 사정이 있소");
                         return;
                     }
                     else {
                         console.log("Whyyyyyyyyyyy");
-                        alert("Unknown Error Occurred");
+                        alert("1조원들을 찾아주게나");
                         return;
                     }
                 }
-                //alert(JSON.stringify(data.body));
                 yield put(actions.setState({
                     authorization: window.atob(localStorage['auth']),
                     articles: data.body,
@@ -291,20 +330,30 @@ function *watchLoginState() {
                         data = error;
                     }
                     else if(error.statusCode === 403) {
-                        alert("Unauthorized user tried to access chatting room page. Please sign in first!");
+                        alert("수다방에 가려면 려권을 보여주게나.");
                         console.log('permission denied');
                         localStorage.removeItem('auth');
                         localStorage.removeItem('parent');
                         yield put(actions.changeUrl('/'));
                     }
+                    else if (error.statusCode === 404) {
+                        alert("없는 장소");
+                        if(localStorage.getItem("auth") === null) {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
+                        } else {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/main/'));
+                        }
+                    }
                     else if(error.statusCode === 0) {
-                        console.log("Backend is not available");
-                        alert("Temporary Server Error");
+                        alert("나라에 사정이 있소.");
+                        console.log("Temporary Server Error");
                         return;
                     }
                     else {
-                        console.log("Unknown error");
-                        alert("Unknown error occurred");
+                        alert("1조원들을 찾아주게나.");
+                        console.log("Unknown error occurred");
                         return;
                     }
                 }
@@ -325,8 +374,18 @@ function *watchLoginState() {
                 const username = path.split("/")[2];
                 const id = path.split("/")[2];//그냥..
                 let profile_data = null;
-                if (username === undefined) {
+                let friend_data = null;
+                let my_data = null;
+                if (username === undefined || username === '') {
                     console.log("404 not found");
+                    alert("없는 장소");
+                    if(localStorage.getItem("auth") === null) {
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
+                    } else {
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/main/'));
+                    }
                     return;
                 }
                 if (path.split("/")[1] === 'chatting') {
@@ -354,24 +413,32 @@ function *watchLoginState() {
                             data = error;
                         }
                         else if(error.statusCode === 403) {
-                            alert("Unauthorized user tried to access wall. Please sign in first!");
+                            alert("담벼락으로 가려면 려권을 보여주게나.");
                             console.log('whyyyyyyyy');
                             localStorage.removeItem('auth');
                             localStorage.removeItem('parent');
                         }
                         else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            console.log("404 Not Found");
                             console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            alert("없는 장소");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         }
                         else if(error.statusCode === 0) {
                             console.log("Backend is not accessible");
-                            alert("Temporary Server Error. Try reloading!");
+                            alert("나라에 잠시 사정이 생겼소! 다시 오게나.");
                             return;
                         }
                         else {
                             console.log("Whyyyyyyyyyyy");
-                            alert("Unknown Error Occurred");
+                            alert("1조원들을 찾아주게나.");
                             return;
                         }
                     }
@@ -391,24 +458,32 @@ function *watchLoginState() {
                             data = error;
                         }
                         else if(error.statusCode === 403) {
-                            alert("Unauthorized user tried to access wall. Please sign in first!");
+                            alert("담벼락에 오려면 려권을 보여주게나.");
                             console.log('whyyyyyyyy');
                             localStorage.removeItem('auth');
                             localStorage.removeItem('parent');
                         }
                         else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            console.log("404 Not Found");
                             console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            alert("없는 장소");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         }
                         else if(error.statusCode === 0) {
                             console.log("Backend is not accessible");
-                            alert("Temporary Server Error. Try reloading!");
+                            alert("나라에 잠시 사정이 생겼소!");
                             return;
                         }
                         else {
                             console.log("Whyyyyyyyyyyy");
-                            alert("Unknown Error Occurred");
+                            alert("1조원들을 찾아주게나.");
                             return;
                         }
                     }
@@ -442,17 +517,24 @@ function *watchLoginState() {
                         console.log(error);
                         //TODO error case
                         if(error.statusCode === 403){
-                            alert("Unauthorized user tried to access profile page. Please sign in first");
-                        }else if(error.statusCode ===404){
-                            alert("404 Not Found");
+                            alert("당신은 려권을 볼 자격이 없소!");
+                        }else if(error.statusCode === 404){
+                            alert("없는 장소");
                             console.log("뉴스프링이 안심하래");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return ;
                         }else if(error.statusCode === 0){
                             console.log("Backend server is not accessible");
-                            alert("Temporary Server error. Try reloading");
+                            alert("나라에 잠시 사정이 생겼소.");
                             return;
                         }else{
-                            alert("Unknown Error Occured");
+                            alert("1조원들을 찾아주시오.");
                             return;
                         }
                     }
@@ -467,12 +549,189 @@ function *watchLoginState() {
                         profile_user: profile_data.body,
                                         }));
                 }
-
+                else if(path.split("/")[1] === 'friend'){
+                    //프로필 정보를 get하는 부분
+                    console.log("get friend list...");
+                    try{
+                        data = yield call(xhr.get, fixed_url+'users/'+username+'/friends/',{
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json'
+                         });
+                         console.log('Get data without exception');
+                    } catch(error) {
+                        console.log(error);
+                        //TODO error case
+                        if (error.statusCode === 403) {
+                            alert("자격이 없소.");
+                        } else if(error.statusCode === 404) {
+                            alert("없는 장소");
+                            console.log("안단티노가 안심하래");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
+                            return;
+                        } else if(error.statusCode === 0) {
+                            alert("나라에 잠시 일이 생겼소.");
+                            console.log("Temporary Server error. Try reloading");
+                            return;
+                        } else {
+                            alert("1조원들을 찾아주게나.");
+                            return;
+                        }
+                    }
+                    yield put(actions.setState({
+                        authorization: window.atob(localStorage['auth']),
+                        parent_article: null,
+                        articles: [],
+                        rooms: [],
+                        texts: [],
+                        chatting_users: [],
+                        room_id: 0,
+                        profile_user: { user: username },
+                        friends: data.body,
+                        friend_requests: [],
+                        my_requests: [],
+                                        }));
+                }
+                else if(path.split("/")[1] === 'addfriend'){
+                    //프로필 정보를 get하는 부분
+                    console.log("get addfriend list...");
+                    try{
+                        data = yield call(xhr.get, fixed_url+'users/'+username+'/addfriend/',{
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json'
+                         });
+                         console.log('Get data without exception');
+                    } catch(error) {
+                        console.log(error);
+                        //TODO error case
+                        if (error.statusCode === 403) {
+                            console.log("Unauthorized user tried to access profile page. Please sign in first");
+                            alert("당신은 자격이 없소.");
+                            return;
+                        } else if(error.statusCode === 404) {
+                            alert("없는 장소");
+                            console.log("안단티노가 안심하래");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
+                            return;
+                        } else if(error.statusCode === 0) {
+                            alert("나라에 사정이 생겼소.");
+                            console.log("Temporary Server error. Try reloading");
+                            return;
+                        } else {
+                            alert("1조를 찾아주시오.");
+                            return;
+                        }
+                    }
+                    try{
+                        friend_data = yield call(xhr.get, fixed_url+'users/'+username+'/friends/',{
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json'
+                         });
+                         console.log('Get data without exception');
+                    } catch(error) {
+                        console.log(error);
+                        //TODO error case
+                        if (error.statusCode === 403) {
+                            alert("려권을 볼 자격이 없소");
+                            return;
+                        } else if(error.statusCode === 404) {
+                            alert("없는 장소");
+                            console.log("안단티노가 안심하래");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
+                            return;
+                        } else if(error.statusCode === 0) {
+                            console.log("Backend server is not accessible");
+                            alert("나라에 사정이 있소.");
+                            return;
+                        } else {
+                            alert("1조를 찾아주시오.");
+                            return;
+                        }
+                    }
+                    try{
+                        my_data = yield call(xhr.get, fixed_url+'myaddfriend/',{
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType: 'json'
+                         });
+                         console.log('Get data without exception');
+                    } catch(error) {
+                        console.log(error);
+                        //TODO error case
+                        if (error.statusCode === 403) {
+                            alert("려권을 볼 자격이 없소");
+                            return;
+                        } else if(error.statusCode === 404) {
+                            alert("없는 장소");
+                            console.log("안단티노가 안심하래");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
+                            return;
+                        } else if(error.statusCode === 0) {
+                            console.log("Backend server is not accessible");
+                            alert("나라에 사정이 있소.");
+                            return;
+                        } else {
+                            alert("1조를 찾아주시오.");
+                            return;
+                        }
+                    }
+                    yield put(actions.setState({
+                        authorization: window.atob(localStorage['auth']),
+                        parent_article: null,
+                        articles: [],
+                        rooms: [],
+                        texts: [],
+                        chatting_users: [],
+                        room_id: 0,
+                        profile_user: { user: username },
+                        friends: friend_data.body,
+                        friend_requests: data.body,
+                        my_requests: my_data.body,
+                                        }));
+                }
                 else {
                     // 스테이트의 articles에 들어갈 내용을 받는 try-catch 문
                     try {
                         localStorage.setItem('parent', id);
-                        data = yield call(xhr.get, fixed_url+'article/'+id+'/article/', {
+                        data = yield call(xhr.get, fixed_url+'article/'+id+'/total/', {
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': 'Basic '+ localStorage['auth'],
@@ -487,24 +746,31 @@ function *watchLoginState() {
                             data = error;
                         }
                         else if(error.statusCode === 403) {
-                            alert("Unauthorized user tried to access article detail page. Please sign in first!");
+                            alert("자격이 없소. 려권을 보여주시오.");
                             console.log('whyyyyyyyy');
                             localStorage.removeItem('auth');
                             localStorage.removeItem('parent');
                         }
                         else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            alert("없는 장소");
                             console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         }
                         else if(error.statusCode === 0) {
-                            console.log("Backend is not accessible");
-                            alert("Temporary Server Error. Try reloading!");
+                            alert("나라에 문제가...");
+                            console.log("Temporary Server Error. Try reloading!");
                             return;
                         }
                         else {
                             console.log("Whyyyyyyyyyyy");
-                            alert("Unknown Error Occurred");
+                            alert("1조를 찾아주시오.");
                             return;
                         }
                     }
@@ -527,22 +793,29 @@ function *watchLoginState() {
                             parent_data = error;
                         }
                         else if(error.statusCode === 403) {
-                            alert("Unauthorized user tried to access article detail page. Please sign in first!");
-                            console.log('whyyyyyyyy');
+                          alert("1조를 찾아주시오");
+                          console.log('whyyyyyyyy');
                         }
                         else if(error.statusCode === 404) {
-                            alert("404 Not Found");
+                            alert("없는 장소");
                             console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
                             return;
                         }
                         else if(error.statusCode === 0) {
                             console.log("Backend is not accessible");
-                            alert("Temporary Server Error. Try reloading");
+                            alert("나라에 문제가 생겻소.");
                             return;
                         }
                         else {
                             console.log("Whyyyyyyyyyyy");
-                            alert("Unknown Error Occurred");
+                            alert("1조를 찾아주시오");
                             return;
                         }
                     }
@@ -607,8 +880,9 @@ function *watchWrite() {
         const data = yield take('WRITE_ARTICLE');
         if(data.id === null)
             yield put(actions.changeUrl('/write/'));
-        else
+        else {
             yield put(actions.changeUrl('/write/'+data.id.id+'/'));
+        }
     }
 
 }
@@ -662,11 +936,11 @@ function *watchEdit(){
         const data = yield take('EDIT_ARTICLE');
         //TODO user data GET해서 forbidden or not
         if(data.username !== window.atob(localStorage['auth']).split(':')[0]) {
-            alert("This is not your article!");
+            alert("당신 글이 아니오!");
             continue;
         }
-        yield put(actions.changeUrl('/edit/'+data.id+'/'));     
-    } 
+        yield put(actions.changeUrl('/edit/'+data.id+'/'));
+    }
 }
 
 
@@ -766,14 +1040,14 @@ function *watchEscape(){
 }
 function *watchGoToFriend(){
     while(true){
-        const data=yield take('TO_FRIEND');
-        yield put(actions.changeUrl('/profile/'+data.profuser+'/friend/'));
+        const data = yield take('TO_FRIEND');
+        yield put(actions.changeUrl('/friend/'+data.profuser+'/'));
     }
 }
 function *watchAddFriend(){
     while(true){
-        const data=yield take('ADD_FRIEND');
-        yield put(actions.changeUrl('/profile/'+data.profuser+'/addfriend/'));
+        const data = yield take('ADD_FRIEND');
+        yield put(actions.changeUrl('/addfriend/'+data.profuser+'/'));
     }
 }
 function *watchGoToWall(){
@@ -782,6 +1056,21 @@ function *watchGoToWall(){
         yield put(actions.changeUrl('/wall/'+data.profuser+'/'));
     }
 }
+
+function *watchPostAddFriend() {
+    while(true) {
+        const data = yield take('POST_ADD_FRIEND');
+        yield call(postAddFriend, data.profuser);
+    }
+}
+
+function *watchDeleteAddFriend() {
+    while(true) {
+        const data = yield take('DELETE_ADD_FRIEND');
+        yield call(deleteAddFriend, data.profuser);
+    }
+}
+
 ///// Page별 saga함수에서 쓸 saga함수 (그 외)
 // signIn: 백엔드에 get을 날리는 함수
 function *signIn(data) {
@@ -796,28 +1085,26 @@ function *signIn(data) {
             responseType: 'json'
         })
         console.log("Login Success without exception");
-        alert("Succeed to sign in! :)");
         localStorage.setItem("auth", encodedData);
         yield put(actions.changeUrl('/main/'));
     }
     catch(error) {
         if(error.statusCode === 200) {
             console.log('Login Success');
-            alert("Succeed to sign in! :)");
             localStorage.setItem("auth", encodedData);
             yield put(actions.changeUrl('/main/'));
         }
         else if(error.statusCode === 403) {
             console.log("User not found");
-            alert("User not exist!");
+            alert("그런 려권은 없는데?");
         }
         else if(error.statusCode === 0) {
             console.log("Server not available");
-            alert("Temporal Server Error");
+            alert("나라에 문제가 생겼소.");
         }
         else {
             console.log(error);
-            alert('Unknown error occurred');
+            alert('1조를 찾아주게나.');
         }
     }
 }
@@ -845,19 +1132,19 @@ function *signUp(data) {
 
         }
         else if(error.statusCode === 0) {
-            alert("Backend server not available");
+            alert("나라에 문제가...");
             console.log("Check backend server");
         }
         else if(error.statusCode === 400){
-            alert("Length of username must be 4~20\nEnter all text box correctly");
+            alert("성명이나 암호가 려권에 맞지 않소.");
             console.log("Put correct username & password");
         }
         else if(error.statusCode === 404) {
-            alert("Parent Article Does Not Exist");
+            alert("윗글이 사라져서 길을 잃은 모양이오.");
             console.log("parent article removed");
         }
         else if(error.statusCode === 405) {
-           alert("This username already exists");
+           alert("이미 같은 성명이 있소.");
            console.log("duplicate username");
         }
         else if(Object.keys(error).length === 0) {
@@ -866,7 +1153,7 @@ function *signUp(data) {
             yield put(actions.changeUrl('/main/'));
         }
         else {
-            alert("Unknown Error Occurred");
+            alert("1조를 찾아주시오.");
             console.log(error);
         }
     }
@@ -885,40 +1172,41 @@ function *postLike(id) {
             },
             contentType:'json'
         });
-        console.log("post article succeed 1");
+        console.log("post like succeed 1");
         yield put(actions.changeUrl(window.location.pathname));
     }
     catch(error) {
         console.log(error);
         if(error.statusCode === 201) {
-            console.log("post article succeed 2");
+            console.log("post like succeed 2");
             yield put(actions.changeUrl(window.location.pathname));
         }
         else if(error.statusCode === 0) {
-            alert("Backend server not available");
+            alert("나라에 문제가..");
             console.log("Check backend server");
         }
         else if(error.statusCode === 404) {
-            alert("Parent Article Does Not Exist");
+            alert("윗글이 사라져 길을 잃은 모양이오.");
             console.log("parent article removed");
         }
         else if(error.statusCode === 405) {
-            alert("You cannot like this post!");
+            alert("그만 좋소");
             console.log("double like");
         }
         else if(Object.keys(error).length === 0) {
-            console.log("post article succeed 3");
+            console.log("post like succeed 3");
             yield put(actions.changeUrl(window.location.pathname));
 
         }
         else {
-            alert("Unknown Error Occurred");
+            alert("1조를 찾아주시오.");
             console.log(error);
         }
     }
 }
 
 // postArticle: 새로운 글/댓글을 쓰는 함수
+// TODO 임시로 메인페이지로 돌아가게 만들었는데 이거 나중에 로컬스토리지에 어트리뷰트 하나 추가해서 구현하심 될 듯
 function *postArticle(text, images) {
     console.log(images);
     let form = new FormData();
@@ -941,27 +1229,30 @@ function *postArticle(text, images) {
             body: form
         });
         console.log("post article succeed 1");
-        yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+        //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+        yield put(actions.changeUrl('/main/'));
     }
     catch(error) {
         if(error.statusCode === 201) {
             console.log("post article succeed 2");
-            yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+            //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+            yield put(actions.changeUrl('/main/'));
         }
         else if(error.statusCode === 0) {
-            alert("Backend server not available");
+            alert("나라에 사정이 생겼소");
             console.log("Check backend server");
         }
         else if(error.statusCode === 404) {
-            alert("Parent Article Does Not Exist");
+           alert("윗글이 사라져 길을 잃은 모양이오.");
             console.log("parent article removed");
         }
         else if(Object.keys(error).length === 0) {
             console.log("post article succeed 3");
-            yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+            //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
+            yield put(actions.changeUrl('/main/'));
         }
         else {
-            alert("Unknown Error Occurred");
+            alert("1조를 찾아주시오");
             console.log(error);
         }
     }
@@ -989,7 +1280,7 @@ function *deleteArticle(id){
             yield put(actions.changeUrl('/main/'));
         }
         else if(error.statusCode === 403){
-            alert("This is not your article");
+            alert("당신의 글이 아니오");
         }
         else yield put(actions.changeUrl('/main/'));
     }
@@ -1017,7 +1308,7 @@ function *putArticle(id, text){
     } catch(error){
         console.log(error);
         if(error.statusCode === 403){
-            alert("This article is not yours");
+            alert("당신의 글이 아니오");
         }
     }
 }
@@ -1043,20 +1334,20 @@ function *joinRoom(id) {
             yield put(actions.changeUrl(window.location.pathname));
         }
         else if(error.statusCode === 0) {
-            alert("Backend server not available");
+            alert("나라에 사정이...");
             console.log("Check backend server");
         }
         else if(error.statusCode === 403) {
-            alert("Please sign in first");
+            alert("려권!");
             console.log("permission denied");
             yield put(actions.changeUrl('/'));
         }
         else if(error.statusCode === 404) {
-            alert("This room does not exist");
+            alert("방이 존재하지 않소.");
             console.log("the room has removed");
         }
         else if(error.statusCode === 405) {
-            alert("You already join in this room");
+            alert("당신은 이미 끼어들었소.");
             console.log("you can join in this room once");
         }
         else if(Object.keys(error).length === 0) {
@@ -1064,7 +1355,7 @@ function *joinRoom(id) {
             yield put(actions.changeUrl(window.location.pathname));
         }
         else {
-            alert("Unknown Error Occurred");
+            alert("1조를 찾아주시오.");
             console.log(error);
         }
     }
@@ -1093,24 +1384,24 @@ function *postText(room_id, text) {
             yield put(actions.updateChatting(room_id))
         }
         else if(error.statusCode === 0) {
-            alert("Backend server not available");
+            alert("나라에 문제가..");
             console.log("Check backend server");
         }
         else if(error.statusCode === 400) {
-            alert("Please input message correctly");
+            alert("제대로 된 입력을 주시오.");
             console.log("bad request");
         }
         else if(error.statusCode === 403) {
-            alert("Please sign in first");
+            alert("려권!");
             console.log("permission denied");
             yield put(actions.changeUrl('/'));
         }
         else if(error.statusCode === 404) {
-            alert("This room does not exist");
+            alert("방이 없소.");
             console.log("the room has removed");
         }
         else if(error.statusCode === 405) {
-            alert("You didn't join in this room. Please join in first.");
+            alert("끼어들고 얘기하시오.");
             console.log("The user isn't a chatting member");
             yield put(actions.changeUrl('/room/'));
         }
@@ -1120,7 +1411,7 @@ function *postText(room_id, text) {
             //yield put(actions.changeUrl(window.location.pathname));
         }
         else {
-            alert("Unknown Error Occurred");
+            alert("1조를 찾아주시오!");
             console.log(error);
         }
     }
@@ -1145,17 +1436,17 @@ function *postRoom(room_name) {
             console.log("post room succeed 2.");
         }
         else if(error.statusCode === 0) {
-            alert("Backend server not available");
+            alert("나라에 문제가...");
             console.log("Check backend server");
             return;
         }
         else if(error.statusCode === 400) {
-            alert("Please input correctly");
+            alert("제대로 입력하시오.");
             console.log("Bad request");
             return;
         }
         else if(error.statusCode === 403) {
-            alert("Please sign in first");
+            alert("려권 먼저!");
             console.log("permission denied");
             yield put(actions.changeUrl('/'));
             return;
@@ -1164,7 +1455,7 @@ function *postRoom(room_name) {
             console.log("post room succeed 3.");
         }
         else {
-            alert("Unknown Error Occurred");
+            alert("1조를 찾아주시오.");
             console.log(error);
             return;
         }
@@ -1193,14 +1484,22 @@ function *updateChatting(room_id) {
             userRes = error;
         }
         else if(error.statusCode === 403) {
-            alert("Unauthorized user tried to access chatting page. Please sign in first!");
+            alert("려권을 보여주고 수다를 떠시오.");
             console.log('permission denied');
             localStorage.removeItem('auth');
             localStorage.removeItem('parent');
             yield put(actions.changeUrl('/'));
         }
         else if(error.statusCode === 404) {
-            alert("404 Not Found");
+            console.log("404 Not Found");
+            alert("없는 장소");
+            if(localStorage.getItem("auth") === null) {
+                localStorage.removeItem('parent');
+                yield put(actions.changeUrl('/'));
+            } else {
+                localStorage.removeItem('parent');
+                yield put(actions.changeUrl('/main/'));
+            }
             console.log("안심하세요! 이 에러는 Unknown Error가 아닙니다.");
             return;
         }
@@ -1211,7 +1510,7 @@ function *updateChatting(room_id) {
         }
         else {
             console.log("Unknown error");
-            alert("Unknown error occurred");
+            alert("1조를 찾아주시오");
             return;
         }
     }
@@ -1231,14 +1530,22 @@ function *updateChatting(room_id) {
             textRes = error;
         }
         else if(error.statusCode === 403) {
-            alert("Unauthorized user tried to access chatting page. Please sign in first!");
+            alert("수다방에 들어가려면 려권!");
             console.log('permission denied');
             localStorage.removeItem('auth');
             localStorage.removeItem('parent');
             yield put(actions.changeUrl('/'));
         }
         else if(error.statusCode === 404) {
-            alert("404 Not Found");
+            console.log("404 Not Found");
+            alert("없는 장소");
+            if(localStorage.getItem("auth") === null) {
+                localStorage.removeItem('parent');
+                yield put(actions.changeUrl('/'));
+            } else {
+                localStorage.removeItem('parent');
+                yield put(actions.changeUrl('/main/'));
+            }
             console.log("안심하세요! 이 에러는 Unknown Error가 아닙니다.");
             return;
         }
@@ -1249,7 +1556,7 @@ function *updateChatting(room_id) {
         }
         else {
             console.log("Unknown error");
-            alert("Unknown error occurred");
+            alert("1조에게 편지를!");
             return;
         }
     }
@@ -1305,11 +1612,11 @@ function *updatePW(profuser, newpw){
             return;
         }else if(error.statusCode === 0){
             console.log("Backend is not accessible");
-            alert("Temporary Server Error");
+            alert("잠시 나라에 문제가..");
             return;
         }else{
             console.log("Unknown Error occured :"+error.statusCode);
-            alert("Unknown Error occured");
+            alert("1조에게 편지~");
             return;
         }
     }
@@ -1363,7 +1670,7 @@ function *escapeBook(profuser){
              localStorage.removeItem('parent');
              yield put(actions.changeUrl('/main/'));
         }else if(error.statusCode === 403){
-             alert("This account is not yours");
+             alert("당신의 려권이 아니오");
         }else{
              console.log("delete account succeed!");
              localStorage.removeItem('parent');
@@ -1372,3 +1679,107 @@ function *escapeBook(profuser){
         }
     }
 }
+
+
+// postAddFriend: profuser에게 자신 명의로 동무 추가 요청을 날리는 함수
+function *postAddFriend(profuser) {
+    const path = 'users/'+profuser+'/addfriend/';
+    try {
+        yield call(xhr.post, fixed_url + path, {
+            headers: {
+                "Authorization": "Basic " + localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType:'json'
+        });
+        console.log("post addfriend succeed 1");
+        yield put(actions.changeUrl(window.location.pathname));
+    }
+    catch(error) {
+        console.log(error);
+        if(error.statusCode === 201) {
+            console.log("post addfriend succeed 2");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else if(error.statusCode === 0) {
+            alert("나라에 문제가 있소.");
+            console.log("Check backend server");
+        }
+        else if(error.statusCode === 404) {
+            alert("이런 려권은 없소.");
+            console.log("User removed");
+        }
+        else if(error.statusCode === 405) {
+            alert("이미 동무 요청을 보냈소.");
+            console.log("Double request or You cannot add yourself");
+        }
+        else if(Object.keys(error).length === 0) {
+            console.log("post addfriend succeed 3");
+            yield put(actions.changeUrl(window.location.pathname));
+
+        }
+        else {
+          alert("1조를 찾아줘");
+            console.log(error);
+        }
+    }
+}
+
+// deleteAddFriend: 자신이 보냈거나 자신에게 온 동무 추가 요청을 지우는 함수
+function *deleteAddFriend(profuser) {
+    let getUsername = yield select((state) => state.authorization);
+    let username = getUsername !== null ? Object.assign(getUsername).split(":")[0] : null;
+    const path = 'users/'+profuser+'/addfriend/'+username+'/';
+    try{
+        yield call(xhr.send, fixed_url+path,{
+            method: 'DELETE',
+            headers:{
+                'Authorization': 'Basic '+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType:'json'
+        });
+    console.log("delete addfriend succeed!!!");
+    yield put(actions.changeUrl(window.location.pathname));
+    }catch(error){
+        console.log(error);
+        if(error.statusCode === 204){
+            console.log("delete addfriend succeedd!!");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else if(error.statusCode === 403){
+          alert("반동이다!");
+        }
+        else if(error.statusCode === 404) {
+            const path2 = 'users/'+username+'/addfriend/'+profuser+'/';
+            try{
+                yield call(xhr.send, fixed_url+path2,{
+                    method: 'DELETE',
+                    headers:{
+                        'Authorization': 'Basic '+localStorage['auth'],
+                        "Content-Type": 'application/json',
+                        Accept: 'application/json'
+                    },
+                    contentType:'json'
+                });
+            console.log("delete addfriend succeed!!!");
+            yield put(actions.changeUrl(window.location.pathname));
+            }catch(error){
+                console.log(error);
+                if(error.statusCode === 204){
+                    console.log("delete addfriend succeedd!!");
+                    yield put(actions.changeUrl(window.location.pathname));
+                }
+                else {
+                    yield put(actions.changeUrl(window.location.pathname));
+                }
+            }
+        }
+        else {
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+    }
+}
+

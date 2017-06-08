@@ -47,6 +47,9 @@
   font-family: 궁서;
   background-color: rgb(237,30,39);
 }
+.Link{
+  cursor: pointer;
+}
 /* AddArticle & EditArticle css */
 .AddArticle{
   position: absolute;
@@ -90,6 +93,7 @@
   left: 23em;
 }
 .Article{
+  font-family: 궁서;
   text-align: center;
   background-color: rgba(237,156,156,0.5);
   font-size: 18px;
@@ -97,6 +101,25 @@
   padding-right: 20px;
   padding-bottom: 5px;
 }
+.ArticleArticle{
+  font-family: 궁서;
+  text-align: center;
+  background-color: rgba(237,156,237,0.5);
+  font-size: 15px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+}
+.ArticleArticleArticle{
+  font-family: 궁서;
+  text-align: center;
+  background-color: rgba(237,237,237,0.5);
+  font-size: 12px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+}
+
 .article_text{
   font-weight: bold;
   font-size: 23px;
@@ -150,7 +173,7 @@
   height: 1.5em;
   color: white;
   font-size: 30px;
-  background-color:rgb(237,30,39); 
+  background-color:rgb(237,30,39);
   font-size: 20px;
   font-family: 궁서;
   width: 120px;
@@ -161,7 +184,7 @@
   height: 1.5em;
   color: white;
   font-size: 30px;
-  background-color:rgb(237,30,39); 
+  background-color:rgb(237,30,39);
   font-size: 20px;
   font-family: 궁서;
   width: 200px;
@@ -175,7 +198,7 @@
   font-family: 궁서;
   color: white;
   font-size: 30px;
-  background-color:rgb(237,30,39); 
+  background-color:rgb(237,30,39);
 }
 .box{
     position: static;
@@ -199,6 +222,7 @@ textarea{
   font-size: 20px;
 }
 button{
+  font-family: 궁서;
   text-align: center;
   left: 20em;
   font-size: 20px;

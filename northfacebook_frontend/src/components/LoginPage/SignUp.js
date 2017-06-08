@@ -10,7 +10,7 @@ class SignUp extends React.Component {
         };
         return (
                 <div className="Button-Field">
-                     No account? <button id="sign_up" onClick={onNewTab}>Sign Up</button>
+                     려권이 없소?? <button id="sign_up" onClick={onNewTab}>입BooK 하기</button>
                 </div>
                 )
     }

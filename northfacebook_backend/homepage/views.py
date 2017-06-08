@@ -24,7 +24,6 @@ def main_list(request):
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        print(request.data)
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
@@ -80,6 +79,7 @@ def like_list(request):
         likes = Like.objects.all()
         serializer = LikeSerializer(likes, many=True)
         return Response(serializer.data)
+
 @api_view(['GET','DELETE'])
 def like_detail(request, pk):
     try:
@@ -153,7 +153,6 @@ def article_article(request,pk):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     articlearticle = Article.objects.filter(parent=article.id)
-    print(articlearticle)
     if request.method == 'GET':
         serializer = ArticleSerializer(articlearticle,many=True)
         return Response(serializer.data)
@@ -243,7 +242,7 @@ def user_detail(request, username):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
             return Response(serializer.data)
-        return Response(status=status.HTTP_400_BAD_REQUEST) 
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
         if user == request.user:
             user.delete()
@@ -406,7 +405,9 @@ def profile(request, username):
         user= User.objects.get(username=username)
         profile=Profile.objects.get(user=user)
     except Profile.DoesNotExist:
-        return Response(status= status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         serializer=ProfileSerializer(profile)
         return Response(serializer.data)
@@ -428,8 +429,6 @@ def friend_list(request, username):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
-        if request.user != user:
-            return Response(status=status.HTTP_403_FORBIDDEN)
         friends = Friend.objects.filter(me=user, is_mutual=True)
         serializer = FriendSerializer(friends, many=True)
         return Response(serializer.data)
@@ -446,7 +445,7 @@ def add_friend_list(request, username):
         if request.user == user:
             add_friends = Friend.objects.filter(me=user, is_mutual=False)
         else:
-            add_friends = Friend.objects.filter(friend=request.user, is_mutual=False)
+            add_friends = Friend.objects.filter(friend=request.user, me=user, is_mutual=False)
         serializer = FriendSerializer(add_friends, many=True)
         return Response(serializer.data)
 
@@ -501,7 +500,15 @@ def add_friend(request, username, friendname):
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
+@api_view(['GET'])
+def my_add_friend_list(request):
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
+    if request.method == 'GET':
+        add_friends = Friend.objects.filter(friend=request.user, is_mutual=False)
+        serializer = FriendSerializer(add_friends, many=True)
+        return Response(serializer.data)
 
 @api_view(['GET','POST','PUT'])
 def sasang(request,username):

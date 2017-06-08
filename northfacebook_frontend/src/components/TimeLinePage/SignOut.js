@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {signOut, postBack, changeUrl} from '../../actions'
+import {signOut, changeUrl} from '../../actions'
 
 class SignOut extends React.Component {
     render() {
@@ -8,10 +8,9 @@ class SignOut extends React.Component {
                 <div className="ToolBar" >
                    <div className="Notif">
                    <button id="to_main_page_field" className="TOMAIN" onClick={this.props.onBackClick}/>
-                   <span id="user_data_field">{this.props.username} 동무 어서오시오!</span>
-                   <button id="sign_out" className="SIGNOUT" onClick={this.props.onLogOut}>Sign Out</button>
+                   <span id="user_data_field"><a id="to_my_profile" className="Link" onClick={ () => this.props.onToProfile(this.props.username) }><u>{this.props.username}</u></a> 동무 어서오시오!</span>
+                   <button id="sign_out" className="SIGNOUT" onClick={this.props.onLogOut}>나오기</button>
                    <button id="to_my_wall" className="WALLBUTTON" onClick={() => this.props.onToWall(this.props.username)}>담벼락</button>
-                   <button id="to_my_profile" className="PROFILEBUTTON" onClick={ ()=>this.props.onToProfile(this.props.username) }>내프로필</button>
                    </div>
                 </div>
 
@@ -21,14 +20,14 @@ class SignOut extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
-        username: Object.assign(state.authorization).split(":")[0],
+        username: state.authorization !== null ? Object.assign(state.authorization).split(":")[0] : null,
     }
 }
 
 let mapDispatchToProps = (dispatch) => {
     return {
         onLogOut: () => dispatch(signOut()),
-        onBackClick: () => dispatch(postBack()),
+        onBackClick: () => dispatch(changeUrl('/main/')),
         onToWall: (username) => dispatch(changeUrl('/wall/'+username+"/")),
         onToProfile: (username) => dispatch(changeUrl('/profile/'+username+"/"))
     }

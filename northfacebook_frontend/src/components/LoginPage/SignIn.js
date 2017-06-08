@@ -19,11 +19,11 @@ class SignIn extends React.Component {
                 }}
                 >
                 <div className="Text-Field">
-                    ID
+                    성명
                     <input type="text" ref={ node => {this.username = node;} } id='username_field' className='field'></input>
-                    PW
+                    암호
                     <input type="password" ref={ node => {this.password = node;} } id='password_field' className='field'></input>
-                    <button type="submit" id='sign_in' className='sign_in'>Sign in</button>
+                    <button type="submit" id='sign_in' className='sign_in'>들어가기</button>
                 </div>
             </form>
            </div>
