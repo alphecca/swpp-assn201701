@@ -162,6 +162,7 @@ def article_article(request,pk):
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET'])
 def total_article(request,pk):
     try:
