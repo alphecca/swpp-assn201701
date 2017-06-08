@@ -500,7 +500,15 @@ def add_friend(request, username, friendname):
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
+@api_view(['GET'])
+def my_add_friend_list(request):
+    if request.user.id == None:
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
+    if request.method == 'GET':
+        add_friends = Friend.objects.filter(friend=request.user, is_mutual=False)
+        serializer = FriendSerializer(add_friends, many=True)
+        return Response(serializer.data)
 
 @api_view(['GET','POST','PUT'])
 def sasang(request,username):

@@ -15,9 +15,9 @@ class FriendRequest extends React.Component {
                 <div id={componentId} className="FriendRequest">
                     <a id={friendNameId} className="Link" onClick={() => this.props.onFriendClick(this.props.friend.friend)}><u>{friendName}</u></a>
                     <div className="divider"/>
-                    <button id={OKButtonId} onClick={() => this.props.onOKClick(this.props.friend.friend)}>좋소</button>
+                    <button id={OKButtonId} onClick={() => this.props.onOKClick(this.props.friend.friend)}>반갑소 동무!</button>
                     <div className="divider"/>
-                    <button id={declineButtonId} onClick={() => this.props.onDeclineClick(this.props.friend.friend)}>싫소</button>
+                    <button id={declineButtonId} onClick={() => this.props.onDeclineClick(this.props.friend.friend)}>일없읍니다.</button>
                 </div>
                )
     }
