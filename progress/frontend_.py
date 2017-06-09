@@ -50,11 +50,11 @@ def signInVerification(driver, username, password):
     driver.find_element_by_id("password_field").clear() # reset password field
     driver.find_element_by_id("sign_in").click()
     sleep(delayTime)
-    alert(driver, "User not exist!")
+    alert(driver, "그런 려권은 없는데?")
     driver.find_element_by_id("username_field").send_keys(username)
     driver.find_element_by_id("sign_in").click()
     sleep(delayTime)
-    alert(driver, "User not exist!")
+    alert(driver, "그런 려권은 없는데?")
     driver.find_element_by_id("password_field").send_keys(password)
     driver.find_element_by_id("sign_in").click()
     sleep(delayTime)
@@ -512,19 +512,19 @@ def changeProfile_T(driver, text1, text2, text3):
     check(driver, "change_intro")
     driver.find_element_by_id("myname").send_keys(text1)
     driver.find_element_by_id("mybelong").send_keys(text2)
-    driver.find_element_by_id("mybelong").send_keys(text3)
+    driver.find_element_by_id("myintro").send_keys(text3)
     driver.find_element_by_id("change_intro").click()
     sleep(delayTime)
     check(driver, "p_name")
     check(driver, "p_belong")
     check(driver, "p_intro")
-    if text1 != driver.find_element_by_id("p_name").text:
+    if "이름:"+text1 != driver.find_element_by_id("p_name").text:
         print("content isn't match")
         exit(1)
-    if text2 != driver.find_element_by_id("p_belong").text:
+    if "소속:"+text2 != driver.find_element_by_id("p_belong").text:
         print("content isn't match")
         exit(1)
-    if text3 != driver.find_elemtn_by_id("p_intro").text:
+    if "소개말:"+text3 != driver.find_element_by_id("p_intro").text:
         print("content isn't match")
         exit(1)
 def changeProfile_F(driver):
@@ -535,14 +535,14 @@ def changeProfile_F(driver):
 def changePW_T(driver,uname, oldpw, newpw):
     check(driver, "change_pw_button_field")
     driver.find_element_by_id("change_pw_button_field").click()
-    sleep(delaytime)
+    sleep(delayTime)
     check(driver, "curr_pw")
     check(driver, "new_pw")
     check(driver, "new_pw_RE")
     check(driver, "change_pw")
     driver.find_element_by_id("curr_pw").send_keys(oldpw)
     driver.find_element_by_id("new_pw").send_keys(newpw)
-    driver.find_element_by_id("new_pw").send_keys(newpw)
+    driver.find_element_by_id("new_pw_RE").send_keys(newpw)
     driver.find_element_by_id("change_pw").click()
     sleep(delayTime)
     signInPageVerification(driver)
@@ -552,6 +552,8 @@ def changePW_T(driver,uname, oldpw, newpw):
     sleep(delayTime)
     alert(driver, "그런 려권은 없는데?")
     sleep(delayTime)
+    driver.find_element_by_id("username_field").clear()
+    driver.find_element_by_id("password_field").clear()
     driver.find_element_by_id("username_field").send_keys(uname)
     driver.find_element_by_id("password_field").send_keys(newpw)
     driver.find_element_by_id("sign_in").click()
@@ -561,18 +563,23 @@ def changePW_T(driver,uname, oldpw, newpw):
 def changePW_F(driver):
     check(driver, "change_pw_button_field")
     driver.find_element_by_id("change_pw_button_field").click()
-    sleep(delaytime)
+    sleep(delayTime)
     alert(driver, "남의 려권 입니다.")
+    sleep(delayTime)
 
-def escapeBook_T(driver):
+def escapeBook_T(driver, uname, upwd):
     check(driver, "escape_account_button_field")
     driver.find_element_by_id("escape_account_button_field").click()
     sleep(delayTime)
     check(driver, "escape_book")
     driver.find_element_by_id("escape_book").click()
     sleep(1)
-    alert(driver, )
-    # TODO    signInVerification
+    sleep(1)
+    driver.find_element_by_id("username_field").send_keys(uname)
+    driver.find_element_by_id("password_field").send_keys(upwd)
+    driver.find_element_by_id("sign_in").click()
+    sleep(delayTime)
+    alert(driver, "그런 려권은 없는데?")
 
 def escapeBook_F(driver):
     check(driver, "escape_account_button_field")

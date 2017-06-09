@@ -9,7 +9,6 @@ from backend_ import *
 
 ####FRONTEND용 패키지들
 from frontend_ import *
-from chat_front import *
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
@@ -38,8 +37,8 @@ upwd1 = "test1passwd"
 user2 = "test2"
 upwd2 = "test2passwd"
 
-delete_or_error(user_link, auth=(user1, upwd1))
-delete_or_error(user_link, auth=(user2, upwd2))
+#delete_or_error(user_link, user1, upwd1)
+#delete_or_error(user_link, user2, upwd2)
 post_or_error_anon(user_link, {"username":user1.encode("ascii"),"password":upwd1.encode("ascii") })
 post_or_error_anon(user_link, {"username":user2.encode("ascii"),"password":upwd2.encode("ascii") })
 print("Frontend initializer ran successfully!")
@@ -51,7 +50,7 @@ driver.get(frontend_link)
 print("0. Sign in")
 signInPageVerification(driver)
 sleep(delayTime)
-signInVerification(drvier, user2, upwd2)
+signInVerification(driver, user2, upwd2)
 sleep(delayTime)
 print(" also make one sample article...")
 check(driver,"write_button_field")
@@ -66,68 +65,81 @@ print("1. Modify profiles")
 print(" 1-1. change my profile")
 sleep(delayTime)
 driver.find_element_by_id("to_my_profile").click()
-url = driver.getCurrentUrl()
+url = driver.current_url
 if url != url_P+user1+"/":
     print("cannot move to my profile")
     exit(1)
 sleep(delayTime)
-changeProfile_T(driver, "name1", "student", "hello"):
+changeProfile_T(driver, "name1", "student", "hello")
 print(" 1-2. try other's profile")
 sleep(delayTime)
 driver.find_element_by_id("to_main_page_field").click()
 sleep(delayTime)
 driver.find_element_by_id("a1_writer_field").click()
-changeProfile_F(driver):
+changeProfile_F(driver)
 
 print("2. Modify passwords")
 print(" 2-1. change my passwords")
 sleep(delayTime)
-changePW_T(driver, user1, upwd1, "new"+upwd1) :
+driver.find_element_by_id("to_my_profile").click()
+sleep(delayTime)
+changePW_T(driver, user1, upwd1, "new"+upwd1)
 print(" 2-2. change other's password")
 sleep(delayTime)
 driver.find_element_by_id("to_main_page_field").click()
 sleep(delayTime)
 driver.find_element_by_id("a1_writer_field").click()
-changePW_F(driver):
+changePW_F(driver)
 
 print("3. Change url to frined")
 sleep(delayTime)
+driver.find_element_by_id("to_my_profile").click()
+sleep(delayTime)
 driver.find_element_by_id("friend_list_button_field").click()
 sleep(delayTime)
-url = driver.getCurrentUrl()# checking url 
-if url != url_FL:
+url = driver.current_url# checking url 
+if "/friend/"+user1 not in url:
     print("cannot move to friend list page")
     exit(1)
 
 print("4. Change url to frined request")
 sleep(delayTime)
+driver.find_element_by_id("to_my_profile").click()
+sleep(delayTime)
 driver.find_element_by_id("friend_add_button_field").click()
 sleep(delayTime)
-url = driver.getCurrentUrl()# checking url 
-if url != url_FA:
+url = driver.current_url# checking url 
+if "/addfriend/"+user1 not in url: 
     print("cannot move to friend add page")
     exit(1)
 
 print("5. Change url to wall")
 sleep(delayTime)
+driver.find_element_by_id("to_my_profile").click()
+sleep(delayTime)
 driver.find_element_by_id("goto_wall_button_field").click()
 sleep(delayTime)
-url = driver.getCurrentUrl()# checking url 
-if url != url_W:
+url = driver.current_url# checking url 
+if "/wall/"+user1 not in url: 
     print("cannot move to wall page")
     exit(1)
 
 print("6. Escape North facebook")
 print(" 6-1. make other person escape the book")
-sleep(dalayTime)
-escapeBook_T(driver)
+driver.find_element_by_id("to_main_page_field").click()
+sleep(delayTime)
+driver.find_element_by_id("a1_writer_field").click()
 sleep(delayTime)
 escapeBook_F(driver)
+print(" 6-2. make my account escape the book")
+sleep(delayTime)
+driver.find_element_by_id("to_my_profile").click()
+sleep(delayTime)
+escapeBook_T(driver, user1, "new"+upwd1)
 sleep(delayTime)
 
 print("7. Delete test users")
-delete_or_error(user_link, auth=(user1, upwd1))
-delete_or_error(user_link, auth=(user2, upwd2))
+delete_or_error(user_link, user2, upwd2)
 ##########################FRONTEND TEST END##############################
 print("TEST SUCCESSFUL")
 driver.quit()
