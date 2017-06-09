@@ -47,6 +47,7 @@ print("Frontend initializer ran successfully!")
 ##########################FRONTEND TEST START##############################
 driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
+driver.maximize_window()
 
 # 본격적인 프론트엔드 테스트 시작
 # 로그인 및 로그아웃 테스트
@@ -55,142 +56,138 @@ sleep(delayTime)
 signInVerification(driver, user_list[0][0], user_list[0][1]) # sign in
 sleep(delayTime*2)
 
-# 메인페이지 테스트
-print("3. main page test")
-sleep(delayTime)
-signInVerification(driver, user_list[0][0], user_list[0][1])
-# get data from backend to test
-forbidden_or_error_anon('GET', main_link)
-data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-# rendering test
-sleep(delayTime)
-mainPageVerification(driver, data[0:5])
-# write test
-print("4. write test")
-driver.find_element_by_id("write_button_field").click()
-sleep(delayTime)
-writePageVerification(driver, "test1")
-sleep(delayTime)
-driver.find_element_by_id("write_button_field").click()
-sleep(delayTime)
-writePageVerification(driver, "test2")
-sleep(delayTime)
-## check the result
-forbidden_or_error_anon('GET', main_link)
-data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-sleep(delayTime)
-# 두 번째로 쓴 글
-if data[0]["owner"] == user_list[0][0] and data[0]["text"] == "test2":
-    pass
-else:
-    print("Post Fail")
-    exit(1)
-# 첫 번째로 쓴 글
-if data[1]["owner"] == user_list[0][0] and data[1]["text"] == "test1":
-    pass
-else:
-    print("Post Fail")
-    exit(1)
-mainPageVerification(driver, data[0:5])
+print("2. my friend and addfriend page test.")
+toMyProfile(driver)
+profileToFriend(driver)
+friendNoListVerification(driver)
+friendToAddFriend(driver)
+addFriendNoListVerification(driver)
+addFriendMRNoListVerification(driver)
+addFriendToBack(driver, user_list[0][0])
+profileToAddFriend(driver)
+addFriendToFriend(driver, user_list[0][0])
+friendURLVerification(driver, frontend_link, user_list[0][0])
 
-# like test
-print("5. like test")
-article_link = backend_link + 'article/' + str(data[0]["id"]) + '/'
+print("3. other's friend and addfriend page test")
+toAddFriend(driver, frontend_link, user_list[1][0])
+addFriendToBack(driver, user_list[1][0])
+profileToFriend(driver)
+friendNoListVerification(driver)
+friendToAddFriend(driver)
+print("3-1. send addfriend request to others.")
+addFriendToOk(driver, user_list[1][0])
+addFriendToBack(driver, user_list[1][0])
+profileToFriend(driver)
+friendNoListVerification(driver)
+friendToAddFriend(driver)
+print("3-2. cancel my request.")
+addFriendToDecline(driver, user_list[1][0])
+addFriendToOk(driver, user_list[1][0])
+addFriendToBack(driver, user_list[1][0])
+toMyProfile(driver)
+profileToFriend(driver)
+friendNoListVerification(driver)
+friendToAddFriend(driver)
+addFriendNoListVerification(driver)
+check(driver, "mr_"+user_list[1][0]+"_field")
+check(driver, "mr_"+user_list[1][0]+"_decline_button_field")
+driver.find_element_by_id("mr_"+user_list[1][0]+"_decline_button_field").click()
 sleep(delayTime)
-likeVerification(driver, data[0]["id"], user_list[0][0] == data[0]["owner"])
-tmp = data[0]["like_num"]
-data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-if user_list[0][0] != data[0]['owner']:
-    tmp = tmp + 1
-## 좋아요 수 증가 확인
-if data[0]["like_num"] == tmp:
-    pass
-else:
-    print("Like fail")
-    exit(1)
-mainPageVerification(driver, data[0:5])
-
-# edit test
-print("6. edit test")
-sleep(delayTime)
-editVerification(driver, data[0]["id"], "edit test")
-sleep(delayTime)
-data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-if(data[0]["text"] != "edit test"):
-    print("Edit fail")
-    exit(1)
-sleep(delayTime)
-articleVerification(driver, data[0])
-sleep(delayTime)
-driver.find_element_by_id('to_main_page_field').click()
-"""
-# reply test
-print("7. reply test")
-sleep(delayTime)
-replyVerification(driver, data[0]["id"], "reply test")
-sleep(delayTime)
-reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
-tmp = data[0]["children_num"]
-data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-if(data[0]["children_num"] != tmp + 1):
-    print("reply fail")
-    exit(1)
-sleep(delayTime)
-detailPageVerification(driver, data[0], reply_data)
-sleep(delayTime)
-driver.find_element_by_id("to_main_page_field").click()
-"""
-# delete test
-print("8. delete test")
-sleep(delayTime)
-tmp = data[0]
-deleteVerification(driver, data[0]["id"])
-data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-if data[0] == tmp:
-    print("delete fail")
-    exit(1)
-mainPageVerification(driver, data[0:5])
-
-article_link = backend_link + 'article/' + str(data[0]["id"]) + '/'
-"""
-# detail button test
-print("9. detail test")
-sleep(delayTime)
-detailVerification(driver, data[0]["id"])
-sleep(delayTime)
-reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
-detailPageVerification(driver, data[0], reply_data)
-sleep(delayTime)
-replyVerification(driver, data[0]["id"], "reply test on detail page")
-sleep(delayTime)
-reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
-data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-likeVerification(driver, reply_data[0]["id"], True)
-sleep(delayTime)
-reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
-data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-sleep(delayTime)
-detailPageVerification(driver, data[0], reply_data)
-sleep(delayTime)
-deleteVerification(driver, reply_data[0]["id"])
-sleep(delayTime)
-data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
-sleep(delayTime)
-mainPageVerification(driver, data[0:5])
-"""
-# edit / delete error test
-print("10. edit / delete error test")
-sleep(delayTime)
+addFriendMRNoListVerification(driver)
+toAddFriend(driver, frontend_link, user_list[1][0])
+addFriendToOk(driver, user_list[1][0])
+addFriendToNameProfile(driver, user_list[1][0])
+profileURLVerification(driver, frontend_link, user_list[1][0])
+toAddFriend(driver, frontend_link, user_list[0][0])
+print("3-3. check my addfriend request list.")
+check(driver, "mr_"+user_list[1][0]+"_field")
+check(driver, "mr_"+user_list[1][0]+"_name_field")
+driver.find_element_by_id("mr_"+user_list[1][0]+"_name_field").click()
+profileURLVerification(driver, frontend_link, user_list[1][0])
 signOutVerification(driver, user_list[0][0])
+
+print("4. send addfriend request with another user.")
+sleep(delayTime)
+signInVerification(driver, user_list[2][0], user_list[2][1]) # sign in
+sleep(delayTime*2)
+toMyProfile(driver)
+profileToFriend(driver)
+friendNoListVerification(driver)
+friendToAddFriend(driver)
+addFriendNoListVerification(driver)
+addFriendMRNoListVerification(driver)
+toAddFriend(driver, frontend_link, user_list[1][0])
+addFriendToOk(driver, user_list[1][0])
+signOutVerification(driver, user_list[2][0])
+
+print("5. receive addfriend request test.")
 sleep(delayTime)
 signInVerification(driver, user_list[1][0], user_list[1][1])
-sleep(delayTime)
-deleteErrorVerification(driver, data[0]["id"])
-sleep(delayTime)
-editErrorVerification(driver, data[0]["id"])
+sleep(delayTime*2)
+toMyProfile(driver)
+profileToFriend(driver)
+friendNoListVerification(driver)
+friendToAddFriend(driver)
+check(driver, "fr_"+user_list[0][0]+"_field")
+check(driver, "fr_"+user_list[2][0]+"_field")
+print("5-1. decline and OK request test.")
+addFriendToDecline(driver, user_list[2][0])
+try:
+    itm = driver.find_element_by_id("fr_"+user_list[2][0]+"_field")
+    print(user_list[2][0]+"'s request should not be exist!")
+    exit(1)
+except NoSuchElementException:
+    pass
+addFriendToOk(driver, user_list[0][0])
+try:
+    itm = driver.find_element_by_id("fr_"+user_list[0][0]+"_field")
+    print(user_list[0][0]+"'s request should not be exist!")
+    exit(1)
+except NoSuchElementException:
+    pass
+addFriendToFriend(driver, user_list[1][0])
+print("5-2. friend list test.")
+check(driver, "f_"+user_list[0][0]+"_field")
+friendToNameProfile(driver, user_list[0][0])
+profileToFriend(driver)
+check(driver, "f_"+user_list[1][0]+"_field")
+friendToNameProfile(driver, user_list[1][0])
+profileURLVerification(driver, frontend_link, user_list[1][0])
+signOutVerification(driver, user_list[1][0])
 
+print("6. send addfriend request again.")
 sleep(delayTime)
-driver.quit()
+signInVerification(driver, user_list[2][0], user_list[2][1])
+sleep(delayTime*2)
+toMyProfile(driver)
+profileToAddFriend(driver)
+addFriendMRNoListVerification(driver)
+toAddFriend(driver, frontend_link, user_list[1][0])
+addFriendToOk(driver, user_list[1][0])
+signOutVerification(driver, user_list[2][0])
+
+print("7. receive addfriend request again.")
+sleep(delayTime)
+signInVerification(driver, user_list[1][0], user_list[1][1])
+sleep(delayTime*2)
+toMyProfile(driver)
+profileToAddFriend(driver)
+check(driver, "fr_"+user_list[2][0]+"_field")
+addFriendToNameProfile(driver, user_list[2][0])
+profileToAddFriend(driver)
+addFriendToOk(driver, user_list[2][0])
+addFriendToBack(driver, user_list[2][0])
+profileToAddFriend(driver)
+addFriendToNameProfile(driver, user_list[2][0])
+profileToFriend(driver)
+print("7-1. check friend list.")
+check(driver, "f_"+user_list[1][0]+"_field")
+friendToNameProfile(driver, user_list[1][0])
+profileToFriend(driver)
+check(driver, "f_"+user_list[0][0]+"_field")
+check(driver, "f_"+user_list[2][0]+"_field")
+signOutVerification(driver)
+sleep(delayTime)
 
 ##########################FRONTEND TEST FINISHED###########################
 driver.quit()

@@ -45,11 +45,11 @@ def signInVerification(driver, username, password):
     driver.find_element_by_id("password_field").clear() # reset password field
     driver.find_element_by_id("sign_in").click()
     sleep(delayTime)
-    alert(driver, "User not exist!")
+    alert(driver, "그런 려권은 없는데?")
     driver.find_element_by_id("username_field").send_keys(username)
     driver.find_element_by_id("sign_in").click()
     sleep(delayTime)
-    alert(driver, "User not exist!")
+    alert(driver, "그런 려권은 없는데?")
     driver.find_element_by_id("password_field").send_keys(password)
     driver.find_element_by_id("sign_in").click()
     sleep(delayTime)
@@ -292,7 +292,7 @@ def wallPageVerification(driver, articles, username):
         articleVerification(driver, article)
 
 #####FRIEND PAGE#####
-def mainToMyProfile(driver):
+def toMyProfile(driver):
     check(driver, "to_my_profile")
     driver.find_element_by_id("to_my_profile").click()
     sleep(delayTime)
@@ -302,30 +302,35 @@ def profileToFriend(driver):
     driver.find_element_by_id("friend_list_button_field").click()
     sleep(delayTime)
 
-def profileURLVerification(driver, frontend_link, profuser):
-    if driver.current_url != frontend_link+"profile/"+profuser+"/":
-        print("Profile user does not match with {0}".format(profuser))
-        exit(1)
-
 def profileToAddFriend(driver):
     check(driver, "friend_add_button_field")
     driver.find_element_by_id("friend_add_button_field").click()
     sleep(delayTime)
 
-def FriendToAddFriend(driver):
+def profileURLVerification(driver, frontend_link, profuser):
+    if driver.current_url != frontend_link+"profile/"+profuser+"/":
+        print("Profile page URL does not match with {0}".format(profuser))
+        exit(1)
+
+def friendToAddFriend(driver):
     check(driver, "add_friend_button_field")
     driver.find_element_by_id("add_friend_button_field").click()
     sleep(delayTime)
 
-def FriendToNameProfile(driver, username):
+def friendToNameProfile(driver, username):
     check(driver, "f_"+username+"_name_field")
     driver.find_element_by_id("f_"+username+"_name_field")
     sleep(delayTime)
 
-def FriendNoListVerification(driver):
-    check(driver, "f_list_message")
-    if driver.find_element_by_id("f_list_message").text != "자네에게는 아직 동무가 없다우. 다른 인민들에게 동무가 되자고 요청을 보내보라우.":
+def friendNoListVerification(driver):
+    check(driver, "f_list_field")
+    if driver.find_element_by_id("f_list_field").text != "자네에게는 아직 동무가 없다우. 다른 인민들에게 동무가 되자고 요청을 보내보라우.":
         print("No friend list message does not match")
+        exit(1)
+
+def friendURLVerification(driver, frontend_link, profuser):
+    if driver.current_url != frontend_link+"friend/"+profuser+"/":
+        print("Friend page URL does not match with {0}".format(profuser))
         exit(1)
 
 def addFriendToBack(driver, profuser):
@@ -354,8 +359,8 @@ def addFriendToNameProfile(driver, username):
     sleep(delayTime)
 
 def addFriendNoListVerification(driver):
-    check(driver, "fr_list_message")
-    if driver.find_element_by_id("fr_list_message").text != "아, 자네에게 온 요청이 없다우.":
+    check(driver, "fr_list_field")
+    if driver.find_element_by_id("fr_list_field").text != "아, 자네에게 온 요청이 없다우.":
         print("No friend request list message does not match")
         exit(1)
 
@@ -370,10 +375,11 @@ def addFriendToMRNameProfile(driver, username):
     sleep(delayTime)
 
 def addFriendMRNoListVerification(driver):
-    check(driver, "mr_list_message")
-    if driver.find_element_by_id("mr_list_message").text != "아, 자네는 아무에게도 요청을 보내지 않았다우.":
+    check(driver, "mr_list_field")
+    if driver.find_element_by_id("mr_list_field").text != "아, 자네는 아무에게도 요청을 보내지 않았다우.":
         print("No my request list message does not match")
         exit(1)
 
 def toAddFriend(driver, frontend_link, username):
     driver.get(frontend_link+"addfriend/"+username+"/")
+    sleep(delayTime)

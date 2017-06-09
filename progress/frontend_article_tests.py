@@ -47,6 +47,7 @@ print("Frontend initializer ran successfully!")
 ##########################FRONTEND TEST START##############################
 driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
+driver.maximize_window()
 
 # 본격적인 프론트엔드 테스트 시작
 # 로그인 및 로그아웃 테스트
