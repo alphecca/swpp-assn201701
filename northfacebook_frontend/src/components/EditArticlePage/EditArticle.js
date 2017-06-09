@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {putArticle} from '../../actions'
-//import '../AddArticlePage/styles.css'
+
 class EditArticle extends React.Component{
   render(){
     let text = "Enter the text" 
@@ -9,7 +9,7 @@ class EditArticle extends React.Component{
       <div id="edit_article_field" className="EditArticle">
         <textarea id={this.props.textId} cols="50" rows="10" placeholder={text} onChange={ (e)=>{text=e.target.value} }/>
         <br />
-        <button id={this.props.buttonId} onClick={()=>this.props.onEditClick(text)}>EDIT</button>
+        <button id={this.props.buttonId} onClick={()=>this.props.onEditClick(text)}>고치기</button>
       </div>
     );
   }
@@ -18,7 +18,7 @@ class EditArticle extends React.Component{
 let mapStateToProps = (state) => {
   return {
      textId: "edit_text_field",
-     buttonId: "edit_button_field"
+     buttonId: "edit_button_field",
   }
 } 
 

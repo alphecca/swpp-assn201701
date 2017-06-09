@@ -836,8 +836,9 @@ function *watchLoginState() {
             }
         }
     }
+    console.log(yield select());
     //console.log('Curr Auth: '+localStorage['auth']);
-    //console.log('Curr Parent: '+localStorage['parent']);
+    console.log('Curr Parent: '+localStorage['parent']);
 }
 
 // watchSignIn: 로그인 버튼 클릭 관찰
@@ -1587,6 +1588,7 @@ function *createUpdateChatting(room_id){
     yield delay(500);
     yield put(actions.updateChatting(room_id))
 }
+
 // 비밀번호 바꾼 걸 put 요청 보내는 함수
 function *updatePW(profuser, newpw){
     const backPath = 'users/'+profuser+'/';
@@ -1625,7 +1627,7 @@ function *updatePW(profuser, newpw){
 // profile을 수정한걸 post요청보내는 함수
 function *updateIntro(profuser, myname, mybelong, myintro){
     const backPath = 'users/'+profuser+'/profile/';
-    try{
+    try {
         yield call(xhr.send, fixed_url+backPath, {
             method : 'PUT',
             headers: {
@@ -1638,7 +1640,7 @@ function *updateIntro(profuser, myname, mybelong, myintro){
         });
         console.log("put profile succeed");
         yield put(actions.changeUrl('/profile/'+profuser+'/'))
-    }catch(error){
+    } catch(error){
         console.log("error code: "+error.statusCode);
         if(error.statusCode === 400){
             console.log("Wrong json input format");
@@ -1744,7 +1746,7 @@ function *deleteAddFriend(profuser) {
         });
     console.log("delete addfriend succeed!!!");
     yield put(actions.changeUrl(window.location.pathname));
-    }catch(error){
+    } catch(error){
         console.log(error);
         if(error.statusCode === 204){
             console.log("delete addfriend succeedd!!");
