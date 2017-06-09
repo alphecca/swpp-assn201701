@@ -6,6 +6,8 @@
 //requests
 //selenium
 //pillow
+//npm install
+//npm install xhr-promise-redux
 //////////////////////////////
 //backend실행
 //  ./Test_back_remote.sh
