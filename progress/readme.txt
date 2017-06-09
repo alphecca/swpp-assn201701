@@ -1,0 +1,14 @@
+//////////////////////////////
+//설치되어있어야하는파일
+//django
+//djangorestframework
+//django-cors-headers
+//requests
+//selenium
+//pillow
+//////////////////////////////
+//backend실행
+//  ./Test_back_remote.sh
+//frontend실행
+//  ./Test_front_remote.sh
+//////////////////////////////
