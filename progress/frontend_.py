@@ -310,7 +310,7 @@ def profileToFriend(driver):
 def profileToAddFriend(driver):
     check(driver, "friend_add_button_field")
     driver.find_element_by_id("friend_add_button_field").click()
-    sleep(delayTime)
+    sleep(delayTime*2)
 
 def profileURLVerification(driver, frontend_link, profuser):
     if driver.current_url != frontend_link+"profile/"+profuser+"/":
@@ -320,7 +320,7 @@ def profileURLVerification(driver, frontend_link, profuser):
 def friendToAddFriend(driver):
     check(driver, "add_friend_button_field")
     driver.find_element_by_id("add_friend_button_field").click()
-    sleep(delayTime)
+    sleep(delayTime*2)
 
 def friendToNameProfile(driver, username):
     check(driver, "f_"+username+"_name_field")
@@ -357,7 +357,7 @@ def addFriendToOk(driver, username):
 def addFriendToDecline(driver, username):
     check(driver, "fr_"+username+"_decline_button_field")
     driver.find_element_by_id("fr_"+username+"_decline_button_field").click()
-    sleep(delayTime*2)
+    sleep(delayTime*3)
 
 def addFriendToNameProfile(driver, username):
     check(driver, "fr_"+username+"_name_field")
@@ -390,7 +390,7 @@ def addFriendMRNoListVerification(driver):
 
 def toAddFriend(driver, frontend_link, username):
     driver.get(frontend_link+"addfriend/"+username+"/")
-    sleep(delayTime)
+    sleep(delayTime*3)
 
 #####PROFILE PAGE#####
 def chatRoomVerification(driver, link, uname, upwd):

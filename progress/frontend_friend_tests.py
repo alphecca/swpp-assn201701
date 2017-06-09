@@ -9,7 +9,6 @@ from backend_ import *
 
 ####FRONTEND용 패키지들
 from frontend_ import *
-from chat_front import *
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
