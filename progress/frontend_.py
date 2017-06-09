@@ -1,3 +1,9 @@
+"""
+DESCRIPTION
+이 파일은 프론트엔드 테스트에서 사용할 함수를 정의하기 위해 만들어진 파이썬 파일입니다.
+이 파일에서는 테스트를 실행하는 코드를 작성하지 마세요.
+"""
+
 from time import sleep
 import sys
 import http, base64
@@ -27,7 +33,6 @@ def alert(driver, text):
     except NoAlertPresentException:
         print("No Alert Error")
         exit(1)
-
 
 
 #####SIGN IN PAGE#####
@@ -386,3 +391,297 @@ def addFriendMRNoListVerification(driver):
 def toAddFriend(driver, frontend_link, username):
     driver.get(frontend_link+"addfriend/"+username+"/")
     sleep(delayTime)
+
+#####PROFILE PAGE#####
+def chatRoomVerification(driver, link, uname, upwd):
+    sleep(delayTime)
+    check(driver, "chat_button_field")
+    sleep(delayTime)
+    driver.find_element_by_id('chat_button_field').click()
+    print("2-1. click new room button and then cancel")
+    for a in range(1,4):
+        sleep(delayTime)
+        check(driver, "new_room_button_field")
+        driver.find_element_by_id('new_room_button_field').click()
+        sleep(delayTime)
+        check(driver, "cancel_button_field")
+        driver.find_element_by_id('cancel_button_field').click()
+    sleep(delayTime)
+    print("2-2. try to make new room without room name")
+    check(driver, "new_room_button_field")
+    driver.find_element_by_id('new_room_button_field').click()
+    sleep(delayTime)
+    check(driver, "post_room_button_field")
+    driver.find_element_by_id('post_room_button_field').click()
+    sleep(delayTime)
+    alert(driver, "Please input correctly")
+    driver.find_element_by_id('cancel_button_field').click()
+    print("2-3. make three new room")
+    for t in range(1,4):
+        check(driver, "new_room_button_field")
+        driver.find_element_by_id('new_room_button_field').click()
+        sleep(delayTime)
+        roomName = "myroom"+str(t)
+        check(driver, "input_room_name_field")
+        driver.find_element_by_id("input_room_name_field").send_keys(roomName)
+        driver.find_element_by_id('post_room_button_field').click()
+        sleep(delayTime*2)
+   
+    print("2-4.check # of people in the room & room name") 
+    for t in range(1,4):
+        roomName = "myroom"+str(t)
+        try:
+            res = requests.get(link+"chatroom/", auth=(uname,upwd))
+            if res.status_code != 200:
+                print("ERROR: Should not found {0} : code {1}, id = {2}, pwd = {3}".format(link, res.status_code, uname, upwd))
+                exit(1)
+        except Exception:
+            print("ERROR: Cannot get {0}".format(link))
+        roomId = "room"+str(res.json()[t-4]['id'])
+        # check num=1 & roomName
+        check(driver, roomId+"_user_num_field")
+        check(driver, roomId+"_name_field")
+        if driver.find_element_by_id(roomId+"_user_num_field").text != str(1):
+            print("number of people in the chatroom "+str(t)+" isn't 1")
+            exit(1)
+        elif driver.find_element_by_id(roomId+"_name_field").text != roomName:
+            print("Name of the chatroom "+str(t)+" isn't correct")
+            exit(1)
+    sleep(delayTime)
+    roomId = "room"
+    for t in range(1,4):
+        try:
+            res = requests.get(link+"chatroom/", auth=(uname,upwd))
+            if res.status_code != 200:
+                print("ERROR: Should not found {0} : code {1}, id = {2}, pwd = {3}".format(link, res.status_code, uname, upwd))
+                exit(1)
+        except Exception:
+            print("ERROR: Cannot get {0}".format(link))
+        roomId = "room"+str(res.json()[t-4]['id'])
+
+        check(driver, roomId+"_join_field")
+        check(driver, roomId+"_chat_field")
+        driver.find_element_by_id(roomId+"_join_field").click()
+        sleep(delayTime)
+        alert(driver,"You already join in this room")
+    sleep(delayTime)
+    driver.find_element_by_id(roomId+"_chat_field").click()
+    sleep(delayTime)
+    check(driver, "change_room_button_field")
+    driver.find_element_by_id("change_room_button_field").click()
+    sleep(delayTime)
+    return roomId[4:]
+def joinUserVerification(driver, link, uname, upwd, roomId): 
+    check(driver, "room"+roomId+"_chat_field")
+    driver.find_element_by_id("room"+roomId+"_chat_field").click()
+    sleep(delayTime)
+    try:
+        res = requests.get(link+"chatroom/"+roomId+"/user/", auth=(uname, upwd))
+        if res.status_code != 200:
+           print("ERROR: Should not found {0} : code {1}, id = {2}, pwd = {3}".format(link, res.status_code, uname, upwd))
+           exit(1)
+    except Exception:
+        print("ERROR: Cannot get {0}".format(link))
+    print("3-1 check whether you joined in the chat room")
+    userId= res.json()[-1]['id']
+    check(driver, "u"+str(userId)+"_username_field")
+    if driver.find_element_by_id("u"+str(userId)+"_username_field" ).text  != uname:
+        print("You are not in the chatroom!")
+        exit(1)
+
+def sendTextVerification(driver, link, uname, upwd, roomId):
+    check(driver, 'post_text_button_field')
+    driver.find_element_by_id("post_text_button_field").click()
+    sleep(delayTime)
+    alert(driver, "Please input message correctly") 
+    sleep(delayTime)
+    print("4-1. send messages")
+    check(driver, 'input_text_field')
+    textCont= "text1"
+    driver.find_element_by_id("input_text_field").send_keys(textCont)
+    driver.find_element_by_id("post_text_button_field").click()
+    sleep(delayTime)
+    try:
+        res = requests.get(link+"chatroom/"+roomId+"/text/", auth=(uname, upwd)) 
+        if res.status_code != 200:
+            print("ERROR: Cannot get {0} : {1}, id = {2}, pwd = {3}".format(link+"chatroom/"+roomId+"/text/", res.status_code, uname, upwd))
+            exit(1)
+    except Exception:
+        print("ERROR: Cannot get {0}".format(link))
+        exit(1)
+    print("4-2. get messages")
+    sleep(delayTime)
+    textId=res.json()[-1]['id']
+    check(driver, "t"+str(textId)+"_text_field")
+    check(driver, "t"+str(textId)+"_writer_field")
+    if driver.find_element_by_id("t"+str(textId)+"_text_field").text != textCont:
+        print("Text message isn't match!")
+        exit(1)
+    elif driver.find_element_by_id("t"+str(textId)+"_writer_field").text != uname:
+        print("Text writer isn't match!")
+        exit(1)
+"""
+def signOutVerification(driver):
+    check(driver, "sign_out")
+    driver.find_element_by_id("sign_out").click()"""
+
+def B_chatRoomVerification(driver, roomId):
+    # in the ~/main/
+    check(driver, "chat_button_field")
+    driver.find_element_by_id('chat_button_field').click()
+    sleep(delayTime)
+    # in the ~/room/
+    check(driver, "room"+roomId+"_chat_field")
+    driver.find_element_by_id('room'+roomId+'_chat_field').click()
+    sleep(delayTime)
+    check(driver, "input_text_field")
+    check(driver, "post_text_button_field")
+    driver.find_element_by_id("input_text_field").send_keys("this text cannot be sent")
+    driver.find_element_by_id('post_text_button_field').click()
+    sleep(delayTime)
+    alert(driver, "You didn't join in this room. Please join in first.") 
+    sleep(delayTime*2)
+    print("2-1. join the room")
+    # at room list 
+    check(driver, "room"+roomId+"_join_field")
+    driver.find_element_by_id("room"+roomId+"_join_field").click()
+    sleep(delayTime)
+    check(driver, "room"+roomId+"_user_num_field")
+    if driver.find_element_by_id("room"+roomId+"_user_num_field").text != str(2):
+        print("# of people in the chatroom1 isn't correct")
+        exit(1)
+    check(driver, "room"+roomId+"_chat_field")
+    driver.find_element_by_id('room'+roomId+'_chat_field').click()
+   
+def B_sendTextVerification(driver, link, uname, upwd, roomId ):
+    print("get messages")
+    try:
+       res = requests.get(link+"chatroom/"+roomId+"/user/", auth=(uname, upwd))
+       if res.status_code != 200:
+         print("ERROR: Cannot get {0} : {1}, id = {2}, pwd= {3}".format(link+"chatroom/"+roomId+"/user/", res.status_code, uname, upwd))
+         exit(1)
+    except Exception:
+        print("ERROR: Cannot get {0}".format(link))
+        sleep(delayTime)
+    userId=res.json()[-1]['id']
+    sleep(delayTime)
+    check(driver, "u"+str(userId)+"_username_field")
+    if driver.find_element_by_id("u"+str(userId)+"_username_field").text != uname:
+        print("Text writer isn't match!")
+        exit(1)
+
+    print("send message")
+    check(driver, "input_text_field")
+    check(driver, "input_text_field")
+    check(driver, "post_text_button_field")
+    textCont= "text2"
+    driver.find_element_by_id("input_text_field").send_keys(textCont)
+    driver.find_element_by_id("post_text_button_field").click()
+    sleep(delayTime)
+    try:
+        res = requests.get(link+"chatroom/"+roomId+"/text/", auth=(uname, upwd)) 
+        if res.status_code != 200:
+            print("ERROR: Cannot get {0} : {1}, id = {2}, pwd = {3}".format(link, res.status_code, uname, upwd))
+            exit(1)
+    except Exception:
+        print("ERROR: Cannot get {0}".format(link))
+    sleep(delayTime)
+    textId=res.json()[0]['id']
+    sleep(delayTime)
+    sleep(delayTime)
+    check(driver, "t"+str(textId)+"_text_field")
+    check(driver, "t"+str(textId)+"_writer_field")
+    if driver.find_element_by_id("t"+str(textId)+"_text_field").text != textCont:
+        print("Text message isn't match!")
+        exit(1)
+    elif driver.find_element_by_id("t"+str(textId)+"_writer_field").text != uname:
+        print("Text writer isn't match!")
+        exit(1)
+#####PROFILE PAGE#####
+def changeProfile_T(driver, text1, text2, text3):
+    check(driver, "change_detail_button_field")
+    driver.find_element_by_id("change_detail_button_field").click()
+    sleep(delayTime)
+    check(driver, "myname")
+    check(driver, "mybelong")
+    check(driver, "myintro")
+    check(driver, "change_intro")
+    driver.find_element_by_id("myname").send_keys(text1)
+    driver.find_element_by_id("mybelong").send_keys(text2)
+    driver.find_element_by_id("myintro").send_keys(text3)
+    driver.find_element_by_id("change_intro").click()
+    sleep(delayTime)
+    check(driver, "p_name")
+    check(driver, "p_belong")
+    check(driver, "p_intro")
+    if "이름:"+text1 != driver.find_element_by_id("p_name").text:
+        print("content isn't match")
+        exit(1)
+    if "소속:"+text2 != driver.find_element_by_id("p_belong").text:
+        print("content isn't match")
+        exit(1)
+    if "소개말:"+text3 != driver.find_element_by_id("p_intro").text:
+        print("content isn't match")
+        exit(1)
+def changeProfile_F(driver):
+    check(driver, "change_detail_button_field")
+    driver.find_element_by_id("change_detail_button_field").click()
+    alert(driver,"남의 려권 입니다.")
+
+def changePW_T(driver,uname, oldpw, newpw):
+    check(driver, "change_pw_button_field")
+    driver.find_element_by_id("change_pw_button_field").click()
+    sleep(delayTime)
+    check(driver, "curr_pw")
+    check(driver, "new_pw")
+    check(driver, "new_pw_RE")
+    check(driver, "change_pw")
+    driver.find_element_by_id("curr_pw").send_keys(oldpw)
+    driver.find_element_by_id("new_pw").send_keys(newpw)
+    driver.find_element_by_id("new_pw_RE").send_keys(newpw)
+    driver.find_element_by_id("change_pw").click()
+    sleep(delayTime)
+    signInPageVerification(driver)
+    driver.find_element_by_id("username_field").send_keys(uname)
+    driver.find_element_by_id("password_field").send_keys(oldpw)
+    driver.find_element_by_id("sign_in").click()
+    sleep(delayTime)
+    alert(driver, "그런 려권은 없는데?")
+    sleep(delayTime)
+    driver.find_element_by_id("username_field").clear()
+    driver.find_element_by_id("password_field").clear()
+    driver.find_element_by_id("username_field").send_keys(uname)
+    driver.find_element_by_id("password_field").send_keys(newpw)
+    driver.find_element_by_id("sign_in").click()
+    sleep(delayTime)
+    check(driver, "sign_out")
+    
+def changePW_F(driver):
+    check(driver, "change_pw_button_field")
+    driver.find_element_by_id("change_pw_button_field").click()
+    sleep(delayTime)
+    alert(driver, "남의 려권 입니다.")
+    sleep(delayTime)
+
+def escapeBook_T(driver, uname, upwd):
+    check(driver, "escape_account_button_field")
+    driver.find_element_by_id("escape_account_button_field").click()
+    sleep(delayTime)
+    check(driver, "escape_book")
+    driver.find_element_by_id("escape_book").click()
+    sleep(1)
+    sleep(1)
+    driver.find_element_by_id("username_field").send_keys(uname)
+    driver.find_element_by_id("password_field").send_keys(upwd)
+    driver.find_element_by_id("sign_in").click()
+    sleep(delayTime)
+    alert(driver, "그런 려권은 없는데?")
+
+def escapeBook_F(driver):
+    check(driver, "escape_account_button_field")
+    driver.find_element_by_id("escape_account_button_field").click()
+    sleep(delayTime)
+    alert(driver, "탈Book할거면 너나해ㅡㅡ")
+    sleep(delayTime)
+   
+
