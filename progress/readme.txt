@@ -1,11 +1,11 @@
 //////////////////////////////
-//설치되어있어야하는파일
-//django
-//djangorestframework
-//django-cors-headers
-//requests
-//selenium
-//pillow
+//설치되어있어야하는파일(& 설치방법)
+//pip install -r django
+//pip install -r djangorestframework
+//pip install -r django-cors-headers
+//pip install -r requests
+//pip install -r selenium
+//pip install -r pillow
 //npm install
 //npm install xhr-promise-redux
 //////////////////////////////
