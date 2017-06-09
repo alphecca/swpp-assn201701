@@ -14,6 +14,7 @@ const initState = {
     room_id: 0,
     friends: [],
     friend_requests: [],
+    my_requests: [],
     load: 0
 }
 
@@ -35,6 +36,7 @@ describe('homepage reducer', () => {
             room_id: 0,
             friends: [],
             friend_requests: [],
+            my_requests: [],
             load: 0
         })
     })
@@ -71,6 +73,7 @@ describe('homepage reducer', () => {
             profile_user: null,
             friends: [],
             friend_requests: [],
+            my_requests: [],
             load: 0
         }
 

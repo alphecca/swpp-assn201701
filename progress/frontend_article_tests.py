@@ -8,7 +8,7 @@ from random import randint
 from backend_ import *
 
 ####FRONTEND용 패키지들
-from frontend import *
+from frontend_ import *
 from chat_front import *
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
@@ -17,8 +17,8 @@ from selenium.webdriver.common.alert import Alert
 delayTime = 1 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫자를 늘려보자
 
 if len(sys.argv) != 3:
-    print("myTest.py <backend_url> <frontend_url>")
-    print("Example: myTest.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/") #TODO change port num
+    print("frontend_article_tests.py <backend_url> <frontend_url>")
+    print("Example: frontend_article_tests.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/") #TODO change port num
     exit(1)
 # 백엔드 주소
 backend_link = sys.argv[1]
@@ -47,6 +47,7 @@ print("Frontend initializer ran successfully!")
 ##########################FRONTEND TEST START##############################
 driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
+driver.maximize_window()
 
 # 본격적인 프론트엔드 테스트 시작
 # 로그인 및 로그아웃 테스트
@@ -130,14 +131,14 @@ data = get_json_or_error(main_link, user_list[0][0], user_list[0][1])
 if(data[0]["text"] != "edit test"):
     print("Edit fail")
     exit(1)
-sleep(1)
+sleep(delayTime)
 articleVerification(driver, data[0])
-sleep(1)
+sleep(delayTime)
 driver.find_element_by_id('to_main_page_field').click()
 """
 # reply test
 print("7. reply test")
-sleep(1)
+sleep(delayTime)
 replyVerification(driver, data[0]["id"], "reply test")
 sleep(delayTime)
 reply_data = get_json_or_error(article_link+'article/', user_list[0][0], user_list[0][1])
@@ -202,53 +203,6 @@ editErrorVerification(driver, data[0]["id"])
 
 sleep(delayTime)
 driver.quit()
-
-sleep(delayTime*3)
-driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
-driver.get(frontend_link)
-
-
-## 채팅 테스트
-print("Frontend chatting test is running...")
-print("[test for person A]")
-# sign in
-sleep(delayTime)
-print("1. sign in ")
-signInVerification(driver, "test1", "test1passwd")
-
-# create chatroom
-sleep(delayTime)
-print("2. create  chatroom")
-roomId = chatRoomVerification(driver, backend_link, "test1","test1passwd") 
-
-# join the chatroom
-sleep(delayTime)
-print("3. join the chatroom")
-joinUserVerification(driver, backend_link, "test1", "test1passwd", roomId)
-# send / get message
-sleep(delayTime)
-print("4. send/get message")
-sendTextVerification(driver, backend_link, "test1", "test1passwd", roomId)
-
-# sign out
-sleep(delayTime)
-print("5. sign out...")
-signOutVerification(driver, 'test1')
-
-# for the other user
-print("[test for person B]")
-sleep(delayTime)
-print("1. sign in")
-signInVerification(driver, "test2", "test2passwd")
-sleep(delayTime)
-print("2. join chatroom")
-B_chatRoomVerification(driver, roomId)
-sleep(delayTime)
-print("3. sen/get message")
-B_sendTextVerification(driver, backend_link, "test2", "test2passwd", roomId)
-sleep(delayTime)
-print("4. sign out...")
-signOutVerification(driver, 'test2')
 
 ##########################FRONTEND TEST FINISHED###########################
 driver.quit()

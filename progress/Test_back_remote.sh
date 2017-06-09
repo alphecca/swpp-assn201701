@@ -5,4 +5,4 @@ python3 backend_friend_tests.py http://wlxyzlw.iptime.org:8000/
 python3 backend_wall_tests.py http://wlxyzlw.iptime.org:8000/
 #python3 backend_profile_tests.py http://wlxyzlw.iptime.org:8000/
 python3 backend_sasang_tests.py http://wlxyzlw.iptime.org:8000/
-#python3 signUpChecker.py http://wlxyzlw.iptime.org:3000/
+#python3 backend_image_tests.py http://wlxyzlw.iptime.org:8000/

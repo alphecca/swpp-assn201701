@@ -148,9 +148,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class FriendSerializer(serializers.ModelSerializer):
     friend = serializers.ReadOnlyField(source='friend.username')
+    me = serializers.ReadOnlyField(source='me.username')
     class Meta:
         model = Friend
-        fields = ('friend',)
+        fields = ('friend','me',)
 
 class SasangSerializer(serializers.ModelSerializer):
     first=serializers.ReadOnlyField(source='first.username')

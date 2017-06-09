@@ -10,6 +10,7 @@ const homepageInitialState = {
     room_id: 0,
     friends: [],
     friend_requests: [],
+    my_requests: [],
     load : 0
 };
 
@@ -55,7 +56,8 @@ const homepage = (state = homepageInitialState, action) => {
                 room_id: action.state.room_id,
                 profile_user: action.state.profile_user,
                 friends: action.state.friends,
-		friend_requests: action.state.friend_requests,
+		        friend_requests: action.state.friend_requests,
+                my_requests: action.state.my_requests,
             })
         }
         case 'ARTICLE_DETAIL': {
