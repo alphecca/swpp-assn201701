@@ -7,8 +7,8 @@ class FriendList extends React.Component {
         const list = this.props.friends;
         if (list.length === 0) {
             return (
-                    <div id="mr_list_field" className="MyRequestList">
-                    자네에게는 아직 동무가 없다우. 다른 인민들에게 동무가 되자고 요청을 보내보라우.
+                    <div id="f_list_field" className="FriendList">
+                    <span id="f_list_message">자네에게는 아직 동무가 없다우. 다른 인민들에게 동무가 되자고 요청을 보내보라우.</span>
                     </div>
                    )
         }

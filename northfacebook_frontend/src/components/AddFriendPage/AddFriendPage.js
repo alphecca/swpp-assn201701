@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 
 class AddFriendPage extends React.Component {
     render() {
-        const profuserNameId = "fr_profuser_name_field";
+        const profuserNameId = "fr_"+this.props.profile_user+"_name_field";
         function checkFriend(objList, username) {
             var i;
             for (i=0; i<objList.length; i++) {
@@ -35,7 +35,7 @@ class AddFriendPage extends React.Component {
                     <FriendRequestList />
                     <hr />
                     <div>
-                    <span id="fr_message2_field">자네가 다른 인민들에게 보낸 요청이라우.</span>
+                    <span id="mr_message_field">자네가 다른 인민들에게 보낸 요청이라우.</span>
                     </div>
                     <MyRequestList />
                     <br />
