@@ -186,7 +186,7 @@ friendToNameProfile(driver, user_list[1][0])
 profileToFriend(driver)
 check(driver, "f_"+user_list[0][0]+"_field")
 check(driver, "f_"+user_list[2][0]+"_field")
-signOutVerification(driver)
+signOutVerification(driver, user_list[1][0])
 sleep(delayTime)
 
 ##########################FRONTEND TEST FINISHED###########################

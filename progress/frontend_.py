@@ -319,10 +319,11 @@ def friendToAddFriend(driver):
 
 def friendToNameProfile(driver, username):
     check(driver, "f_"+username+"_name_field")
-    driver.find_element_by_id("f_"+username+"_name_field")
+    driver.find_element_by_id("f_"+username+"_name_field").click()
     sleep(delayTime)
 
 def friendNoListVerification(driver):
+    sleep(delayTime)
     check(driver, "f_list_field")
     if driver.find_element_by_id("f_list_field").text != "자네에게는 아직 동무가 없다우. 다른 인민들에게 동무가 되자고 요청을 보내보라우.":
         print("No friend list message does not match")
@@ -359,6 +360,7 @@ def addFriendToNameProfile(driver, username):
     sleep(delayTime)
 
 def addFriendNoListVerification(driver):
+    sleep(delayTime)
     check(driver, "fr_list_field")
     if driver.find_element_by_id("fr_list_field").text != "아, 자네에게 온 요청이 없다우.":
         print("No friend request list message does not match")
@@ -375,6 +377,7 @@ def addFriendToMRNameProfile(driver, username):
     sleep(delayTime)
 
 def addFriendMRNoListVerification(driver):
+    sleep(delayTime)
     check(driver, "mr_list_field")
     if driver.find_element_by_id("mr_list_field").text != "아, 자네는 아무에게도 요청을 보내지 않았다우.":
         print("No my request list message does not match")
