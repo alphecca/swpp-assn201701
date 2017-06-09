@@ -33,9 +33,8 @@ class WallArticle extends React.Component {
         const images = this.props.article.images
 
         const labelId = "a"+this.props.article.id+"_label";
+        const current = this.props.current.toString()
         const typeLabel = () => {
-            const current = window.atob(localStorage['auth']).split(":")[0];
-            console.log(current);
             if(this.props.article.owner !== current)
                 return (
                         <div>
@@ -55,8 +54,9 @@ class WallArticle extends React.Component {
                         </div>
                        )
         }
+        const css = this.props.article.depth === 0 ? 'Article' : this.props.article.depth === 1 ? 'ArticleArticle' : 'ArticleArticleArticle';
         return (
-                <div id={componentId} className="Article">
+                <div id={componentId} className={css}>
                     {typeLabel()}
                     <p id={writerId}>id: {username}</p>
                     <hr />
@@ -78,9 +78,9 @@ class WallArticle extends React.Component {
                     <br />
                     댓글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>자세히 보기</button>
+                    {this.props.article.depth === 0 ? <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>자세히 보기</button> : null}
                     <div className="divider"/>
-                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>댓글</button>
+                    {this.props.article.depth < 2 ? <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>댓글</button> : null}
                     <br />
                     </div>
                 </div>
@@ -90,7 +90,8 @@ class WallArticle extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
-        authorization: Object.assign(state.authorization)
+        authorization: Object.assign(state.authorization),
+        current: state.propfile_user !== null ? Object.assign(state.profile_user.username) : null
     }
 }
 

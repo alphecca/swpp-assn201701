@@ -273,3 +273,13 @@ def post_image_or_error(link, img, data, uname, upwd):
         print("ERROR: Cannot post {0}".format(link))
         exit(1)
 
+def forbidden_image_or_error(link, img, data):
+    sleep(0.05)
+    try:
+        res = requests.post(link, data=data, files=img)
+        if res.status_code != 403:
+            print("ERROR: Should not be allowed to post {0} with forbidden: code {1}".format(link, res.status_code))
+            exit(1)
+    except Exception:
+        print("ERROR: Cannot post {0}".format(link))
+        exit(1)

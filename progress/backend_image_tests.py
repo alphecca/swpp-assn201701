@@ -42,13 +42,17 @@ for i in range(1,userN):
     method_not_allowed_or_error_anon_data("POST", user_link, body)
 
 print("2. GET & POST image article list.")
-post_image_or_error(article_link, {"image0": ('testImage.png', open('testImage.png', 'rb'))}, {"text": "test"}, user_pairs[0][0], user_pairs[0][1])
-#post_or_error(article_link, content, 'test2', 'test2passwd')
+img = {"image0": ('testImage.png', open('testImage.png', 'rb'), 'image/png')}
+data = {"text": "test"}
+forbidden_image_or_error(article_link, img, data)
+#post_or_error(article_link, data, user_pairs[0][0], user_pairs[0][1])
+post_image_or_error(article_link, img, data, user_pairs[0][0], user_pairs[0][1])
 data = get_json_or_error(article_link, 'test2', 'test2passwd')
 
 print("3. GET & POST image reply")
 articleId = str(data[0]["id"])
-post_image_or_error(article_link+articleId+'/article/', {"image0": ('testImage.png', open('testImage.png', 'rb'))}, {"text": "test"}, user_pairs[0][0], user_pairs[0][1])
+#forbidden_image_or_error(article_link+articleId+'/article/', img, data)
+post_image_or_error(article_link+articleId+'/article/', img, data, user_pairs[0][0], user_pairs[0][1])
 get_json_or_error(article_link+articleId+'/article/', 'test2', 'test2passwd')
 
 print("Final. Deleting all data that test has created.")
