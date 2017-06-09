@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 class FriendPage extends React.Component {
     render() {
         let profuser = this.props.profuser;
-        const profuserNameId = "f_profuser_name_field";
+        const profuserNameId = "f_"+profuser+"_name_field";
         console.log(this.props.profuser);
         if (this.props.profuser === null) {
             return (

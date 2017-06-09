@@ -13,7 +13,7 @@ from selenium.webdriver.common.alert import Alert
 
 from backend_ import *
 
-delayTime = 1
+delayTime = 1.5
 # 특정 id를 가진 컴퍼넌트가 존재하는지 확인
 def check(driver, name):
     try:
@@ -295,6 +295,102 @@ def wallPageVerification(driver, articles, username):
             print(driver.find_element_by_id(labelId).text)
             exit(1)
         articleVerification(driver, article)
+
+#####FRIEND PAGE#####
+def toMyProfile(driver):
+    check(driver, "to_my_profile")
+    driver.find_element_by_id("to_my_profile").click()
+    sleep(delayTime)
+
+def profileToFriend(driver):
+    check(driver, "friend_list_button_field")
+    driver.find_element_by_id("friend_list_button_field").click()
+    sleep(delayTime)
+
+def profileToAddFriend(driver):
+    check(driver, "friend_add_button_field")
+    driver.find_element_by_id("friend_add_button_field").click()
+    sleep(delayTime*2)
+
+def profileURLVerification(driver, frontend_link, profuser):
+    if driver.current_url != frontend_link+"profile/"+profuser+"/":
+        print("Profile page URL does not match with {0}".format(profuser))
+        exit(1)
+
+def friendToAddFriend(driver):
+    check(driver, "add_friend_button_field")
+    driver.find_element_by_id("add_friend_button_field").click()
+    sleep(delayTime*2)
+
+def friendToNameProfile(driver, username):
+    check(driver, "f_"+username+"_name_field")
+    driver.find_element_by_id("f_"+username+"_name_field").click()
+    sleep(delayTime)
+
+def friendNoListVerification(driver):
+    sleep(delayTime)
+    check(driver, "f_list_field")
+    if driver.find_element_by_id("f_list_field").text != "자네에게는 아직 동무가 없다우. 다른 인민들에게 동무가 되자고 요청을 보내보라우.":
+        print("No friend list message does not match")
+        exit(1)
+
+def friendURLVerification(driver, frontend_link, profuser):
+    if driver.current_url != frontend_link+"friend/"+profuser+"/":
+        print("Friend page URL does not match with {0}".format(profuser))
+        exit(1)
+
+def addFriendToBack(driver, profuser):
+    check(driver, "fr_"+profuser+"_back_button_field")
+    driver.find_element_by_id("fr_"+profuser+"_back_button_field").click()
+    sleep(delayTime)
+
+def addFriendToFriend(driver, profuser):
+    check(driver, "fr_"+profuser+"_friend_button_field")
+    driver.find_element_by_id("fr_"+profuser+"_friend_button_field").click()
+    sleep(delayTime)
+
+def addFriendToOk(driver, username):
+    check(driver, "fr_"+username+"_ok_button_field")
+    driver.find_element_by_id("fr_"+username+"_ok_button_field").click()
+    sleep(delayTime*2)
+
+def addFriendToDecline(driver, username):
+    check(driver, "fr_"+username+"_decline_button_field")
+    driver.find_element_by_id("fr_"+username+"_decline_button_field").click()
+    sleep(delayTime*3)
+
+def addFriendToNameProfile(driver, username):
+    check(driver, "fr_"+username+"_name_field")
+    driver.find_element_by_id("fr_"+username+"_name_field").click()
+    sleep(delayTime)
+
+def addFriendNoListVerification(driver):
+    sleep(delayTime)
+    check(driver, "fr_list_field")
+    if driver.find_element_by_id("fr_list_field").text != "아, 자네에게 온 요청이 없다우.":
+        print("No friend request list message does not match")
+        exit(1)
+
+def addFriendToMRDecline(driver, username):
+    check(driver, "mr_"+username+"_decline_field")
+    driver.find_element_by_id("mr_"+username+"_decline_field").click()
+    sleep(delayTime*2)
+
+def addFriendToMRNameProfile(driver, username):
+    check(driver, "mr_"+username+"_name_field")
+    driver.find_element_by_id("mr_"+username+"_name_field").click()
+    sleep(delayTime)
+
+def addFriendMRNoListVerification(driver):
+    sleep(delayTime)
+    check(driver, "mr_list_field")
+    if driver.find_element_by_id("mr_list_field").text != "아, 자네는 아무에게도 요청을 보내지 않았다우.":
+        print("No my request list message does not match")
+        exit(1)
+
+def toAddFriend(driver, frontend_link, username):
+    driver.get(frontend_link+"addfriend/"+username+"/")
+    sleep(delayTime*3)
 
 #####PROFILE PAGE#####
 def chatRoomVerification(driver, link, uname, upwd):

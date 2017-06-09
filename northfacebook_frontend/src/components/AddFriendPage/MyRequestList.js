@@ -9,7 +9,7 @@ class MyRequestList extends React.Component {
         if (list.length === 0) {
             return (
                     <div id="mr_list_field" className="MyRequestList">
-                    아, 자네는 아무에게도 요청을 보내지 않았다우.
+                    <span id="mr_list_message">아, 자네는 아무에게도 요청을 보내지 않았다우.</span>
                     </div>
                    )
         }
