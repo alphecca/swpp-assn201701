@@ -347,12 +347,12 @@ def addFriendToFriend(driver, profuser):
 def addFriendToOk(driver, username):
     check(driver, "fr_"+username+"_ok_button_field")
     driver.find_element_by_id("fr_"+username+"_ok_button_field").click()
-    sleep(delayTime)
+    sleep(delayTime*2)
 
 def addFriendToDecline(driver, username):
     check(driver, "fr_"+username+"_decline_button_field")
     driver.find_element_by_id("fr_"+username+"_decline_button_field").click()
-    sleep(delayTime)
+    sleep(delayTime*2)
 
 def addFriendToNameProfile(driver, username):
     check(driver, "fr_"+username+"_name_field")
@@ -369,7 +369,7 @@ def addFriendNoListVerification(driver):
 def addFriendToMRDecline(driver, username):
     check(driver, "mr_"+username+"_decline_field")
     driver.find_element_by_id("mr_"+username+"_decline_field").click()
-    sleep(delayTime)
+    sleep(delayTime*2)
 
 def addFriendToMRNameProfile(driver, username):
     check(driver, "mr_"+username+"_name_field")
