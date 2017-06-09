@@ -7,7 +7,7 @@ from selenium.webdriver.common.alert import Alert
 
 from backend_ import *
 
-delayTime = 1
+delayTime = 1.5
 # 특정 id를 가진 컴퍼넌트가 존재하는지 확인
 def check(driver, name):
     try:
