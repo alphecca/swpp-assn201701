@@ -14,7 +14,7 @@ class ChangeIntroPage extends React.Component{
                 <br />
                 이름<input type="myname" ref={node=>{this.myname = node;} } id="myname" className="field" />
                 <br />
-                소속<input type="mybelong"ref={node=>{this.mybelong = node;} } id="belong" className="field" />
+                소속<input type="mybelong"ref={node=>{this.mybelong = node;} } id="mybelong" className="field" />
                 <br />
                 소개<input type="myintro" ref={node=>{this.myintro = node;} } id="myintro" className="field" />
                 <br />
