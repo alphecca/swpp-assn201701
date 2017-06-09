@@ -36,11 +36,11 @@ let mapStateToProps = (state) => {
                           )
     }
 }
-
-WallArticleList = connect(mapStateToProps,(dispatch)=>{
+let mapDispatchToProps = (dispatch)=>{
   return{
     onMoreClick:()=>dispatch(moreArticle())
   }
-})(WallArticleList)
+}
+WallArticleList = connect(mapStateToProps,mapDispatchToProps)(WallArticleList)
 
 export default WallArticleList
