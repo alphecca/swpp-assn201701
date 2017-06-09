@@ -5,7 +5,7 @@ import * as actions from './../../actions'
 var xhr = require('xhr-promise-redux');
 
 //TODO 개인적으로 테스트할 때는 포트번호를 바꾸자. 풀리퀘를 날릴 때는 URL을 확인할 것
-const fixed_url = /*"http://localhost:8000/";*/"http://wlxyzlw.iptime.org:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
+const fixed_url = "http://localhost:8000/";//"http://wlxyzlw.iptime.org:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
 //const fixed_url = "http://wlxyzlw.iptime.org:7777/";
 const auth_check_url = fixed_url+'auth/';
 

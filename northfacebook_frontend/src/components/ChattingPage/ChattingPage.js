@@ -15,7 +15,6 @@ class ChattingPage extends React.Component {
       return (
                 <div >
                 <SignOut />
-                <br /> <br /> <br /> <br /> <br /> <br />
                 <div className="Chatting">
                 <div className="divider" />
                 <button id="change_room_button_field" onClick={this.props.onChangeRoomClick}>모든방</button>
