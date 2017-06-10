@@ -9,7 +9,6 @@ from backend_ import *
 
 ####FRONTEND용 패키지들
 from frontend_ import *
-from chat_front import *
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
@@ -35,6 +34,8 @@ try:
         username = "test{0}".format(i)
         pwd = "test{0}passwd".format(i)
         res = requests.delete(user_link, auth=(username, pwd))
+    for i in range(5):
+         requests.delete(user_link, auth=("test{0}".format(i), "newtest{0}passwd".format(i)))
 except Exception:
     pass
 
@@ -55,12 +56,12 @@ print("Frontend chatting test is running...")
 print("[test for person A]")
 # sign in
 sleep(delayTime)
-print("1. sign in ")
+print("1. sign in")
 signInVerification(driver, "test1", "test1passwd")
 
 # create chatroom
 sleep(delayTime)
-print("2. create  chatroom")
+print("2. create chatroom")
 roomId = chatRoomVerification(driver, backend_link, "test1","test1passwd") 
 
 # join the chatroom
@@ -83,10 +84,10 @@ sleep(delayTime)
 print("1. sign in")
 signInVerification(driver, "test2", "test2passwd")
 sleep(delayTime)
-print("2. join chatroom")
+print("2. join the chatroom")
 B_chatRoomVerification(driver, roomId)
 sleep(delayTime)
-print("3. sen/get message")
+print("3. send/get message")
 B_sendTextVerification(driver, backend_link, "test2", "test2passwd", roomId)
 sleep(delayTime)
 print("4. sign out...")

@@ -117,11 +117,11 @@ def signUpVerification(driver, testNum):
     driver.find_element_by_id('sign_up').click()
     sleep(delayTime)
     if testNum < 10:
-        alert(driver, "This username already exists")
+        alert(driver, "이미 같은 성명이 있소.")
 
 #####MAIN PAGE#####
 # article view verification
-def articleVerification(driver, article):
+def articleVerification(driver, article, depth):
     articleId = "a"+str(article["id"])+"_field"
     writerId = "a"+str(article["id"])+"_writer_field"
     textId = "a"+str(article["id"])+"_text_field"
@@ -138,10 +138,13 @@ def articleVerification(driver, article):
     check(driver, createdId)
     check(driver, updatedId)
     check(driver, likeId)
-    check(driver, replyId)
+    if depth < 2:
+        check(driver, replyId)
     check(driver, likeButtonId)
-    check(driver, replyButtonId)
-    check(driver, detailId) # component check finished
+    if depth < 2:
+        check(driver, replyButtonId)
+    if depth == 0:
+        check(driver, detailId) # component check finished
     #Contents checking
     if driver.find_element_by_id(writerId).text != "id: "+article["owner"]:
         print("Owner not match on article %d" % article["id"])
@@ -154,7 +157,7 @@ def articleVerification(driver, article):
     elif driver.find_element_by_id(likeId).text != str(article["like_num"]):
         print("Like num not match on article %d" % article["id"])
         exit(1)
-    elif driver.find_element_by_id(replyId).text != str(article["children_num"]):
+    elif depth < 2 and driver.find_element_by_id(replyId).text != str(article["children_num"]):
         print("Reply num not match on article %d" % article["id"])
         exit(1)
 
@@ -165,7 +168,7 @@ def likeVerification(driver, article_id, isClicked):
     driver.find_element_by_id(likeId).click()
     sleep(delayTime)
     if isClicked == True:
-        alert(driver, "You cannot like this post!")
+        alert(driver, "동무는 이 글을 더이상 좋아할 수 없소.")
 
 def replyVerification(driver, article_id, text):
     replyId = "a"+str(article_id)+"_reply_button_field"
@@ -202,14 +205,14 @@ def editErrorVerification(driver, article_id):
     check(driver, editId)
     driver.find_element_by_id(editId).click()
     sleep(delayTime)
-    alert(driver, "This is not your article!")
+    alert(driver, "당신의 글이 아니오.")
 
 def deleteErrorVerification(driver, article_id):
     deleteId = "a"+str(article_id)+"_delete_button_field"
     check(driver, deleteId)
     driver.find_element_by_id(deleteId).click()
     sleep(delayTime)
-    alert(driver, "This is not your article")
+    alert(driver, "당신의 글이 아니오.")
 
 ## main page rendering test
 def mainPageVerification(driver, articles):
@@ -218,7 +221,7 @@ def mainPageVerification(driver, articles):
     check(driver, "write_button_field")
     check(driver, "to_my_wall")
     for article in articles:
-        articleVerification(driver, article)
+        articleVerification(driver, article, 0)
 
 #####WRITE PAGE#####
 # write page verification (article, not reply)
@@ -232,7 +235,7 @@ def writePageVerification(driver, text):
 
 #####DETAIL PAGE#####
 def detailPageVerification(driver, article, replies):
-    articleVerification(driver, article)
+    articleVerification(driver, article, 0)
     check(driver, "to_main_page_field")
     check(driver, "reply_list_field")
     for reply in replies:
@@ -294,7 +297,7 @@ def wallPageVerification(driver, articles, username):
             print(username+label)
             print(driver.find_element_by_id(labelId).text)
             exit(1)
-        articleVerification(driver, article)
+        articleVerification(driver, article, article["depth"])
 
 #####FRIEND PAGE#####
 def toMyProfile(driver):
@@ -414,7 +417,7 @@ def chatRoomVerification(driver, link, uname, upwd):
     check(driver, "post_room_button_field")
     driver.find_element_by_id('post_room_button_field').click()
     sleep(delayTime)
-    alert(driver, "Please input correctly")
+    alert(driver, "제대로 입력하시오.")
     driver.find_element_by_id('cancel_button_field').click()
     print("2-3. make three new room")
     for t in range(1,4):
@@ -428,6 +431,8 @@ def chatRoomVerification(driver, link, uname, upwd):
         sleep(delayTime*2)
    
     print("2-4.check # of people in the room & room name") 
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    sleep(delayTime)
     for t in range(1,4):
         roomName = "myroom"+str(t)
         try:
@@ -463,7 +468,7 @@ def chatRoomVerification(driver, link, uname, upwd):
         check(driver, roomId+"_chat_field")
         driver.find_element_by_id(roomId+"_join_field").click()
         sleep(delayTime)
-        alert(driver,"You already join in this room")
+        alert(driver,"당신은 이미 함께하였소.")
     sleep(delayTime)
     driver.find_element_by_id(roomId+"_chat_field").click()
     sleep(delayTime)
@@ -471,7 +476,8 @@ def chatRoomVerification(driver, link, uname, upwd):
     driver.find_element_by_id("change_room_button_field").click()
     sleep(delayTime)
     return roomId[4:]
-def joinUserVerification(driver, link, uname, upwd, roomId): 
+
+def joinUserVerification(driver, link, uname, upwd, roomId):
     check(driver, "room"+roomId+"_chat_field")
     driver.find_element_by_id("room"+roomId+"_chat_field").click()
     sleep(delayTime)
@@ -493,7 +499,7 @@ def sendTextVerification(driver, link, uname, upwd, roomId):
     check(driver, 'post_text_button_field')
     driver.find_element_by_id("post_text_button_field").click()
     sleep(delayTime)
-    alert(driver, "Please input message correctly") 
+    alert(driver, "제대로 된 입력을 주시오.") 
     sleep(delayTime)
     print("4-1. send messages")
     check(driver, 'input_text_field')
@@ -527,6 +533,8 @@ def signOutVerification(driver):
 
 def B_chatRoomVerification(driver, roomId):
     # in the ~/main/
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    sleep(delayTime) 
     check(driver, "chat_button_field")
     driver.find_element_by_id('chat_button_field').click()
     sleep(delayTime)
@@ -539,13 +547,15 @@ def B_chatRoomVerification(driver, roomId):
     driver.find_element_by_id("input_text_field").send_keys("this text cannot be sent")
     driver.find_element_by_id('post_text_button_field').click()
     sleep(delayTime)
-    alert(driver, "You didn't join in this room. Please join in first.") 
+    alert(driver, "함께하고 얘기하시오.") 
     sleep(delayTime*2)
     print("2-1. join the room")
     # at room list 
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    sleep(delayTime)
     check(driver, "room"+roomId+"_join_field")
     driver.find_element_by_id("room"+roomId+"_join_field").click()
-    sleep(delayTime)
+    sleep(delayTime*2)
     check(driver, "room"+roomId+"_user_num_field")
     if driver.find_element_by_id("room"+roomId+"_user_num_field").text != str(2):
         print("# of people in the chatroom1 isn't correct")
@@ -626,7 +636,8 @@ def changeProfile_T(driver, text1, text2, text3):
 def changeProfile_F(driver):
     check(driver, "change_detail_button_field")
     driver.find_element_by_id("change_detail_button_field").click()
-    alert(driver,"남의 려권 입니다.")
+    sleep(delayTime)
+    alert(driver, "남의 려권 입니다.")
 
 def changePW_T(driver,uname, oldpw, newpw):
     check(driver, "change_pw_button_field")
