@@ -937,7 +937,7 @@ function *watchEdit(){
         const data = yield take('EDIT_ARTICLE');
         //TODO user data GET해서 forbidden or not
         if(data.username !== window.atob(localStorage['auth']).split(':')[0]) {
-            alert("당신 글이 아니오!");
+            alert("당신의 글이 아니오.");
             continue;
         }
         yield put(actions.changeUrl('/edit/'+data.id+'/'));
@@ -1191,7 +1191,7 @@ function *postLike(id) {
             console.log("parent article removed");
         }
         else if(error.statusCode === 405) {
-            alert("그만 좋소");
+            alert("동무는 이 글을 더이상 좋아할 수 없소.");
             console.log("double like");
         }
         else if(Object.keys(error).length === 0) {
@@ -1281,7 +1281,7 @@ function *deleteArticle(id){
             yield put(actions.changeUrl('/main/'));
         }
         else if(error.statusCode === 403){
-            alert("당신의 글이 아니오");
+            alert("당신의 글이 아니오.");
         }
         else yield put(actions.changeUrl('/main/'));
     }
@@ -1309,7 +1309,7 @@ function *putArticle(id, text){
     } catch(error){
         console.log(error);
         if(error.statusCode === 403){
-            alert("당신의 글이 아니오");
+            alert("당신의 글이 아니오.");
         }
     }
 }
@@ -1328,7 +1328,7 @@ function *joinRoom(id) {
             body: JSON.stringify({})
         });
         console.log("join room succeed.");
-        yield put(window.location.pathname);
+        yield put(actions.changeUrl(window.location.pathname));
     }catch(error){
         if(error.statusCode === 201){
             console.log("join room succeed 2.");
@@ -1348,7 +1348,7 @@ function *joinRoom(id) {
             console.log("the room has removed");
         }
         else if(error.statusCode === 405) {
-            alert("당신은 이미 끼어들었소.");
+            alert("당신은 이미 함께하였소.");
             console.log("you can join in this room once");
         }
         else if(Object.keys(error).length === 0) {
@@ -1402,7 +1402,7 @@ function *postText(room_id, text) {
             console.log("the room has removed");
         }
         else if(error.statusCode === 405) {
-            alert("끼어들고 얘기하시오.");
+            alert("함께하고 얘기하시오.");
             console.log("The user isn't a chatting member");
             yield put(actions.changeUrl('/room/'));
         }

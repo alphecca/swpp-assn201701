@@ -36,15 +36,21 @@ user1 = "test1"
 upwd1 = "test1passwd"
 user2 = "test2"
 upwd2 = "test2passwd"
+try:
+    requests.delete(user_link, auth=(user1, upwd1))
+    requests.delete(user_link, auth=(user2, upwd2))
+    for i in range(5):
+         requests.delete(user_link, auth=("test{0}".format(i), "newtest{0}passwd".format(i)))
+except Exception:
+    pass
 
-#delete_or_error(user_link, user1, upwd1)
-#delete_or_error(user_link, user2, upwd2)
 post_or_error_anon(user_link, {"username":user1.encode("ascii"),"password":upwd1.encode("ascii") })
 post_or_error_anon(user_link, {"username":user2.encode("ascii"),"password":upwd2.encode("ascii") })
 print("Frontend initializer ran successfully!")
 ##########################FRONTEND TEST START##############################
 driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
+driver.maximize_window()
 
 # 본격적인 프론트엔드 테스트 시작
 print("0. Sign in")
@@ -55,7 +61,7 @@ sleep(delayTime)
 print(" also make one sample article...")
 check(driver,"write_button_field")
 driver.find_element_by_id("write_button_field").click()
-writePageVerification(driver, "sampel text")
+writePageVerification(driver, "sample text")
 sleep(delayTime)
 signOutVerification(driver, user2)
 sleep(delayTime)
@@ -73,9 +79,13 @@ sleep(delayTime)
 changeProfile_T(driver, "name1", "student", "hello")
 print(" 1-2. try other's profile")
 sleep(delayTime)
+check(driver, "to_main_page_field")
 driver.find_element_by_id("to_main_page_field").click()
 sleep(delayTime)
-driver.find_element_by_id("a1_writer_field").click()
+# 테스트 만들 때 DB가 항상 초기화되어 있을 거라고 가정하지 마세요!
+data = get_json_or_error(main_link, user1, upwd1)
+check(driver, "a"+str(data[0]["id"])+"_writer_field")
+driver.find_element_by_id("a"+str(data[0]["id"])+"_writer_field").click()
 changeProfile_F(driver)
 
 print("2. Modify passwords")
@@ -83,12 +93,15 @@ print(" 2-1. change my passwords")
 sleep(delayTime)
 driver.find_element_by_id("to_my_profile").click()
 sleep(delayTime)
+# Password를 바꿔버리는 까닭에 여기서 테스트가 멈추거나 하면 다른 모든 테스트가 동작하지 않습니다.
 changePW_T(driver, user1, upwd1, "new"+upwd1)
 print(" 2-2. change other's password")
 sleep(delayTime)
 driver.find_element_by_id("to_main_page_field").click()
 sleep(delayTime)
-driver.find_element_by_id("a1_writer_field").click()
+# 여기도 "a1_writer_field"였네요. 이러면 글이 첫 번째 글이 아니면 동작하지 않습니다. 수정합니다.
+check(driver, "a"+str(data[0]["id"])+"_writer_field")
+driver.find_element_by_id("a"+str(data[0]["id"])+"_writer_field").click()
 changePW_F(driver)
 
 print("3. Change url to frined")
@@ -128,7 +141,8 @@ print("6. Escape North facebook")
 print(" 6-1. make other person escape the book")
 driver.find_element_by_id("to_main_page_field").click()
 sleep(delayTime)
-driver.find_element_by_id("a1_writer_field").click()
+check(driver, "a"+str(data[0]["id"])+"_writer_field")
+driver.find_element_by_id("a"+str(data[0]["id"])+"_writer_field").click()
 sleep(delayTime)
 escapeBook_F(driver)
 print(" 6-2. make my account escape the book")

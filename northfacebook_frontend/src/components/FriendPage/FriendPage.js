@@ -11,7 +11,7 @@ class FriendPage extends React.Component {
         console.log(this.props.profuser);
         if (this.props.profuser === null) {
             return (
-                    <div>Now loading...</div>
+                    <div>불러오는 중...</div>
                     )
         }
         // eslint-disable-next-line
