@@ -836,8 +836,9 @@ function *watchLoginState() {
             }
         }
     }
+    console.log(yield select());
     //console.log('Curr Auth: '+localStorage['auth']);
-    //console.log('Curr Parent: '+localStorage['parent']);
+    console.log('Curr Parent: '+localStorage['parent']);
 }
 
 // watchSignIn: 로그인 버튼 클릭 관찰
@@ -951,7 +952,7 @@ function *watchPutArticle(id){
         console.log("in watchPutArticle...");
         const data = yield take('PUT_ARTICLE');
         console.log("text: "+data.text);
-        yield call(putArticle, id, data.text);
+        yield call(putArticle, id, data.text, data.removeImg, data.images);
     }
 }
 
@@ -1289,22 +1290,35 @@ function *deleteArticle(id){
 
 // putArticle: 자신이 쓴 글을 수정하는 함수
 // TODO 업로드된 사진 수정 가능하게 만들기
-function *putArticle(id, text){
+function *putArticle(id, text, removeImg, images){
     const path = 'article/'+id+'/';
     console.log("in editArticle[path]: "+path);
+    let form = new FormData();
+    form.append('text', text);
+    if(removeImg === true) {
+        if (images === null || images === undefined || images.length === 0)
+            form.append('image0', null);
+        else
+            form.append('image0', images[0]);
+    }
+    else
+        if (images !== null && images !== undefined && images.length !== 0)
+            form.append('image0', images[0]);
+    //TODO 이후에는 여러개 처리 가능하도록
     try {
-        yield call(xhr.send, fixed_url+path, {
+        yield call(xhr.send, fixed_url + path, {
             method: 'PUT',
             headers: {
-                "Authorization": "Basic "+localStorage['auth'],
-                "Content-Type": 'application/json',
-                Accept: 'application/json'
+                "Authorization": "Basic " + localStorage['auth'],
             },
-            contentType:'json',
-            body: JSON.stringify({"text": text}),
-            responseType:'json'
+            async: true,
+            crossDomain: true,
+            processData: false,
+            contentType: false,
+            mimeType: "multipart/form-data",
+            body: form
         });
-        console.log("edit article succeeeeed!!!!!!!!!");
+        console.log("edit article succeed");
         yield put(actions.changeUrl('/'+path));
     } catch(error){
         console.log(error);
@@ -1587,6 +1601,7 @@ function *createUpdateChatting(room_id){
     yield delay(500);
     yield put(actions.updateChatting(room_id))
 }
+
 // 비밀번호 바꾼 걸 put 요청 보내는 함수
 function *updatePW(profuser, newpw){
     const backPath = 'users/'+profuser+'/';
@@ -1625,7 +1640,7 @@ function *updatePW(profuser, newpw){
 // profile을 수정한걸 post요청보내는 함수
 function *updateIntro(profuser, myname, mybelong, myintro){
     const backPath = 'users/'+profuser+'/profile/';
-    try{
+    try {
         yield call(xhr.send, fixed_url+backPath, {
             method : 'PUT',
             headers: {
@@ -1638,7 +1653,7 @@ function *updateIntro(profuser, myname, mybelong, myintro){
         });
         console.log("put profile succeed");
         yield put(actions.changeUrl('/profile/'+profuser+'/'))
-    }catch(error){
+    } catch(error){
         console.log("error code: "+error.statusCode);
         if(error.statusCode === 400){
             console.log("Wrong json input format");
@@ -1744,7 +1759,7 @@ function *deleteAddFriend(profuser) {
         });
     console.log("delete addfriend succeed!!!");
     yield put(actions.changeUrl(window.location.pathname));
-    }catch(error){
+    } catch(error){
         console.log(error);
         if(error.statusCode === 204){
             console.log("delete addfriend succeedd!!");
