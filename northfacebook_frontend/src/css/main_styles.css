@@ -138,7 +138,108 @@
   text-align: justify;
 }
 /* TODO ChattingPage 및 ChattingRoomPage, CreateRoomPage css는 여기에 추가할 것 */
+.ChattingRoom{
+  position: absolute;
+  top: 120px;
+  left:2em;
+}
 
+.Chatting{
+  position: absolute;
+  top: 120px;
+  left:2em;
+}
+
+.CreateRoom{
+  position: absolute;
+  top: 120px;
+  left:2em;
+}
+
+.FriendPage{
+  position: absolute;
+  top: 120px;
+  left:2em;
+}
+
+.AddFriendPage{
+  position: absolute;
+  top: 120px;
+  left:2em;
+}
+
+.ChattingUser{
+  font-family: 궁서;
+  text-align: left;
+  background-color: rgba(128,237,237,0.5);
+  font-size: 18px;
+  padding-left: 5px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+.Text{
+  font-family: 궁서;
+  text-align: left;
+  background-color: rgba(237,237,237,0.5);
+  font-size: 18px;
+  padding-left: 5px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+.Friend{
+  font-family: 궁서;
+  text-align: left;
+  background-color: rgba(237,128,237,0.5);
+  font-size: 20px;
+  padding-left: 5px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+.FriendRequest{
+  font-family: 궁서;
+  text-align: left;
+  background-color: rgba(237,237,128,0.5);
+  font-size: 20px;
+  padding-left: 5px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+.MyRequest{
+  font-family: 궁서;
+  text-align: left;
+  background-color: rgba(128,237,128,0.5);
+  font-size: 20px;
+  padding-left: 5px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+.FriendRequestButtons{
+  font-family: 궁서;
+  text-align: right;
+  padding-left: 20px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+.MyRequestButtons{
+  font-family: 궁서;
+  text-align: right;
+  padding-left: 20px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
 /* Login Page css */
 .app{
   background-image: url('login_logo.png');

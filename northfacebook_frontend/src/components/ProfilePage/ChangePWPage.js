@@ -23,11 +23,11 @@ class ChangePWPage extends React.Component {
                     <div className="TimeLine">
                         <span>{this.props.profile_user}동무는 비밀번호를 바꾸는가?</span>
                         <br />
-                        현재 비밀번호<input type="curr_pw" ref={ node=>{this.currpw = node;} } id="curr_pw" className="field" />
+                        현재 비밀번호<input type="password" ref={ node=>{this.currpw = node;} } id="curr_pw" className="field" />
                         <br />
-                        바꿀 비밀번호<input type="new_pw" ref={ node=> {this.newpw = node;}} id="new_pw" className="field" />
+                        바꿀 비밀번호<input type="password" ref={ node=> {this.newpw = node;}} id="new_pw" className="field" />
                         <br />
-                        비밀번호 확인<input type="new_pw_RE" ref={ node =>{this.newpwre = node;} } id="new_pw_RE" className="field" />
+                        비밀번호 확인<input type="password" ref={ node =>{this.newpwre = node;} } id="new_pw_RE" className="field" />
                         <br />
                         <button type="submit" id="change_pw" onClick={onChangeSubmit}>바꾼다!</button>
                     </div>

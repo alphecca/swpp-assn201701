@@ -31,6 +31,8 @@ try:
         username = "test{0}".format(i)
         pwd = "test{0}passwd".format(i)
         res = requests.delete(user_link, auth=(username, pwd))
+    for i in range(5):
+         requests.delete(user_link, auth=("test{0}".format(i), "newtest{0}passwd".format(i)))
 except Exception:
     pass
 
@@ -44,10 +46,10 @@ for i in range(1,userN):
 print("2. GET & POST image article list.")
 img = {"image0": ('testImage.png', open('testImage.png', 'rb'), 'image/png')}
 data = {"text": "test"}
-forbidden_image_or_error(article_link, img, data)
 #post_or_error(article_link, data, user_pairs[0][0], user_pairs[0][1])
 post_image_or_error(article_link, img, data, user_pairs[0][0], user_pairs[0][1])
 data = get_json_or_error(article_link, 'test2', 'test2passwd')
+#forbidden_image_or_error(article_link, img, data)
 
 print("3. GET & POST image reply")
 articleId = str(data[0]["id"])
