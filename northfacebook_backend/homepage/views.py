@@ -59,6 +59,8 @@ def article_detail(request, pk):
         return Response(serializer.data)
     elif request.method == 'PUT':
         if article.owner == request.user:
+            if "image0" in request.data and request.data["image0"] == 'null':
+                request.data["image0"] = None
             serializer = ArticleSerializer(article,data=request.data)
             if serializer.is_valid():
                 serializer.save()

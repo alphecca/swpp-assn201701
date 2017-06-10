@@ -952,7 +952,7 @@ function *watchPutArticle(id){
         console.log("in watchPutArticle...");
         const data = yield take('PUT_ARTICLE');
         console.log("text: "+data.text);
-        yield call(putArticle, id, data.text);
+        yield call(putArticle, id, data.text, data.removeImg, data.images);
     }
 }
 
@@ -1290,22 +1290,35 @@ function *deleteArticle(id){
 
 // putArticle: 자신이 쓴 글을 수정하는 함수
 // TODO 업로드된 사진 수정 가능하게 만들기
-function *putArticle(id, text){
+function *putArticle(id, text, removeImg, images){
     const path = 'article/'+id+'/';
     console.log("in editArticle[path]: "+path);
+    let form = new FormData();
+    form.append('text', text);
+    if(removeImg === true) {
+        if (images === null || images === undefined || images.length === 0)
+            form.append('image0', null);
+        else
+            form.append('image0', images[0]);
+    }
+    else
+        if (images !== null && images !== undefined && images.length !== 0)
+            form.append('image0', images[0]);
+    //TODO 이후에는 여러개 처리 가능하도록
     try {
-        yield call(xhr.send, fixed_url+path, {
+        yield call(xhr.send, fixed_url + path, {
             method: 'PUT',
             headers: {
-                "Authorization": "Basic "+localStorage['auth'],
-                "Content-Type": 'application/json',
-                Accept: 'application/json'
+                "Authorization": "Basic " + localStorage['auth'],
             },
-            contentType:'json',
-            body: JSON.stringify({"text": text}),
-            responseType:'json'
+            async: true,
+            crossDomain: true,
+            processData: false,
+            contentType: false,
+            mimeType: "multipart/form-data",
+            body: form
         });
-        console.log("edit article succeeeeed!!!!!!!!!");
+        console.log("edit article succeed");
         yield put(actions.changeUrl('/'+path));
     } catch(error){
         console.log(error);
