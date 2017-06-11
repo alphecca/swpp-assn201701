@@ -64,10 +64,12 @@ export const editArticle = (id, username) => {
         username: username
     }
 }
-export const putArticle = (text) =>{
+export const putArticle = (text, removeImg, images) =>{
     return {
         type: 'PUT_ARTICLE',
-        text: text//after edit
+        text: text,
+        removeImg: removeImg,
+        images: images
     }
 }
 export const deleteArticle = (id) => {
