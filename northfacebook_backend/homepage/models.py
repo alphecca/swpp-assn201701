@@ -8,7 +8,7 @@ class Profile(models.Model):
 #    owner= models.ForeignKey('auth.User', on_delete=models.CASCADE)
     myname = models.TextField()
     mybelong = models.TextField()
-    myintro = models.TextField()
+    myintro = models.TextField(upload_to='profiles/', default='media/profiles/')
 
 # 클래스 밖에 정의된 함수입니다 
 def create_profile(sender, instance, created, **kwargs):
@@ -35,7 +35,7 @@ class Article(models.Model):
     children_num = models.IntegerField(default=0)
     like_num = models.IntegerField(default=0)
     depth = models.IntegerField(default=0)
-    image0 = models.ImageField(upload_to='images/', null=True, blank=True, default=None) #TODO 최대 짤 3개까지 올릴 수 있도록
+    image0 = models.ImageField(upload_to='articles/', null=True, blank=True, default=None) #TODO 최대 짤 3개까지 올릴 수 있도록
     class Meta:
         ordering = ['-created_time']
 
