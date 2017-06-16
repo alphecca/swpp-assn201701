@@ -61,7 +61,7 @@ class WallArticle extends React.Component {
                     <p id={writerId}>id: {username}</p>
                     <hr />
                     <div id={imgId}>
-                    {images.map((img) => <img key={"img"+imgId} src={'data:image;base64,'+img} alt=""/>)}
+                    {images.map((img) => <img key={"img"+imgId} src={img} alt=""/>)}
                     </div>
                     <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}</div>
                     <hr />

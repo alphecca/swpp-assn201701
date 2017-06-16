@@ -1023,7 +1023,7 @@ function *watchIntroChange(){
     while(true){
         const data = yield take('TO_INTRO_CHANGE');
         console.log("##"+data.user);
-        yield call(updateIntro, data.user, data.myname, data.mybelong, data.myintro);
+        yield call(updateIntro, data.user, data.myname, data.mybelong, data.myintro, data.removeImg, data.changeImg, data.img);
     }
 }
 function *watchPWChange(){
@@ -1638,23 +1638,35 @@ function *updatePW(profuser, newpw){
     }
 }
 // profile을 수정한걸 post요청보내는 함수
-function *updateIntro(profuser, myname, mybelong, myintro){
+function *updateIntro(profuser, myname, mybelong, myintro, removeImg, changeImg, img){
     const backPath = 'users/'+profuser+'/profile/';
     try {
-        yield call(xhr.send, fixed_url+backPath, {
-            method : 'PUT',
+        let form = new FormData();
+        form.append('user', profuser);
+        form.append('myname', myname);
+        form.append('mybelong', mybelong);
+        form.append('myintro', myintro);
+        if(removeImg === true && changeImg === true && img !== null)
+            form.append('myimage', img);
+        else if(removeImg === true)
+            form.append('myimage', null);
+        yield call(xhr.send, fixed_url + backPath, {
+            method: 'PUT',
             headers: {
-                "Authorization": "Basic "+localStorage['auth'],
-                "Content-Type": 'application/json',
-                Accept : 'application/json',
+                "Authorization": "Basic " + localStorage['auth'],
             },
-            responseType: 'json',
-            body: JSON.stringify({"user":profuser,"myname":myname, "mybelong": mybelong, "myintro": myintro})
+            async: true,
+            crossDomain: true,
+            processData: false,
+            contentType: false,
+            mimeType: "multipart/form-data",
+            body: form
         });
         console.log("put profile succeed");
+
         yield put(actions.changeUrl('/profile/'+profuser+'/'))
     } catch(error){
-        console.log("error code: "+error.statusCode);
+        console.log(error);
         if(error.statusCode === 400){
             console.log("Wrong json input format");
         }else if(error.statusCode === 403 ){

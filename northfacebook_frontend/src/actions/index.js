@@ -183,13 +183,16 @@ export const toProfile = (profile_user) =>{
         profuser: profile_user,
     }
 }
-export const toChangeIntro = (user,name,belong,intro)=>{
+export const toChangeIntro = (user,name,belong,intro, removeImg, changeImg, img)=>{
     return {
          type: 'TO_INTRO_CHANGE',
          user: user,
          myname: name,
          mybelong: belong,
          myintro: intro,
+         removeImg: removeImg,
+         changeImg: changeImg,
+         img: img
     }
 }
 export const toChangePW = (profile_user, oldpw, newpw) => {

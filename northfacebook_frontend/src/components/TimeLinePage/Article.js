@@ -43,7 +43,7 @@ class Article extends React.Component {
                     <hr />
 
                     <div id={imgId}>
-                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={"data:image;base64,"+img} alt="" /></span>)} ) : null}
+                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img} alt="" /></span>)} ) : null}
                     </div>
 
                     <div id={textId} className="article_text">
