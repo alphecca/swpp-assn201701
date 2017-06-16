@@ -7,11 +7,11 @@ import { connect } from 'react-redux'
 class FriendPage extends React.Component {
     render() {
         let profuser = this.props.profuser;
-        const profuserNameId = "f_profuser_name_field";
+        const profuserNameId = "f_"+profuser+"_name_field";
         console.log(this.props.profuser);
         if (this.props.profuser === null) {
             return (
-                    <div>Now loading...</div>
+                    <div>불러오는 중...</div>
                     )
         }
         // eslint-disable-next-line
@@ -19,26 +19,28 @@ class FriendPage extends React.Component {
             return (
                     <div>
                         <SignOut />
-                        <br /> <br /> <br /> <br /> <br /> <br />
+                        <div className="FriendPage">
                         <div>
                         <span id="f_message_field">자네의 동무 목록</span>
                         </div>
                         <button id="add_friend_button_field" onClick={() => {this.props.onClick(profuser)}}>동무 추가 요청 관리하기</button>
                         <hr />
                         <FriendList />
+                        </div>
                     </div>
                    );
         }
         return (
                 <div>
                     <SignOut />
-                    <br /> <br /> <br /> <br /> <br /> <br />
+                    <div className="FriendPage">
                     <div>
                     <span id="f_message_field"><a id={profuserNameId} className="Link" onClick={() => this.props.onProfuserClick(this.props.profuser)}><u>{this.props.profuser}</u></a>의 동무 목록</span>
                     </div>
                     <button id="add_friend_button_field" onClick={() => {this.props.onClick(profuser)}}>이 인민과 동무가 되고 싶소!</button>
                     <hr />
                     <FriendList />
+                    </div>
                 </div>
                );
     }

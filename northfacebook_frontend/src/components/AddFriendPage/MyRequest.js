@@ -13,8 +13,9 @@ class MyRequest extends React.Component {
         return (
                 <div id={componentId} className="MyRequest">
                     <a id={friendNameId} className="Link" onClick={() => this.props.onFriendClick(this.props.friend.me)}><u>{friendName}</u></a>
-                    <div className="divider"/>
+                    <span className="MyRequestButtons">
                     <button id={declineButtonId} onClick={() => this.props.onDeclineClick(this.props.friend.me)}>요청 취소</button>
+                    </span>
                 </div>
                )
     }

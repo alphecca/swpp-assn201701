@@ -24,6 +24,8 @@ try:
         username = "test{0}".format(i)
         pwd = "test{0}passwd".format(i)
         res = requests.delete(link, auth=(username, pwd))
+    for i in range(5):
+         requests.delete(user_link, auth=("test{0}".format(i), "newtest{0}passwd".format(i)))
 except Exception:
     pass
 for i in range(userN):
@@ -38,7 +40,7 @@ for i in range(userN):
     upwd="test{0}passwd".format(i)
     get_json_or_error(link_user+uname+"/profile/", uname, upwd)
 print("3. Modify profiles")
-for i in range( userN):
+for i in range(userN):
    uname="test{0}".format(i)
    upwd="test{0}passwd".format(i)
    body={"user":uname.encode("ascii"), 
@@ -48,11 +50,11 @@ for i in range( userN):
           }
    put_or_error(link_user+uname+"/profile/",body,uname, upwd) 
 print("4. Modify passwords")
-for i in range( userN):
+for i in range(userN):
    uname="test{0}".format(i)
    upwd="test{0}passwd".format(i)
    newpwd="newtest{0}passwd".format(i)
-   body={ "username":uname.encode("ascii"),"password":newpwd.encode("ascii")}
+   body={"username":uname.encode("ascii"),"password":newpwd.encode("ascii")}
    put_or_error(link_user+uname+"/", body, uname, upwd)
 print("5. Delete test accounts...")
 for i in range(userN):

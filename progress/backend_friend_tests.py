@@ -28,6 +28,8 @@ try:
         username = "test{0}".format(i)
         pwd = "test{0}passwd".format(i)
         res = requests.delete(link, auth=(username, pwd))
+    for i in range(5):
+         requests.delete(user_link, auth=("test{0}".format(i), "newtest{0}passwd".format(i)))
 except Exception:
     pass
 

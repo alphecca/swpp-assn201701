@@ -7,7 +7,7 @@ import sys
 from time import sleep
 from random import randint
 from backend_ import *
-from frontend import *
+from frontend_ import *
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
@@ -34,6 +34,8 @@ try:
         username = "test{0}".format(i)
         pwd = "test{0}passwd".format(i)
         res = requests.delete(user_link, auth=(username, pwd))
+    for i in range(5):
+         requests.delete(user_link, auth=("test{0}".format(i), "newtest{0}passwd".format(i)))
 except Exception:
     pass
 
@@ -48,6 +50,8 @@ driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동�
 driver2 = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
 driver2.get(frontend_link)
+driver.maximize_window()
+driver2.maximize_window()
 
 print("1. Sign In")
 sleep(delayTime)

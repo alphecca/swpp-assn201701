@@ -9,7 +9,6 @@ from backend_ import *
 
 ####FRONTEND용 패키지들
 from frontend_ import *
-from chat_front import *
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
@@ -35,6 +34,8 @@ try:
         username = "test{0}".format(i)
         pwd = "test{0}passwd".format(i)
         res = requests.delete(user_link, auth=(username, pwd))
+    for i in range(5):
+         requests.delete(user_link, auth=("test{0}".format(i), "newtest{0}passwd".format(i)))
 except Exception:
     pass
 
@@ -47,6 +48,7 @@ print("Frontend initializer ran successfully!")
 ##########################FRONTEND TEST START##############################
 driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
+driver.maximize_window()
 
 # 본격적인 프론트엔드 테스트 시작
 # 로그인 및 로그아웃 테스트
@@ -131,7 +133,7 @@ if(data[0]["text"] != "edit test"):
     print("Edit fail")
     exit(1)
 sleep(delayTime)
-articleVerification(driver, data[0])
+articleVerification(driver, data[0], 0)
 sleep(delayTime)
 driver.find_element_by_id('to_main_page_field').click()
 """

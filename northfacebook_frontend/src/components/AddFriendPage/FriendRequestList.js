@@ -8,8 +8,8 @@ class FriendRequestList extends React.Component {
         console.log(list);
         if (list.length === 0) {
             return (
-                    <div id="mr_list_field" className="MyRequestList">
-                    아, 자네에게 온 요청이 없다우.
+                    <div id="fr_list_field" className="FriendRequestList">
+                    <span id="fr_list_message">아, 자네에게 온 요청이 없다우.</span>
                     </div>
                    )
         }

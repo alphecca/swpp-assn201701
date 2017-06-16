@@ -8,7 +8,6 @@ class CreateRoomPage extends React.Component {
         return (
                 <div className="CreateRoomPage">
                     <SignOut />
-                    <br /> <br /> <br /> <br /> <br /> <br />
                     <CreateRoom />
                 </div>
             )
