@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from homepage.models import *
 from django.db.models import Sum, Q
 import base64
+from django.conf import settings
 
 class UserSerializer(serializers.ModelSerializer):
     '''
@@ -44,8 +45,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         if obj.image0 == None: #TODO 이후 최대 이미지 3장까지 올릴 수 있도록 + 프론트에서 이미지 불러오는 식으로 하고 싶은데 그거 삽질 한 이후에 수정하기
             return imgs
         try:
-            img = open(obj.image0.path, 'rb')
-            imgs.append(base64.b64encode(img.read()))
+            imgs.append('http://'+self.context['domain']+obj.image0.url)
             return imgs
         except ValueError:
             return []
@@ -135,16 +135,19 @@ class WallSerializer(serializers.BaseSerializer):
         likes = Like.objects.filter(owner=obj)
         test = Article.objects.filter(id__in=likes.values('parent_id'))
         total = articles | test
-        serializer = ArticleSerializer(total, many=True)
+        serializer = ArticleSerializer(total, many=True, context=self.context)
         return serializer.data
     class Meta:
         model = User
 
 class ProfileSerializer(serializers.ModelSerializer):
     user= serializers.ReadOnlyField(source='user.username')
+    domain = serializers.SerializerMethodField()
+    def get_domain(self, obj):
+        return 'http://'+self.context['domain']+obj.myimage.url
     class Meta:
         model = Profile
-        fields = ('user','myname','mybelong','myintro')
+        fields = ('user','myname','mybelong','myintro', 'myimage', 'domain')
 
 class FriendSerializer(serializers.ModelSerializer):
     friend = serializers.ReadOnlyField(source='friend.username')

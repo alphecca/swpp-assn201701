@@ -8,7 +8,8 @@ class Profile(models.Model):
 #    owner= models.ForeignKey('auth.User', on_delete=models.CASCADE)
     myname = models.TextField()
     mybelong = models.TextField()
-    myintro = models.TextField(upload_to='profiles/', default='media/profiles/')
+    myintro = models.TextField()
+    myimage = models.ImageField(upload_to='profiles/', default='profiles/defaultImage.jpg')
 
 # 클래스 밖에 정의된 함수입니다 
 def create_profile(sender, instance, created, **kwargs):
