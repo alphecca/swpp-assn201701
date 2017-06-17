@@ -60,7 +60,7 @@ class WallArticle extends React.Component {
                 <div id={componentId} className={css}>
                     {typeLabel()}
                     <img src={this.props.article.owner_img} alt='' id={profileId} className='PROFILEIMG' />
-                    <a id={writerId} className="Link" onClick={() => this.props.onProfileClick(username)}>{username}</a>
+                    <a id={writerId} className="Link" onClick={() => this.props.onProfileClick(username)}><u>{username}</u></a>
                     <hr />
                     <div id={imgId}>
                     {images.map((img) => <img key={"img"+imgId} src={img} alt=""/>)}

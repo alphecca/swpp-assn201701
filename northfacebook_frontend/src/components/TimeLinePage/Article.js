@@ -41,7 +41,7 @@ class Article extends React.Component {
         return (
                 <div id={componentId} className="Article">
                     <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
-                    <a className='Link' id={writerId} onClick={onPostClick}>{username}</a>
+                    <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
                     <hr />
 
                     <div id={imgId}>
@@ -78,7 +78,7 @@ class Article extends React.Component {
         return (
               <div id={componentId} className="ArticleArticle">
                     <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
-                    <a className='Link' id={writerId} onClick={onPostClick}>{username}</a>
+                    <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
                     <hr />
 
                     <div id={imgId}>
@@ -113,7 +113,7 @@ class Article extends React.Component {
         return (
                 <div id={componentId} className="ArticleArticleArticle">
                     <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
-                    <a className='Link' id={writerId} onClick={onPostClick}>{username}</a>
+                    <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
                     <hr />
                     <div id={imgId}>
                     {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img} alt="" /></span>)} ) : null}
