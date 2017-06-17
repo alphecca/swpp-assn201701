@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { toProfile,editArticle, deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
+import { toProfile, editArticle, deleteArticle, writeArticle, postLike, articleDetail } from '../../actions'
 
 class Article extends React.Component {
     render() {
@@ -30,7 +30,9 @@ class Article extends React.Component {
         const updated_time = updated_[1].split(':');
 
         const imgId = 'a'+this.props.article.id+'_images';
-        const images = this.props.article.images
+        const images = this.props.article.images;
+        const profileId = 'a'+this.props.article.id+'_profile_img';
+        const videoId = 'a'+this.props.article.id+'_video';
 
         const onPostClick = ()=>{
             this.props.onPostClick(username);
@@ -39,11 +41,14 @@ class Article extends React.Component {
         if(depth===0){
         return (
                 <div id={componentId} className="Article">
-                    <button id={writerId} onClick={onPostClick}>id: {username}</button>
+                    <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
+                    <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
                     <hr />
-
+                    {this.props.article.youtube_video !== 'None' ?
+                        <iframe id={videoId} width="560" height="315" src={this.props.article.youtube_video} frameBorder="0" allowFullScreen></iframe> : null
+                    }
                     <div id={imgId}>
-                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={"data:image;base64,"+img} alt="" /></span>)} ) : null}
+                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img} alt="" /></span>)} ) : null}
                     </div>
 
                     <div id={textId} className="article_text">
@@ -75,11 +80,14 @@ class Article extends React.Component {
         else if(depth===1){
         return (
               <div id={componentId} className="ArticleArticle">
-                <button id={writerId} onClick={onPostClick}>id: {username}</button>
+                    <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
+                    <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
                     <hr />
-
+                    {this.props.article.youtube_video !== 'None' ?
+                        <iframe id={videoId} width="560" height="315" src={this.props.article.youtube_video} frameBorder="0" allowFullScreen></iframe> : null
+                    }
                     <div id={imgId}>
-                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={"data:image;base64,"+img} alt="" /></span>)} ) : null}
+                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img} alt="" /></span>)} ) : null}
                     </div>
 
                     <div id={textId} className="article_text">
@@ -109,11 +117,14 @@ class Article extends React.Component {
         else{
         return (
                 <div id={componentId} className="ArticleArticleArticle">
-                    <button id={writerId} onClick={onPostClick}>id: {username}</button>
+                    <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
+                    <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
                     <hr />
-
+                    {this.props.article.youtube_video !== 'None' ?
+                        <iframe id={videoId} width="560" height="315" src={this.props.article.youtube_video} frameBorder="0" allowFullScreen></iframe> : null
+                    }
                     <div id={imgId}>
-                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={"data:image;base64,"+img} alt="" /></span>)} ) : null}
+                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img} alt="" /></span>)} ) : null}
                     </div>
 
                     <div id={textId} className="article_text">
@@ -151,9 +162,6 @@ Article.propTypes = {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-      /*
-        onEditClick: (id,text,time) => dispatch(editArticle(id,text)),
-      */
         onDeleteClick: (id) => dispatch(deleteArticle(id)),
         onEditClick: (id, username) => dispatch(editArticle(id, username)),
         onReplyClick: (id) => dispatch(writeArticle(id)),

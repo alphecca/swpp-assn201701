@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {editArticle, deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
+import {toProfile, editArticle, deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
 
 class WallArticle extends React.Component {
     render() {
@@ -30,7 +30,9 @@ class WallArticle extends React.Component {
         const updated_time = updated_[1].split(':');
 
         const imgId = 'a'+this.props.article.id+'_images';
-        const images = this.props.article.images
+        const images = this.props.article.images;
+        const profileId = 'a'+this.props.article.id+'_profile_img';
+        const videoId = 'a'+this.props.article.id+'_video';
 
         const labelId = "a"+this.props.article.id+"_label";
         const current = this.props.current.toString()
@@ -58,10 +60,14 @@ class WallArticle extends React.Component {
         return (
                 <div id={componentId} className={css}>
                     {typeLabel()}
-                    <p id={writerId}>id: {username}</p>
+                    <img src={this.props.article.owner_img} alt='' id={profileId} className='PROFILEIMG' />
+                    <a id={writerId} className="Link" onClick={() => this.props.onProfileClick(username)}><u>{username}</u></a>
                     <hr />
+                    {this.props.article.youtube_video !== 'None' ?
+                        <iframe id={videoId} width="560" height="315" src={this.props.article.youtube_video} frameBorder="0" allowFullScreen></iframe> : null
+                    }
                     <div id={imgId}>
-                    {images.map((img) => <img key={"img"+imgId} src={'data:image;base64,'+img} alt=""/>)}
+                    {images.map((img) => <img key={"img"+imgId} src={img} alt=""/>)}
                     </div>
                     <div id={textId} className="article_text">{articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}</div>
                     <hr />
@@ -105,7 +111,8 @@ let mapDispatchToProps = (dispatch) => {
         onEditClick: (id,text,time) => dispatch(editArticle(id,text)), 
         onReplyClick: (id) => dispatch(writeArticle(id)),
         onLikeClick: (id, auth) => dispatch(postLike(id, auth)),
-        onDetailClick: (id) => dispatch(articleDetail(id))
+        onDetailClick: (id) => dispatch(articleDetail(id)),
+        onProfileClick: (profuser) => dispatch(toProfile(profuser))
     }
 }
 

@@ -9,6 +9,8 @@ class ProfilePage extends React.Component {
                 <div>
                     <SignOut />
                     <div className="TimeLine">
+                        <img id='p_img' src={this.props.profile_myimage} alt='' />
+                        <br />
                         <span>{this.props.profile_user}의 프로필</span>
                         <br />
                         <h2 id="p_name">이름:{this.props.profile_myname}</h2>
@@ -26,18 +28,12 @@ class ProfilePage extends React.Component {
 let mapStateToProps = (state) => {
     return {
         profile_user : state.profile_user !== null ? Object.assign(state.profile_user.user) : null,
-//        profile_user:state.profile_data['user'],//TODO 나중에 내프로필이 아닌 남의 프로필 클릭하면 이거면 안됨
         profile_myname: state.profile_user !== null? Object.assign(state.profile_user.myname): null, 
         profile_mybelong: state.profile_user !== null? Object.assign(state.profile_user.mybelong):null, 
-        profile_myintro: state.profile_user !== null? Object.assign(state.profile_user.myintro): null 
+        profile_myintro: state.profile_user !== null? Object.assign(state.profile_user.myintro): null,
+        profile_myimage: state.profile_user !== null? Object.assign(state.profile_user.domain): null, 
     }
 }
-
-/*let mapDispatchToProps = (dispatch) => {
-    return {
-    }
-}
-*/
 
 export default ProfilePage = connect(mapStateToProps)(ProfilePage);
 
