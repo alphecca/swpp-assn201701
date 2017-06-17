@@ -13,7 +13,7 @@ class SignOut extends React.Component {
                    <button id="sign_out" className="SIGNOUT" onClick={this.props.onLogOut}>나오기</button>
                    <button id="to_my_wall" className="WALLBUTTON" onClick={() => this.props.onToWall(this.props.username)}>담벼락</button>
                    <audio controls loop>
-                     <source id='janggunnim' src='http://wlxyzlw.iptime.org:7777/media/default/defaultBGM.mp3' type='audio/mpeg' />
+                     <source id='janggunnim' src='http://wlxyzlw.iptime.org:8000/media/default/defaultBGM.mp3' type='audio/mpeg' />
                    </audio>
                    </div>
                 </div>
