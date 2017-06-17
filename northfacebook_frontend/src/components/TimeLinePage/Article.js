@@ -30,7 +30,8 @@ class Article extends React.Component {
         const updated_time = updated_[1].split(':');
 
         const imgId = 'a'+this.props.article.id+'_images';
-        const images = this.props.article.images
+        const images = this.props.article.images;
+        const profileId = 'a'+this.props.article.id+'_profile_img';
 
         const onPostClick = ()=>{
             this.props.onPostClick(username);
@@ -39,6 +40,7 @@ class Article extends React.Component {
         if(depth===0){
         return (
                 <div id={componentId} className="Article">
+                    <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
                     <button id={writerId} onClick={onPostClick}>id: {username}</button>
                     <hr />
 

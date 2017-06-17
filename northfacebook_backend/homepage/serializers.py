@@ -70,13 +70,12 @@ class ArticleSerializer(serializers.ModelSerializer):
             return 0
     def get_owner_img(self, obj):
         profile = Profile.objects.get(user=obj.owner)
-        print(profile.myimage.url)
-        return 'http://'+self.context['domain']
+        return 'http://'+self.context['domain']+profile.myimage.url
     class Meta:
         model = Article
         fields = ('id','parent','owner',
         'like_num','depth','text','children_num',
-        'created_time','updated_time', 'images', 'owner_img')
+        'created_time','updated_time', 'images', 'image0', 'owner_img')
 
 # for CHATTING
 class ChatRoomSerializer(serializers.ModelSerializer):
