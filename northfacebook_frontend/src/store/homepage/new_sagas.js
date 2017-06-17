@@ -444,6 +444,63 @@ function *watchLoginState() {
                             return;
                         }
                     }
+                    try {
+                        profile_data = yield call(xhr.get, fixed_url+'users/'+username+'/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
+                            headers: {
+                               'Content-Type': 'application/json',
+                                'Authorization': 'Basic '+ localStorage['auth'],
+                            Accept: 'application/json'
+                           },
+                            responseType: 'json'
+                        });
+                    }
+                    catch(error) {
+                        console.log(error);
+                        if(error.statusCode === 200) {
+                           data = error;
+                        }
+                        else if(error.statusCode === 403) {
+                            alert("담벼락에 오려면 려권을 보여주게나.");
+                           console.log('whyyyyyyyy');
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                        }
+                        else if(error.statusCode === 404) {
+                            console.log("404 Not Found");
+                            console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
+                            alert("없는 장소");
+                            if(localStorage.getItem("auth") === null) {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/'));
+                            } else {
+                                localStorage.removeItem('parent');
+                                yield put(actions.changeUrl('/main/'));
+                            }
+                            return;
+                        }
+                        else if(error.statusCode === 0) {
+                            console.log("Backend is not accessible");
+                            alert("나라에 잠시 사정이 생겼소!");
+                            return;
+                        }
+                        else {
+                            console.log("Whyyyyyyyyyyy");
+                            alert("1조원들을 찾아주게나.");
+                            return;
+                        }
+                    }
+                    console.log(profile_data);
+                    yield put(actions.setState({
+                        authorization: window.atob(localStorage['auth']),
+                        articles: data.body,
+                        parent_article: null,
+                        rooms: [],
+                        texts: [],
+                        chatting_users: [],
+                        room_id: 0,
+                        profile_user: profile_data.body,
+                        //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
+                    }));
                 }
                 else if(path.split("/")[1] === 'profile'){
                     //프로필 정보를 get하는 부분
