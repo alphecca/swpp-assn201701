@@ -15,7 +15,8 @@ const initState = {
     friends: [],
     friend_requests: [],
     my_requests: [],
-    load: 0
+    load: 0,
+    loading: false,
 }
 
 
@@ -37,7 +38,8 @@ describe('homepage reducer', () => {
             friends: [],
             friend_requests: [],
             my_requests: [],
-            load: 0
+            load: 0,
+            loading: false,
         })
     })
     it('should return the signout state', () => {
@@ -74,7 +76,8 @@ describe('homepage reducer', () => {
             friends: [],
             friend_requests: [],
             my_requests: [],
-            load: 0
+            load: 0,
+            loading: false,
         }
 
         expect(homepageApp(undefined, actions.setState(state))).toEqual(state)

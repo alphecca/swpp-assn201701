@@ -6,6 +6,13 @@ import { connect } from 'react-redux'
 
 class ChattingRoomPage extends React.Component {
     render() {
+        if (!this.props.loading) {
+            return (
+                    <div>
+                        <SignOut />
+                    </div>
+                    )
+        }
         return (
                 <div >
                 <SignOut />
@@ -19,6 +26,12 @@ class ChattingRoomPage extends React.Component {
     }
 }
 
+let mapStateToProps = (state) => {
+    return {
+        loading: state.loading,
+    }
+}
+
 let mapDispatchToProps = (dispatch) => {
     return {
         onBackClick: () => dispatch(postBack()),
@@ -26,6 +39,6 @@ let mapDispatchToProps = (dispatch) => {
     }
 }
 
-ChattingRoomPage = connect(undefined, mapDispatchToProps)(ChattingRoomPage)
+ChattingRoomPage = connect(mapStateToProps, mapDispatchToProps)(ChattingRoomPage)
 
 export default ChattingRoomPage

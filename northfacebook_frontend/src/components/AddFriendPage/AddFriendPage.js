@@ -7,6 +7,13 @@ import { connect } from 'react-redux'
 
 class AddFriendPage extends React.Component {
     render() {
+        if (this.props.loading === false) {
+            return (
+                    <div>
+                        <SignOut />
+                    </div>
+                    )
+        }
         const profuserNameId = "fr_"+this.props.profile_user+"_name_field";
         function checkFriend(objList, username) {
             var i;
@@ -111,7 +118,8 @@ let mapStateToProps = (state) => {
                             friend: friend
                         })
                     )
-                )
+                ),
+        loading: state.loading,
     }
 }
 

@@ -5,6 +5,13 @@ import {connect} from 'react-redux';
 
 class WallPage extends React.Component {
     render() {
+        if (!this.props.loading) {
+            return (
+                    <div>
+                        <SignOut />
+                    </div>
+                    )
+        }
         return (
                 <div>
                     <SignOut />
@@ -19,6 +26,7 @@ class WallPage extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
+        loading: state.loading,
         profile_user: state.profile_user !== null ? Object.assign(state.profile_user.username) : null //TODO 이후 프로필 전체 구현 끝나면 수정 예정
     }
 }
