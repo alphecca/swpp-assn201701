@@ -390,16 +390,7 @@ def profile_list(request):
     serializer = ProfileSerializer(Profile.objects.all(), many=True)
     if request.method == 'GET':
         return Response(serializer.data)
-    '''
-    if request.method == 'POST':
-        my_serializer = ProfileSerializer(data=request.data)
-        if Profile.objects.filter(owner=request.user).count()!=0:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        if my_serializer.is_valid():
-            my_serializer.save(owner=request.user)
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-    '''
+
 @api_view(['GET','PUT'])
 def profile(request, username):
     context = {'domain': request.META['HTTP_HOST']}
@@ -420,8 +411,7 @@ def profile(request, username):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         data = request.data
         if 'myimage' in data and data['myimage'] == 'null':
-            image = open('media/profiles/defaultImage.jpg', 'rb')
-            data['myimage'] = File(image)
+            data['myimage'] = File(open('defaultImage.jpg', 'rb'))
         serializer = ProfileSerializer(profile, data=data, context=context)
         if serializer.is_valid():
             serializer.save()

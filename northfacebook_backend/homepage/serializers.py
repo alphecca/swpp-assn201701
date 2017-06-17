@@ -35,6 +35,7 @@ class LikeSerializer(serializers.ModelSerializer):
 
 class ArticleSerializer(serializers.ModelSerializer):
     owner=serializers.ReadOnlyField(source='owner.username')
+    owner_img = serializers.SerializerMethodField()
     parent=serializers.ReadOnlyField(source='parent.id')
     children_num = serializers.SerializerMethodField()
     depth = serializers.SerializerMethodField()
@@ -67,11 +68,15 @@ class ArticleSerializer(serializers.ModelSerializer):
                 return 1
         except:
             return 0
+    def get_owner_img(self, obj):
+        profile = Profile.objects.get(user=obj.owner)
+        print(profile.myimage.url)
+        return 'http://'+self.context['domain']
     class Meta:
         model = Article
         fields = ('id','parent','owner',
         'like_num','depth','text','children_num',
-        'created_time','updated_time', 'images', 'image0')
+        'created_time','updated_time', 'images', 'owner_img')
 
 # for CHATTING
 class ChatRoomSerializer(serializers.ModelSerializer):
