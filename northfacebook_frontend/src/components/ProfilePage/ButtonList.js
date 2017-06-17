@@ -1,6 +1,7 @@
+/* eslint-disable */
 import React from 'react'
 import { connect } from 'react-redux'
-import { gotoFriend, addFriend, gotoWall } from '../../actions'
+import { gotoFriend, addFriend, gotoWall,postSasang,putSasang } from '../../actions'
 import ChangeIntroPage from './ChangeIntroPage.js';
 import ChangePWPage from './ChangePWPage.js';
 import EscapePage from './EscapePage.js';
@@ -17,6 +18,7 @@ class ButtonList extends React.Component{
     render(){
         let curruser= this.props.curruser;
         let profuser= this.props.profuser;
+        let sasangs = this.props.sasangs;
         const onPostClick1 = () => {
             if("\""+curruser+"\"" !== JSON.stringify(profuser))
                alert("남의 려권 입니다.");
@@ -53,6 +55,50 @@ class ButtonList extends React.Component{
         const onPostClick6 = () => {
             this.props.onClick6(profuser);
         }
+        const onPostClick7 = (user) => {
+            this.props.onClick7(user);
+        }
+        const onPostClick8 = (user) => {
+            this.props.onClick8(user);
+        }
+        let ss=[];
+        if("\""+curruser+"\"" !== JSON.stringify(profuser)){
+          if(sasangs.length===0){
+            ss=[
+              <div id="sasang_status">아직 사상검증 않았소</div>,
+              <button id="POST_sasang_button_field" onClick={()=>{onPostClick7(profuser)}}>사상검증</button>,
+            ];
+          }
+          else if(sasangs[0]["first"]===curruser){
+            ss=[
+              <div id="sasang_status">지금까지 총사상검증 횟수는 {sasangs[0]["counter"]}번이오!</div>,
+              <button id="PUT_sasang_button_field" onClick={()=>{onPostClick8(profuser)}}>재사상검증</button>
+            ]
+          }
+          else{
+            ss=[
+              <div id="sasang_status">지금까지 총사상검증 횟수는 {sasangs[0]["counter"]}번이오!</div>,
+              <div id="sasanging">이미 사상검증 중이오!</div>
+            ]
+          }
+        }
+        else{
+          ss=[];
+          if(sasangs.length===0){
+            ss=[<div id="sasang_status">아직 아무도 사상검증 않았소</div>];
+          }
+          for(var i=0;i<sasangs.length;i++){
+            if(sasangs[i].first===curruser){
+              ss.push(<div id={"sasang_status_"+i}>지금까지 {sasangs[i].second}와 총사상검증 횟수는 {sasangs[i]["counter"]}번이오!</div>);
+              var user=sasangs[i].second;
+              ss.push(<button id={"PUT_sasang_button_field"+i} onClick={()=>{onPostClick8(user)}}>재사상검증</button>);
+            }
+            else{
+              ss.push(<div id={"sasang_status_"+i}>지금까지 {sasangs[i].first}와 총사상검증 횟수는 {sasangs[i]["counter"]}번이오!</div>);
+              ss.push(<div id={"sasanging_"+i}>이미 사상검증 중이오!</div>);
+            }
+          }
+        }
         return(
             <div>
                <div id="profile_photo_field">
@@ -77,6 +123,9 @@ class ButtonList extends React.Component{
                <div id="goto_wall_field">
                    <button id="goto_wall_button_field" onClick={onPostClick6}>담벼락 보기</button>
                </div>
+               <div id="test">
+                  {ss}
+               </div>
             </div>
         );
     }
@@ -85,7 +134,8 @@ class ButtonList extends React.Component{
 let mapStateToProps = (state) => {
     return{
         curruser: Object.assign(state.authorization).split(":")[0],
-        profuser: state.profile_user !== null ? Object.assign(state.profile_user.user) : null
+        profuser: state.profile_user !== null ? Object.assign(state.profile_user.user) : null,
+        sasangs : Object.assign(state.sasangs)//!==null?Object.assign(state.sasangs):null
     }
 }
 
@@ -96,7 +146,9 @@ let mapDispatchToProps = (dispatch) => {
 //        onClick3: () => dispatch(toEscape()),
         onClick4: (profuser) => dispatch(gotoFriend(profuser)),
         onClick5: (profuser) => dispatch(addFriend(profuser)),
-        onClick6: (profuser) => dispatch(gotoWall(profuser))
+        onClick6: (profuser) => dispatch(gotoWall(profuser)),
+        onClick7: (user) => dispatch(postSasang(user)),
+        onClick8: (user) => dispatch(putSasang(user))
     }
 }
 export default ButtonList = connect(mapStateToProps, mapDispatchToProps)(ButtonList)
