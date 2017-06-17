@@ -919,7 +919,7 @@ function *watchGoToMain() {
 function *watchPostArticle() {
     while(true) {
         const data = yield take('ADD_ARTICLE');
-        yield call(postArticle, data.text, data.images);
+        yield call(postArticle, data.text, data.images, data.url);
     }
 }
 
@@ -952,7 +952,7 @@ function *watchPutArticle(id){
         console.log("in watchPutArticle...");
         const data = yield take('PUT_ARTICLE');
         console.log("text: "+data.text);
-        yield call(putArticle, id, data.text, data.removeImg, data.images);
+        yield call(putArticle, id, data.text, data.removeImg, data.images, data.removeUrl, data.url);
     }
 }
 
@@ -1209,10 +1209,13 @@ function *postLike(id) {
 
 // postArticle: 새로운 글/댓글을 쓰는 함수
 // TODO 임시로 메인페이지로 돌아가게 만들었는데 이거 나중에 로컬스토리지에 어트리뷰트 하나 추가해서 구현하심 될 듯
-function *postArticle(text, images) {
+function *postArticle(text, images, url) {
     console.log(images);
     let form = new FormData();
     form.append('text', text);
+    if(url === null || url === '')
+        url = 'None';
+    form.append('youtube_video', url);
     if(images === null || images === undefined || images.length === 0)
         console.log("No image")
     else
@@ -1290,7 +1293,7 @@ function *deleteArticle(id){
 
 // putArticle: 자신이 쓴 글을 수정하는 함수
 // TODO 업로드된 사진 수정 가능하게 만들기
-function *putArticle(id, text, removeImg, images){
+function *putArticle(id, text, removeImg, images, removeUrl, url){
     const path = 'article/'+id+'/';
     console.log("in editArticle[path]: "+path);
     let form = new FormData();
@@ -1304,6 +1307,18 @@ function *putArticle(id, text, removeImg, images){
     else
         if (images !== null && images !== undefined && images.length !== 0)
             form.append('image0', images[0]);
+
+    if(removeUrl === true) {
+        if(url === null || url === '' || url === 'null') {
+            alert(url);
+            form.append('youtube_video', 'None');
+        }
+        else
+            form.append('youtube_video', url);
+    }
+    else
+        if(url !== null && url !== '')
+            form.append('youtube_video', url);
     //TODO 이후에는 여러개 처리 가능하도록
     try {
         yield call(xhr.send, fixed_url + path, {

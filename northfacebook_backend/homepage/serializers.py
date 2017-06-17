@@ -75,7 +75,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         model = Article
         fields = ('id','parent','owner',
         'like_num','depth','text','children_num',
-        'created_time','updated_time', 'images', 'image0', 'owner_img')
+        'created_time','updated_time', 'images', 'image0', 'owner_img', 'youtube_video')
 
 # for CHATTING
 class ChatRoomSerializer(serializers.ModelSerializer):
