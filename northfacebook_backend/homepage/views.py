@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.core.files import File
 from django.contrib.auth.models import User
 from django.db.models import Q
 from homepage.models import *
@@ -17,14 +17,15 @@ import re
 
 @api_view(['GET', 'POST'])
 def main_list(request):
+    context = {'domain': request.META['HTTP_HOST']}
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         articles = Article.objects.filter(parent=0)
-        serializer = ArticleSerializer(articles, many=True)
+        serializer = ArticleSerializer(articles, many=True, context=context)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = ArticleSerializer(data=request.data)
+        serializer = ArticleSerializer(data=request.data, context=context)
         if serializer.is_valid():
             serializer.save(owner=request.user)
             return Response(status=status.HTTP_201_CREATED)
@@ -32,14 +33,15 @@ def main_list(request):
 
 @api_view(['GET', 'POST'])
 def article_list(request):
+    context = {'domain': request.META['HTTP_HOST']}
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         articles = Article.objects.all()
-        serializer = ArticleSerializer(articles, many=True)
+        serializer = ArticleSerializer(articles, many=True, context=context)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = ArticleSerializer(data=request.data)
+        serializer = ArticleSerializer(data=request.data, context=context)
         if serializer.is_valid():
             serializer.save(owner=request.user)
             return Response(status=status.HTTP_201_CREATED)
@@ -48,6 +50,7 @@ def article_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def article_detail(request, pk):
+    context = {'domain': request.META['HTTP_HOST']}
     try:
         article = Article.objects.get(pk=pk)
     except Article.DoesNotExist:
@@ -55,13 +58,13 @@ def article_detail(request, pk):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
-        serializer = ArticleSerializer(article)
+        serializer = ArticleSerializer(article, context=context)
         return Response(serializer.data)
     elif request.method == 'PUT':
         if article.owner == request.user:
             if "image0" in request.data and request.data["image0"] == 'null':
                 request.data["image0"] = None
-            serializer = ArticleSerializer(article,data=request.data)
+            serializer = ArticleSerializer(article,data=request.data, context=context)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -148,6 +151,7 @@ def user_nonchat(request,username):
 
 @api_view(['GET','POST'])
 def article_article(request,pk):
+    context = {'domain': request.META['HTTP_HOST']}
     try:
         article = Article.objects.get(pk=pk)
     except Article.DoesNotExist:
@@ -156,10 +160,10 @@ def article_article(request,pk):
         return Response(status=status.HTTP_403_FORBIDDEN)
     articlearticle = Article.objects.filter(parent=article.id)
     if request.method == 'GET':
-        serializer = ArticleSerializer(articlearticle,many=True)
+        serializer = ArticleSerializer(articlearticle,many=True, context=context)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = ArticleSerializer(data=request.data)
+        serializer = ArticleSerializer(data=request.data, context=context)
         if serializer.is_valid():
             serializer.save(owner=request.user,parent=article)
             return Response(status=status.HTTP_201_CREATED)
@@ -167,6 +171,7 @@ def article_article(request,pk):
 
 @api_view(['GET'])
 def total_article(request,pk):
+    context = {'domain': request.META['HTTP_HOST']}
     try:
         article = Article.objects.get(pk=pk)
     except Article.DoesNotExist:
@@ -179,7 +184,7 @@ def total_article(request,pk):
         QS=QS|Q(parent=aa.id)
     ta=Article.objects.filter(QS)
     if request.method == 'GET':
-        serializer = ArticleSerializer(ta,many=True)
+        serializer = ArticleSerializer(ta,many=True, context=context)
         return Response(serializer.data)
 
 
@@ -252,12 +257,6 @@ def user_detail(request, username):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
 
-"""
-class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-# permission_classes = ()
-"""
 # for CHATTING
 @api_view(['GET', 'POST'])
 def chatroom_list(request):
@@ -373,12 +372,13 @@ def text(request, pk):
 #####담벼락#####
 @api_view(['GET'])
 def wall(request, username):
+    context = {'domain': request.META['HTTP_HOST']}
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         try:
             owner = User.objects.get(username=username)
-            serializer = WallSerializer(owner)
+            serializer = WallSerializer(owner, context=context)
             return Response(serializer.data)
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -390,18 +390,10 @@ def profile_list(request):
     serializer = ProfileSerializer(Profile.objects.all(), many=True)
     if request.method == 'GET':
         return Response(serializer.data)
-    '''
-    if request.method == 'POST':
-        my_serializer = ProfileSerializer(data=request.data)
-        if Profile.objects.filter(owner=request.user).count()!=0:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        if my_serializer.is_valid():
-            my_serializer.save(owner=request.user)
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-    '''
+
 @api_view(['GET','PUT'])
 def profile(request, username):
+    context = {'domain': request.META['HTTP_HOST']}
     if request.user.id == None:
         return Response(status= status.HTTP_403_FORBIDDEN)
     try:
@@ -412,12 +404,15 @@ def profile(request, username):
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        serializer=ProfileSerializer(profile)
+        serializer=ProfileSerializer(profile, context=context)
         return Response(serializer.data)
     if request.method == 'PUT':
         if profile.user!= request.user:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        serializer = ProfileSerializer(profile,data=request.data)
+        data = request.data
+        if 'myimage' in data and data['myimage'] == 'null':
+            data['myimage'] = File(open('media/default/defaultImage.jpg', 'rb'))
+        serializer = ProfileSerializer(profile, data=data, context=context)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
