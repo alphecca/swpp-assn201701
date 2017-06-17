@@ -30,7 +30,8 @@ class WallArticle extends React.Component {
         const updated_time = updated_[1].split(':');
 
         const imgId = 'a'+this.props.article.id+'_images';
-        const images = this.props.article.images
+        const images = this.props.article.images;
+        const profileId = 'a'+this.props.article.id+'_profile_img';
 
         const labelId = "a"+this.props.article.id+"_label";
         const current = this.props.current.toString()
@@ -58,6 +59,7 @@ class WallArticle extends React.Component {
         return (
                 <div id={componentId} className={css}>
                     {typeLabel()}
+                    <img src={this.props.article.owner_img} alt='' id={profileId} className='PROFILEIMG' />
                     <p id={writerId}>id: {username}</p>
                     <hr />
                     <div id={imgId}>
