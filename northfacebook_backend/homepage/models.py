@@ -9,7 +9,7 @@ class Profile(models.Model):
     myname = models.TextField()
     mybelong = models.TextField()
     myintro = models.TextField()
-    myimage = models.ImageField(upload_to='profiles/', default='defaultImage.jpg')
+    myimage = models.ImageField(upload_to='profiles/', default='default/defaultImage.jpg')
 
 # 클래스 밖에 정의된 함수입니다 
 def create_profile(sender, instance, created, **kwargs):

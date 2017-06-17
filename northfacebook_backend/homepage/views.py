@@ -411,7 +411,7 @@ def profile(request, username):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         data = request.data
         if 'myimage' in data and data['myimage'] == 'null':
-            data['myimage'] = File(open('defaultImage.jpg', 'rb'))
+            data['myimage'] = File(open('media/default/defaultImage.jpg', 'rb'))
         serializer = ProfileSerializer(profile, data=data, context=context)
         if serializer.is_valid():
             serializer.save()
