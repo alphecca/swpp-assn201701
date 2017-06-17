@@ -36,7 +36,8 @@ class Article(models.Model):
     children_num = models.IntegerField(default=0)
     like_num = models.IntegerField(default=0)
     depth = models.IntegerField(default=0)
-    image0 = models.ImageField(upload_to='articles/', null=True, blank=True, default=None) #TODO 최대 짤 3개까지 올릴 수 있도록
+    image0 = models.ImageField(upload_to='articles/', null=True, blank=True, default=None)
+    youtube_video = models.TextField(default='None')
     class Meta:
         ordering = ['-created_time']
 

@@ -32,6 +32,7 @@ class WallArticle extends React.Component {
         const imgId = 'a'+this.props.article.id+'_images';
         const images = this.props.article.images;
         const profileId = 'a'+this.props.article.id+'_profile_img';
+        const videoId = 'a'+this.props.article.id+'_video';
 
         const labelId = "a"+this.props.article.id+"_label";
         const current = this.props.current.toString()
@@ -62,6 +63,9 @@ class WallArticle extends React.Component {
                     <img src={this.props.article.owner_img} alt='' id={profileId} className='PROFILEIMG' />
                     <a id={writerId} className="Link" onClick={() => this.props.onProfileClick(username)}><u>{username}</u></a>
                     <hr />
+                    {this.props.article.youtube_video !== 'None' ?
+                        <iframe id={videoId} width="560" height="315" src={this.props.article.youtube_video} frameBorder="0" allowFullScreen></iframe> : null
+                    }
                     <div id={imgId}>
                     {images.map((img) => <img key={"img"+imgId} src={img} alt=""/>)}
                     </div>
