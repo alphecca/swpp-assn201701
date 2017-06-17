@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {editArticle, deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
+import {toProfile, editArticle, deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
 
 class WallArticle extends React.Component {
     render() {
@@ -60,7 +60,7 @@ class WallArticle extends React.Component {
                 <div id={componentId} className={css}>
                     {typeLabel()}
                     <img src={this.props.article.owner_img} alt='' id={profileId} className='PROFILEIMG' />
-                    <p id={writerId}>id: {username}</p>
+                    <a id={writerId} className="Link" onClick={() => this.props.onProfileClick(username)}>{username}</a>
                     <hr />
                     <div id={imgId}>
                     {images.map((img) => <img key={"img"+imgId} src={img} alt=""/>)}
@@ -107,7 +107,8 @@ let mapDispatchToProps = (dispatch) => {
         onEditClick: (id,text,time) => dispatch(editArticle(id,text)), 
         onReplyClick: (id) => dispatch(writeArticle(id)),
         onLikeClick: (id, auth) => dispatch(postLike(id, auth)),
-        onDetailClick: (id) => dispatch(articleDetail(id))
+        onDetailClick: (id) => dispatch(articleDetail(id)),
+        onProfileClick: (profuser) => dispatch(toProfile(profuser))
     }
 }
 

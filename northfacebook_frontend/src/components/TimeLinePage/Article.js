@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { toProfile,editArticle, deleteArticle, writeArticle, postLike, articleDetail} from '../../actions'
+import { toProfile, editArticle, deleteArticle, writeArticle, postLike, articleDetail } from '../../actions'
 
 class Article extends React.Component {
     render() {
@@ -41,7 +41,7 @@ class Article extends React.Component {
         return (
                 <div id={componentId} className="Article">
                     <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
-                    <button id={writerId} onClick={onPostClick}>id: {username}</button>
+                    <a className='Link' id={writerId} onClick={onPostClick}>{username}</a>
                     <hr />
 
                     <div id={imgId}>
@@ -77,11 +77,12 @@ class Article extends React.Component {
         else if(depth===1){
         return (
               <div id={componentId} className="ArticleArticle">
-                <button id={writerId} onClick={onPostClick}>id: {username}</button>
+                    <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
+                    <a className='Link' id={writerId} onClick={onPostClick}>{username}</a>
                     <hr />
 
                     <div id={imgId}>
-                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={"data:image;base64,"+img} alt="" /></span>)} ) : null}
+                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img} alt="" /></span>)} ) : null}
                     </div>
 
                     <div id={textId} className="article_text">
@@ -111,11 +112,11 @@ class Article extends React.Component {
         else{
         return (
                 <div id={componentId} className="ArticleArticleArticle">
-                    <button id={writerId} onClick={onPostClick}>id: {username}</button>
+                    <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
+                    <a className='Link' id={writerId} onClick={onPostClick}>{username}</a>
                     <hr />
-
                     <div id={imgId}>
-                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={"data:image;base64,"+img} alt="" /></span>)} ) : null}
+                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img} alt="" /></span>)} ) : null}
                     </div>
 
                     <div id={textId} className="article_text">
