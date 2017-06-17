@@ -11,7 +11,8 @@ const homepageInitialState = {
     friends: [],
     friend_requests: [],
     my_requests: [],
-    load : 0
+    load : 0,
+    sasangs : []
 };
 
 const homepage = (state = homepageInitialState, action) => {
@@ -58,6 +59,7 @@ const homepage = (state = homepageInitialState, action) => {
                 friends: action.state.friends,
 		        friend_requests: action.state.friend_requests,
                 my_requests: action.state.my_requests,
+                sasangs : action.state.sasangs
             })
         }
         case 'ARTICLE_DETAIL': {

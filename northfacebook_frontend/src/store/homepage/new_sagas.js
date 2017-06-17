@@ -5,7 +5,7 @@ import * as actions from './../../actions'
 var xhr = require('xhr-promise-redux');
 
 //TODO 개인적으로 테스트할 때는 포트번호를 바꾸자. 풀리퀘를 날릴 때는 URL을 확인할 것
-const fixed_url = /*"http://localhost:8000/";*/"http://wlxyzlw.iptime.org:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
+const fixed_url = /*"http://localhost:8000/";*/"http://wlxyzlw.iptime.org:8808/"; //포오오오트으으으버어어어언호오오오 확이이이인
 //const fixed_url = "http://wlxyzlw.iptime.org:7777/";
 const auth_check_url = fixed_url+'auth/';
 
@@ -204,6 +204,8 @@ function *profilePageSaga() {
     yield spawn(watchGoToFriend);
     yield spawn(watchAddFriend);
     yield spawn(watchGoToWall);
+    yield spawn(watchPostSasang);
+    yield spawn(watchPutSasang);
 }
 
 function *friendPageSaga() {
@@ -230,9 +232,6 @@ function *addFriendPageSaga() {
 // <<주의>> 새로운 Page를 추가할 경우 PageSaga함수에 반드시 추가할 것
 // <<주의>> 새로운 state를 추가할 경우 try-catch문을 이용해 정보를 받아온 후 스테이트에 업데이트 해야 함
 function *watchLoginState() {
-    console.log("Prev Auth: "+localStorage.getItem("auth"));
-    console.log("Prev Parent: "+localStorage.getItem("parent"))
-    console.log(window.location.pathname[window.location.pathname.length-1]);
     if(window.location.pathname[window.location.pathname.length-1] !== '/') {
         yield put(actions.changeUrl(window.location.pathname+'/'));
         return;
@@ -250,7 +249,6 @@ function *watchLoginState() {
         }
         else {
             const path = window.location.pathname;
-	        console.log(path);
             let data, parent_data;
             if(path === '/main/' || path === '/write/') { // 여기가 바로 하드코딩된 부분입니다 여러분!
                 localStorage.removeItem('parent');
@@ -307,6 +305,7 @@ function *watchLoginState() {
                     texts: [],
                     chatting_users: [],
                     room_id: 0,
+                    sasangs:[],
                     //load : 0
                     //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                 }));
@@ -367,6 +366,7 @@ function *watchLoginState() {
                     chatting_users: [],
                     room_id: 0,
                     profile_user: null,
+                    sasangs:[]
                     // load: 0,
                     // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
                 }));
@@ -377,6 +377,7 @@ function *watchLoginState() {
                 let profile_data = null;
                 let friend_data = null;
                 let my_data = null;
+                let sasangs = null;
                 if (username === undefined || username === '') {
                     console.log("404 not found");
                     alert("없는 장소");
@@ -443,63 +444,6 @@ function *watchLoginState() {
                             return;
                         }
                     }
-                    try {
-                        profile_data = yield call(xhr.get, fixed_url+'users/'+username+'/', { //TODO 이후 프로필 페이지 완성 시 프로필이 들어갈 거에요
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': 'Basic '+ localStorage['auth'],
-                            Accept: 'application/json'
-                            },
-                            responseType: 'json'
-                        });
-                    }
-                    catch(error) {
-                        console.log(error);
-                        if(error.statusCode === 200) {
-                            data = error;
-                        }
-                        else if(error.statusCode === 403) {
-                            alert("담벼락에 오려면 려권을 보여주게나.");
-                            console.log('whyyyyyyyy');
-                            localStorage.removeItem('auth');
-                            localStorage.removeItem('parent');
-                        }
-                        else if(error.statusCode === 404) {
-                            console.log("404 Not Found");
-                            console.log("안심하세요, 이 오류는 Unknown Error가 아닙니다.");
-                            alert("없는 장소");
-                            if(localStorage.getItem("auth") === null) {
-                                localStorage.removeItem('parent');
-                                yield put(actions.changeUrl('/'));
-                            } else {
-                                localStorage.removeItem('parent');
-                                yield put(actions.changeUrl('/main/'));
-                            }
-                            return;
-                        }
-                        else if(error.statusCode === 0) {
-                            console.log("Backend is not accessible");
-                            alert("나라에 잠시 사정이 생겼소!");
-                            return;
-                        }
-                        else {
-                            console.log("Whyyyyyyyyyyy");
-                            alert("1조원들을 찾아주게나.");
-                            return;
-                        }
-                    }
-                    console.log(profile_data);
-                    yield put(actions.setState({
-                        authorization: window.atob(localStorage['auth']),
-                        articles: data.body,
-                        parent_article: null,
-                        rooms: [],
-                        texts: [],
-                        chatting_users: [],
-                        room_id: 0,
-                        profile_user: profile_data.body,
-                        //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
-                    }));
                 }
                 else if(path.split("/")[1] === 'profile'){
                     //프로필 정보를 get하는 부분
@@ -512,6 +456,14 @@ function *watchLoginState() {
                             Accept: 'application/json'
                             },
                             responseType: 'json'
+                         });
+                         sasangs = yield call(xhr.get, fixed_url+'users/'+username+'/sasang/',{
+                            headers:{
+                                'Content-Type':'application/json',
+                                'Authorization':'Basic '+localStorage['auth'],
+                            Accept: 'application/json'
+                            },
+                            responseType:'json'
                          });
                          console.log('Get data without exception');
                     }catch(error){
@@ -548,7 +500,8 @@ function *watchLoginState() {
                         chatting_users: [],
                         room_id: 0,
                         profile_user: profile_data.body,
-                                        }));
+                        sasangs:sasangs.body
+                    }));
                 }
                 else if(path.split("/")[1] === 'friend'){
                     //프로필 정보를 get하는 부분
@@ -837,8 +790,6 @@ function *watchLoginState() {
         }
     }
     console.log(yield select());
-    //console.log('Curr Auth: '+localStorage['auth']);
-    console.log('Curr Parent: '+localStorage['parent']);
 }
 
 // watchSignIn: 로그인 버튼 클릭 관찰
@@ -1072,7 +1023,18 @@ function *watchDeleteAddFriend() {
         yield call(deleteAddFriend, data.profuser);
     }
 }
-
+function *watchPostSasang() {
+    while(true) {
+        const data = yield take('POST_SASANG');
+        yield call(postSasang, data.profuser);
+    }
+}
+function *watchPutSasang() {
+    while(true) {
+        const data = yield take('PUT_SASANG');
+        yield call(putSasang, data.profuser);
+    }
+}
 ///// Page별 saga함수에서 쓸 saga함수 (그 외)
 // signIn: 백엔드에 get을 날리는 함수
 function *signIn(data) {
@@ -1798,4 +1760,72 @@ function *deleteAddFriend(profuser) {
         }
     }
 }
+function *postSasang(profuser) {
+    const path = 'users/'+profuser+'/sasang/';
+    try{
+        yield call(xhr.post, fixed_url+path,{
+            headers:{
+                'Authorization': 'Basic '+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType:'json'
+        });
+      yield put(actions.changeUrl(window.location.pathname));
+    }
+    catch(error) {
+        console.log(error);
+        if(error.statusCode === 201) {
+            console.log("post Sasang success!");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else if(error.statusCode === 0) {
+            alert("나라에 문제가 있소.");
+        }
+        else if(error.statusCode === 404) {
+            alert("이런 려권은 없소.");
+        }
+        else if(error.statusCode === 405) {
+            alert("사상검증 중이오");
+        }
+        else {
+          alert("1조를 찾아줘");
+        }
+    }
+}
 
+function *putSasang(profuser) {
+    const path = 'users/'+profuser+'/sasang/';
+    try{
+        yield call(xhr.send, fixed_url+path,{
+            method: 'PUT',
+            headers:{
+                'Authorization': 'Basic '+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType:'json'
+        });
+      console.log("sasang succeed!!!");
+      yield put(actions.changeUrl(window.location.pathname));
+    }
+    catch(error){
+      console.log(error);
+      if(error.statusCode === 201) {
+          console.log("post Sasang success!");
+          yield put(actions.changeUrl(window.location.pathname));
+      }
+      else if(error.statusCode === 0) {
+          alert("나라에 문제가 있소.");
+      }
+      else if(error.statusCode === 404) {
+          alert("이런 려권은 없소.");
+      }
+      else if(error.statusCode === 405) {
+          alert("사상검증 중이오");
+      }
+      else {
+        alert("1조를 찾아줘");
+      }
+    }
+}
