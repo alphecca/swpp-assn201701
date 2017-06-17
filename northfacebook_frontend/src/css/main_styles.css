@@ -318,6 +318,15 @@
     background: url("./login_logo.png") no-repeat;
     background-size: contain;
 }
+/* 프로필 사진 크기 조정 */
+.PROFILEIMG{
+    width: 50px;
+}
+
+#p_img{
+    width: 200px;
+}
+
 /* 일반적인 버튼 및 textarea등 태그에 대한 css */
 textarea{
   font-size: 20px;

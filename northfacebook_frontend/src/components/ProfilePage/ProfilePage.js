@@ -9,7 +9,7 @@ class ProfilePage extends React.Component {
                 <div>
                     <SignOut />
                     <div className="TimeLine">
-                        <img src={this.props.profile_myimage} alt='' />
+                        <img id='p_img' src={this.props.profile_myimage} alt='' />
                         <br />
                         <span>{this.props.profile_user}의 프로필</span>
                         <br />
