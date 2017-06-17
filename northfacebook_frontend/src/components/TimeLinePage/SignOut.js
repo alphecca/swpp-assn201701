@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {signOut, changeUrl} from '../../actions'
 
 class SignOut extends React.Component {
+    //TODO 커밋 전에는 portnum 8000으로 수정
     render() {
         return (
                 <div className="ToolBar" >
@@ -11,8 +12,8 @@ class SignOut extends React.Component {
                    <span id="user_data_field"><a id="to_my_profile" className="Link" onClick={ () => this.props.onToProfile(this.props.username) }><u>{this.props.username}</u></a> 동무 어서오시오!</span>
                    <button id="sign_out" className="SIGNOUT" onClick={this.props.onLogOut}>나오기</button>
                    <button id="to_my_wall" className="WALLBUTTON" onClick={() => this.props.onToWall(this.props.username)}>담벼락</button>
-                   <audio controls>
-                     <source src='' type='audio/mpeg' />
+                   <audio controls loop>
+                     <source id='janggunnim' src='http://wlxyzlw.iptime.org:7777/media/default/defaultBGM.mp3' type='audio/mpeg' />
                    </audio>
                    </div>
                 </div>
