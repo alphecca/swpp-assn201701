@@ -43,6 +43,7 @@ class Article(models.Model):
 
 class Chat(models.Model):
     room_name = models.TextField()
+    secret = models.BooleanField(default=False)
     chatuser_num = models.IntegerField(default=0)
 
 class ChatUser(models.Model):

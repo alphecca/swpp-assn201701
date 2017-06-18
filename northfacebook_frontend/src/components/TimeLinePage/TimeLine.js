@@ -1,6 +1,6 @@
 import React from 'react'
 import ArticleList from './ArticleList.js'
-import {moreArticle,writeArticle, showChattingRoom} from '../../actions'
+import {moreArticle,writeArticle} from '../../actions'
 import {connect} from 'react-redux'
 import AddArticle from '../AddArticlePage/AddArticle.js';
 var re=0;
@@ -29,7 +29,6 @@ class TimeLine extends React.Component {
 TimeLine = connect(undefined, (dispatch) => {
   return {
     onWriteClick: () => dispatch(writeArticle(null)),
-    onChatClick: () => dispatch(showChattingRoom(null)),
     onMoreClick: () => dispatch(moreArticle())
   }
 })(TimeLine)

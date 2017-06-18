@@ -85,7 +85,7 @@ class ChatRoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chat
-        fields = ('id','user_num', 'room_name')
+        fields = ('id', 'user_num', 'room_name', 'secret')
 
 class NowChatSerializer(serializers.BaseSerializer):
     def to_representation(self, obj):
