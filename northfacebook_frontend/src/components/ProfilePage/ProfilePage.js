@@ -5,6 +5,13 @@ import {connect} from 'react-redux';
 
 class ProfilePage extends React.Component {
     render() {
+        if (!this.props.loading) {
+            return (
+                    <div>
+                        <SignOut />
+                    </div>
+                    )
+        }
         return (
                 <div>
                     <SignOut />
@@ -27,6 +34,7 @@ class ProfilePage extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
+        loading: state.loading,
         profile_user : state.profile_user !== null ? Object.assign(state.profile_user.user) : null,
         profile_myname: state.profile_user !== null? Object.assign(state.profile_user.myname): null, 
         profile_mybelong: state.profile_user !== null? Object.assign(state.profile_user.mybelong):null, 

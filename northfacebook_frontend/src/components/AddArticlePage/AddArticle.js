@@ -51,7 +51,9 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
    return {
-      onClick: (id, text, images, url) => dispatch(addArticle(id, text, images, url)),
+      onClick: (id, text, images, url) => {
+                   dispatch(addArticle(id, text, images, url))
+               },
    }
 }
 

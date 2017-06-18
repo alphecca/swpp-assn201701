@@ -20,11 +20,11 @@ class ChangeIntroPage extends React.Component{
             <div className="TimeLine">
                 <span>{this.props.profile_user}동무는 누구인가?</span>
                 <br />
-                이름<input type="myname" ref={node=>{this.myname = node;} } id="myname" className="field" />
+                이름<input type="myname" placeholder={this.props.myname}  ref={node=>{this.myname = node;} } id="myname" className="field" />
                 <br />
                 소속<input type="mybelong"ref={node=>{this.mybelong = node;} } id="mybelong" className="field" />
                 <br />
-                소개<input type="myintro" ref={node=>{this.myintro = node;} } id="myintro" className="field" />
+                소개<input type="myintro" placeholder={this.props.myintro} ref={node=>{this.myintro = node;} } id="myintro" className="field" />
                 <br />
                 {this.state.removeImg ?
                     null : <button id='remove_myimage' onClick={() => this.setState({removeImg:true})} className='field'>기본 사진으로 하겠소!</button>}
