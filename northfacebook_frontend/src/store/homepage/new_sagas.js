@@ -121,6 +121,7 @@ function *mainPageSaga() {
     yield spawn(watchDelete);
     yield spawn(watchChattingRoom);
     yield spawn(watchToProfile);
+    yield spawn(watchPostArticle);
 }
 
 function *articleDetailPageSaga() {
@@ -134,6 +135,7 @@ function *articleDetailPageSaga() {
     yield spawn(watchEdit);
     yield spawn(watchDelete);
     yield spawn(watchToProfile);
+    yield spawn(watchPostArticle);
 }
 
 function *writePageSaga() {
@@ -948,6 +950,7 @@ function *watchEdit(){
             alert("당신의 글이 아니오.");
             continue;
         }
+//	console.log("사가에서 data.id= "+data.id);
         yield put(actions.changeUrl('/edit/'+data.id+'/'));
     }
 }
@@ -959,6 +962,7 @@ function *watchPutArticle(id){
         console.log("in watchPutArticle...");
         const data = yield take('PUT_ARTICLE');
         console.log("text: "+data.text);
+//	console.log("$id: "+data.id); 왜지?!?!?!?!?!
         yield call(putArticle, id, data.text, data.removeImg, data.images, data.removeUrl, data.url);
     }
 }

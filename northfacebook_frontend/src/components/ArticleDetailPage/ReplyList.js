@@ -1,6 +1,7 @@
 import React from 'react'
 import Article from '../TimeLinePage/Article.js'
 import {connect} from 'react-redux'
+import AddArticle from '../AddArticlePage/AddArticle.js';
 
 class ReplyList extends React.Component {
     render() {
@@ -29,6 +30,7 @@ class ReplyList extends React.Component {
                 <div id="reply_list_field">
                 <p>Reply List</p>
                 {rendered_list.map(article => <Article key={article.id} id={"r"+article.id+"_field"} {...article}/>)}
+		<AddArticle />
                 </div>
                )
     }
