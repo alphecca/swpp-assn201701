@@ -264,6 +264,11 @@ def chatroom_list(request):
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         chat = Chat.objects.all()
+        for room in chat:
+            roomuser = ChatUser.objects.filter(chatroom=room.id) #TODO
+            if not roomuser.exists():
+                room.delete()
+        chat = Chat.objects.all()
         serializer = ChatRoomSerializer(chat, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
