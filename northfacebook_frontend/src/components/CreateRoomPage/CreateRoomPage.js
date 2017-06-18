@@ -1,10 +1,17 @@
 import React from 'react'
 import CreateRoom from './CreateRoom.js'
 import SignOut from '../TimeLinePage/SignOut.js'
+import { connect } from 'react-redux'
 
 class CreateRoomPage extends React.Component {
     render() {
-        // TODO <br />은 나중에 지워주시고 styles.css를 수정해 주세요.
+        if (!this.props.loading) {
+            return (
+                    <div>
+                        <SignOut />
+                    </div>
+                    )
+        }
         return (
                 <div className="CreateRoomPage">
                     <SignOut />
@@ -13,5 +20,13 @@ class CreateRoomPage extends React.Component {
             )
         }
 }
+
+let mapStateToProps = (state) => {
+    return {
+        loading: state.loading,
+    }
+}
+
+CreateRoomPage = connect(mapStateToProps)(CreateRoomPage);
 
 export default CreateRoomPage;

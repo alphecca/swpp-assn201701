@@ -5,6 +5,16 @@ import {signOut, changeUrl} from '../../actions'
 class SignOut extends React.Component {
     //TODO 커밋 전에는 portnum 8000으로 수정
     render() {
+        if (!this.props.loading) {
+            return (
+                <div className="ToolBar" >
+                   <div className="Notif">
+                   <button id="to_main_page_field" className="TOMAIN" onClick={this.props.onBackClick}/>
+                   <span id="user_data_field">불러오는 중...</span>
+                   </div>
+                </div>
+                    )
+        }
         return (
                 <div className="ToolBar" >
                    <div className="Notif">
@@ -26,6 +36,7 @@ class SignOut extends React.Component {
 let mapStateToProps = (state) => {
     return {
         username: state.authorization !== null ? Object.assign(state.authorization).split(":")[0] : null,
+        loading: state.loading,
     }
 }
 
