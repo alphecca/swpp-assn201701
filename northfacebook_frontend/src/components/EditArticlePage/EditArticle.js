@@ -11,7 +11,7 @@ class EditArticle extends React.Component{
       }
   }
   render(){
-    let text = "Enter the text";
+	let text = this.props.content;
     let files = null;
     let url = null;
     const editClick = () => {

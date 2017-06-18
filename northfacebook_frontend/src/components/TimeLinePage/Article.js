@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { toProfile, editArticle, deleteArticle, writeArticle, postLike, articleDetail } from '../../actions'
+import AddArticle from '../AddArticlePage/AddArticle.js';
 
 class Article extends React.Component {
     render() {
