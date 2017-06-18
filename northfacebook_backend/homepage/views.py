@@ -62,11 +62,13 @@ def article_detail(request, pk):
         return Response(serializer.data)
     elif request.method == 'PUT':
         if article.owner == request.user:
+            print(request.data)
             if "image0" in request.data and request.data["image0"] == 'null':
                 request.data["image0"] = None
             serializer = ArticleSerializer(article,data=request.data, context=context)
             if serializer.is_valid():
                 serializer.save()
+                print(serializer.data['youtube_video'])
                 return Response(serializer.data)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_403_FORBIDDEN)

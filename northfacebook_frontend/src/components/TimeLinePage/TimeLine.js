@@ -2,6 +2,7 @@ import React from 'react'
 import ArticleList from './ArticleList.js'
 import {moreArticle,writeArticle, showChattingRoom} from '../../actions'
 import {connect} from 'react-redux'
+import AddArticle from '../AddArticlePage/AddArticle.js';
 
 var re=0;
 class TimeLine extends React.Component {
@@ -18,9 +19,7 @@ class TimeLine extends React.Component {
         };
       return(
          <div className="TimeLine">
-                    <button id="write_button_field" onClick={this.props.onWriteClick}>글쓰기</button>
-                    <button id="chat_button_field" onClick={this.props.onChatClick}>수다방</button>
-                    <hr />
+		    <AddArticle />
                     <ArticleList />
         </div>
       );
