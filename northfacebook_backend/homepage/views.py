@@ -137,6 +137,10 @@ def user_nowchat(request,username):
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         serializer = NowChatSerializer(user)
+        chat = []
+        for room_id in serializer.data:
+            chat.append(Chat.objects.get(id=room_id))
+        serializer = ChatRoomSerializer(chat, many=True)
         return Response(serializer.data)
 
 @api_view(['GET'])
@@ -149,6 +153,14 @@ def user_nonchat(request,username):
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         serializer = NonChatSerializer(user)
+        chat = []
+        for room_id in serializer.data:
+            room = Chat.objects.get(id=room_id)
+            if not ChatUser.objects.filter(chatroom=room.id).exists():
+                room.delete()
+            else:
+                chat.append(room)
+        serializer = ChatRoomSerializer(chat, many=True)
         return Response(serializer.data)
 
 @api_view(['GET','POST'])
@@ -266,8 +278,9 @@ def chatroom_list(request):
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
         chat = Chat.objects.all()
+        # Auto delete empty room
         for room in chat:
-            roomuser = ChatUser.objects.filter(chatroom=room.id) #TODO
+            roomuser = ChatUser.objects.filter(chatroom=room.id)
             if not roomuser.exists():
                 room.delete()
         chat = Chat.objects.all()
@@ -298,6 +311,9 @@ def chatroom_detail(request,pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
+    if not ChatUser.objects.filter(chatroom=chatroom.id).exists():
+        chatroom.delete()
+        return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         serializer = ChatRoomSerializer(chatroom)
         return Response(serializer.data)
