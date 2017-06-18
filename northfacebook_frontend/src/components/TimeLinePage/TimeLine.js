@@ -3,7 +3,6 @@ import ArticleList from './ArticleList.js'
 import {moreArticle,writeArticle, showChattingRoom} from '../../actions'
 import {connect} from 'react-redux'
 import AddArticle from '../AddArticlePage/AddArticle.js';
-
 var re=0;
 class TimeLine extends React.Component {
     render() {
