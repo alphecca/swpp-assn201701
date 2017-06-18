@@ -25,7 +25,7 @@ class ButtonList extends React.Component{
             else{
         //        this.props.onClick1();
                 if(this.state.showComponent1) this.setState({showComponent1 : false,});
-                else this.setState({showComponent1 : true,});
+                else this.setState({showComponent1 : true, showComponent2: false, showComponent3: false});
             }
         }
         const onPostClick2 = () => {
@@ -34,7 +34,7 @@ class ButtonList extends React.Component{
              else{
           //       this.props.onClick2()
                  if(this.state.showComponent2) this.setState({showComponent2 : false,});
-                 else this.setState({showComponent2 : true,});
+                 else this.setState({showComponent2 : true, showComponent1:false, showComponent3:false});
              }
         }
         const onPostClick3 = () => {
@@ -43,7 +43,7 @@ class ButtonList extends React.Component{
             else{
            //     this.props.onClick3()
                 if(this.state.showComponent3) this.setState({showComponent3 : false,});
-                else this.setState({showComponent3: true,});
+                else this.setState({showComponent3: true,showComponent1:false,showComponent2:false});
             }
         }
         const onPostClick4 = () => {
