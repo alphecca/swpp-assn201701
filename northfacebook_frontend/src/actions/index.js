@@ -242,3 +242,15 @@ export const deleteAddFriend = (profile_user) => {
         profuser: profile_user
     }
 }
+export const postSasang = (profile_user) => {
+    return {
+      type: 'POST_SASANG',
+      profuser : profile_user
+    }
+}
+export const putSasang = (profile_user) => {
+    return {
+      type: 'PUT_SASANG',
+      profuser : profile_user
+    }
+}
