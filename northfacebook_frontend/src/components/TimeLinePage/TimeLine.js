@@ -17,10 +17,10 @@ class TimeLine extends React.Component {
           }
         };
       return(
-         <div className="TimeLine">
-		    <AddArticle />
-                    <ArticleList />
-        </div>
+          <div className="TimeLine">
+		      <AddArticle />
+              <ArticleList />
+          </div>
       );
     }
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { toProfile, editArticle, deleteArticle, writeArticle, postLike, articleDetail } from '../../actions'
-import AddArticle from '../AddArticlePage/AddArticle.js';
+//import AddArticle from '../AddArticlePage/AddArticle.js';
 
 class Article extends React.Component {
     render() {
@@ -34,7 +34,7 @@ class Article extends React.Component {
         const images = this.props.article.images;
         const profileId = 'a'+this.props.article.id+'_profile_img';
         const videoId = 'a'+this.props.article.id+'_video';
-
+        
         const onPostClick = ()=>{
             this.props.onPostClick(username);
         }
