@@ -306,6 +306,7 @@ function *watchLoginState() {
                     texts: [],
                     chatting_users: [],
                     room_id: 0,
+                    loading: true,
                     sasangs:[],
                     //load : 0
                     //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
@@ -367,6 +368,7 @@ function *watchLoginState() {
                     chatting_users: [],
                     room_id: 0,
                     profile_user: null,
+                    loading: true,
                     sasangs:[]
                     // load: 0,
                     // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
@@ -500,6 +502,7 @@ function *watchLoginState() {
                         chatting_users: [],
                         room_id: 0,
                         profile_user: profile_data.body,
+                        loading: true,
                         //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                     }));
                 }
@@ -558,6 +561,7 @@ function *watchLoginState() {
                         chatting_users: [],
                         room_id: 0,
                         profile_user: profile_data.body,
+                        loading: true,
                         sasangs:sasangs.body
                     }));
                 }
@@ -611,6 +615,7 @@ function *watchLoginState() {
                         friends: data.body,
                         friend_requests: [],
                         my_requests: [],
+                        loading: true,
                                         }));
                 }
                 else if(path.split("/")[1] === 'addfriend'){
@@ -737,6 +742,7 @@ function *watchLoginState() {
                         friends: friend_data.body,
                         friend_requests: data.body,
                         my_requests: my_data.body,
+                        loading: true,
                                         }));
                 }
                 else {
@@ -840,7 +846,8 @@ function *watchLoginState() {
                         texts: [],
                         chatting_users: [],
                         room_id: 0,
-                        profile_user: profile_data !== null ? profile_data.body : null
+                        profile_user: profile_data !== null ? profile_data.body : null,
+                        loading: true,
                         //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                     }));
                 }
@@ -1622,7 +1629,8 @@ function *updateChatting(room_id) {
         rooms: getRooms,
         texts: textRes.body,
         chatting_users: userRes.body,
-        room_id: room_id
+        room_id: room_id,
+        loading: true,
         // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
     }));
     const path = window.location.pathname;

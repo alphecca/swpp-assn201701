@@ -9,9 +9,11 @@ class FriendPage extends React.Component {
         let profuser = this.props.profuser;
         const profuserNameId = "f_"+profuser+"_name_field";
         console.log(this.props.profuser);
-        if (this.props.profuser === null) {
+        if (!this.props.loading) {
             return (
-                    <div>불러오는 중...</div>
+                    <div>
+                        <SignOut />
+                    </div>
                     )
         }
         // eslint-disable-next-line
@@ -48,6 +50,7 @@ class FriendPage extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
+        loading: state.loading,
         username: state.authorization !== null ? Object.assign(state.authorization).split(":")[0] : null,
         profuser: state.profile_user !== null ? Object.assign(state.profile_user.user) : null
     }

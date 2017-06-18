@@ -12,6 +12,7 @@ const homepageInitialState = {
     friend_requests: [],
     my_requests: [],
     load : 0,
+    loading: false,
     sasangs : []
 };
 
@@ -56,9 +57,11 @@ const homepage = (state = homepageInitialState, action) => {
                 chatting_users: action.state.chatting_users,
                 room_id: action.state.room_id,
                 profile_user: action.state.profile_user,
-                friends: action.state.friends,
+                friends: action.state.friends, 
 		        friend_requests: action.state.friend_requests,
                 my_requests: action.state.my_requests,
+                load : action.state.load,
+                loading: action.state.loading,
                 sasangs : action.state.sasangs
             })
         }

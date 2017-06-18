@@ -7,6 +7,13 @@ import { connect } from 'react-redux'
 
 class ChattingPage extends React.Component {
     render() {
+        if (!this.props.loading) {
+            return (
+                    <div>
+                        <SignOut />
+                    </div>
+                    )
+        }
         const onSubmit = () => {
             if (this.message !== undefined) {
                 this.props.onSendClick(this.props.room.room_id, this.message.value)
@@ -44,6 +51,7 @@ class ChattingPage extends React.Component {
 //<button id='more_button_field' onClick={()=>this.props.onMoreClick()}>더!</button>
 let mapStateToProps = (state) => {
     return {
+        loading: state.loading,
         room: Object.assign(state)
     }
 }

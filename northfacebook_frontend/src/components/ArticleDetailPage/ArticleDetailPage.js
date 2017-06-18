@@ -9,6 +9,13 @@ import {postBack} from '../../actions'
 
 class ArticleDetailPage extends React.Component {
     render() {
+        if (!this.props.loading) {
+            return (
+                    <div>
+                        <SignOut />
+                    </div>
+                    )
+        }
         return (
                 this.props.article.parent_article === null ? (
 		    <div >
@@ -32,9 +39,10 @@ class ArticleDetailPage extends React.Component {
 }
 
 let mapStateToProps = (state) => {
-     return {
-         article: Object.assign(state)
-     }
+    return {
+        loading: state.loading,
+        article: Object.assign(state)
+    }
 }
 
 let mapDispatchToProps = (dispatch) => {
