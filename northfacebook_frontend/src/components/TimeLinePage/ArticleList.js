@@ -1,7 +1,6 @@
 import React from 'react'
 import Article from './Article.js'
 import {connect} from 'react-redux'
-
 class ArticleList extends React.Component {
   render() {
    const list = this.props.articles
