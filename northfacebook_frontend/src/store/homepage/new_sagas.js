@@ -43,12 +43,6 @@ export default function *saga() {
                 case 'article':
                     yield spawn(articleDetailPageSaga);
                     break;
-                /*case 'write':
-                    yield spawn(writePageSaga);
-                    break;
-                case 'edit':
-                    yield spawn(editPageSaga, url[2]);
-                    break;*/
                 case 'room':
                     yield spawn(roomPageSaga);
                     break;
@@ -113,12 +107,10 @@ function *signUpPageSaga() {
 function *mainPageSaga() {
     console.log("Main Page");
     yield spawn(watchLoginState);
-    yield spawn(watchWrite);
     yield spawn(watchDetail);
     yield spawn(watchLike);
     yield spawn(watchSignOut);
     yield spawn(watchGoToMain);
-    yield spawn(watchEdit);
     yield spawn(watchDelete);
     yield spawn(watchChattingRoom);
     yield spawn(watchToProfile);
@@ -129,31 +121,16 @@ function *mainPageSaga() {
 function *articleDetailPageSaga() {
     console.log("Article Detail Page");
     yield spawn(watchLoginState);
-    yield spawn(watchWrite);
     yield spawn(watchDetail);
     yield spawn(watchLike);
     yield spawn(watchGoToMain);
     yield spawn(watchSignOut);
-    yield spawn(watchEdit);
     yield spawn(watchDelete);
     yield spawn(watchToProfile);
     yield spawn(watchPostArticle);
     yield spawn(watchPutArticle);
 }
-/*
-function *writePageSaga() {
-    console.log("Write Page")
-    yield spawn(watchLoginState);
-    yield spawn(watchSignOut);
-    yield spawn(watchPostArticle);
-    yield spawn(watchGoToMain);
-}
 
-function *editPageSaga(id){
-//    yield spawn(watchPutArticle, id);
-//    yield spawn(watchGoToMain);
-}
-*/
 function *roomPageSaga(){
     console.log("Chatting Room Page")
     yield spawn(watchLoginState);
@@ -184,13 +161,10 @@ function *createRoomPageSaga(){
 
 function *wallPageSaga() {
     yield spawn(watchLoginState);
-    yield spawn(watchWrite);
     yield spawn(watchDetail);
     yield spawn(watchLike);
     yield spawn(watchSignOut);
     yield spawn(watchGoToMain);
-    yield spawn(watchEdit);
-    yield spawn(watchDelete);
     yield spawn(watchToProfile);
 }
 
@@ -251,7 +225,7 @@ function *watchLoginState() {
         else {
             const path = window.location.pathname;
             let data, parent_data;
-            if(path === '/main/' || path === '/write/') { // 여기가 바로 하드코딩된 부분입니다 여러분!
+            if(path === '/main/') { // 여기가 바로 하드코딩된 부분입니다 여러분!
                 localStorage.removeItem('parent');
                 try {
                     data = yield call(xhr.get, fixed_url+'mainpage/', {
@@ -893,19 +867,6 @@ function *watchPostSignUp() {
     }
 }
 
-// watchWrite: 글쓰기/답글쓰기 버튼 클릭 관찰 및 리다이렉트
-function *watchWrite() {
-    while(true) {
-        const data = yield take('WRITE_ARTICLE');
-        if(data.id === null)
-            yield put(actions.changeUrl('/write/'));
-        else {
-            yield put(actions.changeUrl('/write/'+data.id.id+'/'));
-        }
-    }
-
-}
-
 // watchDetail: 디테일 버튼 클릭 관찰 및 리다이렉트
 function *watchDetail() {
     while(true) {
@@ -947,22 +908,6 @@ function *watchDelete() {
         yield call(deleteArticle, data.id);
     }
 }
-
-// watchEdit: 메인페이지 또는 세부페이지에서 수정 버튼 클릭 관찰
-function *watchEdit(){
-    while(true){
-        console.log("in edit article");
-        const data = yield take('EDIT_ARTICLE');
-        //TODO user data GET해서 forbidden or not
-        if(data.username !== window.atob(localStorage['auth']).split(':')[0]) {
-            alert("당신의 글이 아니오.");
-            continue;
-        }
-//	console.log("사가에서 data.id= "+data.id);
-        yield put(actions.changeUrl('/edit/'+data.id+'/'));
-    }
-}
-
 
 // watchPutArticle: 글 수정 페이지에서 EDIT 버튼 클릭 관찰
 function *watchPutArticle(){

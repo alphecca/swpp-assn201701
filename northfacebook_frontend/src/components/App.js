@@ -4,9 +4,7 @@ import {BrowserRouter, Route} from 'react-router-dom';
 import LoginPage from './LoginPage/LoginPage.js';
 import SignUpPage from './SignUpPage/SignUpPage.js';
 import TimeLinePage from './TimeLinePage/TimeLinePage.js';
-import AddArticlePage from './AddArticlePage/AddArticlePage.js';
 import ArticleDetailPage from './ArticleDetailPage/ArticleDetailPage.js';
-import EditArticlePage from './EditArticlePage/EditArticlePage.js';
 import ChattingRoomPage from './ChattingRoomPage/ChattingRoomPage.js';
 import CreateRoomPage from './CreateRoomPage/CreateRoomPage.js';
 import ChattingPage from './ChattingPage/ChattingPage.js';
@@ -28,8 +26,6 @@ const App = ({store}) => {
                     <Route exact path="/sign_up" component={SignUpPage} />
                     <Route exact path="/main" component={TimeLinePage} />
                     <Route path="/article/:id" component={ArticleDetailPage} />
-                    <Route exact path="/write/:id?" component={AddArticlePage} />
-                    <Route exact path="/edit/:id" component={EditArticlePage} /> 
                     <Route exact path="/room" component={ChattingRoomPage} />
                     <Route exact path="/create_room" component={CreateRoomPage} />
                     <Route exact path="/chatting/:id" component={ChattingPage} />

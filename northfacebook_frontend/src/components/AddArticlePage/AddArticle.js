@@ -4,7 +4,7 @@ import {addArticle} from '../../actions'
 
 class AddArticle extends React.Component{
   render(){
-    let text = "Enter the text";
+    let text = "글을 입력하시라우";
     let files = null;
     let url = '';
     const onPostClick = () => {
