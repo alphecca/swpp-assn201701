@@ -1,8 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {addArticle} from '../../actions'
+import PropTypes from 'prop-types'
 
-class AddArticle extends React.Component{
+class AddReply extends React.Component{
   render(){
     let text = "글을 입력하시라우";
     let files = null;
@@ -22,7 +23,7 @@ class AddArticle extends React.Component{
                 url = 'https://www.youtube.com/embed/'+pattern[2];
             }
         }
-        this.props.onClick(this.props.id, text, files, url);
+        this.props.onClick(this.props.parent_id, text, files, url);
     }
     const handleChange = (e) => {
         text = e.target.value;
@@ -31,25 +32,25 @@ class AddArticle extends React.Component{
       <div id="add_article_field" className="AddArticle">
         <textarea id={this.props.textId} cols="50" rows="10" placeholder={text} onChange={handleChange}/>
         <br />
-        <input id="upload_img0" className="sub_button" type="file" accept=".png, .jpg, .jpeg, .gif" onChange={(e) => {files = e.target.files;}}/>
+        <input id="upload_img0" type="file" accept=".png, .jpg, .jpeg, .gif" onChange={(e) => {files = e.target.files;}}/>
+        <br />
         영상넣기: <input id='add_youtube_link' onChange={(e) => {url=e.target.value;}}/>
-<<<<<<< HEAD
-        <button id={this.props.buttonId} className="main_button" onClick={onPostClick}>POST</button>
-=======
         <br />
         <button id={this.props.buttonId} onClick={onPostClick}>글쓰기</button>
->>>>>>> 6eda02a206ebe1ef9bcb8339a759798ff674f108
       </div>
     );
   }
 }
 
+AddReply.propTypes = {
+    parent_id: PropTypes.object.isRequired
+}
+
 let mapStateToProps = (state) => {
     console.log(window.location.pathname)
   return {
-     id: state.parent_article,
-     textId: "post_text_field",
-     buttonId: "post_button_field"
+     textId: "post_reply_text_field",
+     buttonId: "post_reply_button_field"
   }
 } 
 
@@ -61,6 +62,6 @@ let mapDispatchToProps = (dispatch) => {
    }
 }
 
-AddArticle = connect(mapStateToProps, mapDispatchToProps)(AddArticle)
+AddReply = connect(mapStateToProps, mapDispatchToProps)(AddReply)
 
-export default AddArticle
+export default AddReply

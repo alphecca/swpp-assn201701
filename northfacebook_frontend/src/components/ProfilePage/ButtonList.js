@@ -85,31 +85,28 @@ class ButtonList extends React.Component{
         else{
           ss=[];
           if(sasangs.length===0){
-            ss=[<div id="sasang_status">아직 아무도 사상검증 않았소</div>];
+            ss=[<div key="0" id="sasang_status">아직 아무도 사상검증 않았소</div>];
           }
           for(var i=0;i<sasangs.length;i++){
             if(sasangs[i].first===curruser){
-              ss.push(<div id={"sasang_status_"+i}>지금까지 {sasangs[i].second}와 총사상검증 횟수는 {sasangs[i]["counter"]}번이오!</div>);
+              ss.push(<div key={i} id={"sasang_status_"+i}>지금까지 {sasangs[i].second}와 총사상검증 횟수는 {sasangs[i]["counter"]}번이오!</div>);
               var user=sasangs[i].second;
-              ss.push(<button id={"PUT_sasang_button_field"+i} onClick={()=>{onPostClick8(user)}}>재사상검증</button>);
+              ss.push(<button key={i} id={"PUT_sasang_button_field"+i} onClick={()=>{onPostClick8(user)}}>재사상검증</button>);
             }
             else{
-              ss.push(<div id={"sasang_status_"+i}>지금까지 {sasangs[i].first}와 총사상검증 횟수는 {sasangs[i]["counter"]}번이오!</div>);
-              ss.push(<div id={"sasanging_"+i}>이미 사상검증 중이오!</div>);
+              ss.push(<div key={i} id={"sasang_status_"+i}>지금까지 {sasangs[i].first}와 총사상검증 횟수는 {sasangs[i]["counter"]}번이오!</div>);
+              ss.push(<div key={i} id={"sasanging_"+i}>이미 사상검증 중이오!</div>);
             }
           }
         }
         return(
             <div>
-               <div id="profile_photo_field">
-                   *TODO :profile_photo_field @ButtonList.js
-               </div>
                <div id="change_pw_field">
                    <button id="change_pw_button_field" onClick={onPostClick1}>암호 바꾸기!</button>
                    {this.state.showComponent1 ? <ChangePWPage />: null }
                </div>
                <div id="change_detail_field">
-                   <button id="change_detail_button_field" onClick={onPostClick2}>소개글 바꾸기!</button>
+                   <button id="change_detail_button_field" onClick={onPostClick2}>프로필 바꾸기!</button>
                    {this.state.showComponent2 ? <ChangeIntroPage />: null }
                </div>
                <div id="escape_account_field">

@@ -2,9 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { toProfile, editArticle, deleteArticle, writeArticle, postLike, articleDetail } from '../../actions'
-//import AddArticle from '../AddArticlePage/AddArticle.js';
+import AddReply from './AddReply.js'
+import EditArticle from '../EditArticlePage/EditArticle.js'
 
 class Article extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            addReply: false,
+            edit: false
+        }
+    }
     render() {
         const writerId = "a"+this.props.article.id+"_writer_field"
         const username = this.props.article.owner
@@ -26,7 +34,7 @@ class Article extends React.Component {
         const created_ = this.props.article.created_time.split('T');
         const created_date = created_[0].split('-');
         const created_time = created_[1].split(':');
-        const updated_ = this.props.article.created_time.split('T');
+        const updated_ = this.props.article.updated_time.split('T');
         const updated_date = updated_[0].split('-');
         const updated_time = updated_[1].split(':');
 
@@ -42,8 +50,14 @@ class Article extends React.Component {
         if(depth===0){
         return (
 		<div>
-                <div className="Article_padding"/>
                 <div id={componentId} className="Article">
+        const depth = this.props.article.depth;
+        const css = depth === 0 ? 'Article' : depth === 1 ? 'ArticleArticle' : 'ArticleArticleArticle';
+        const user = this.props.authorization.split(':')[0];
+        if(!this.state.edit)
+            return (
+                <div id={componentId} className={css}>
+>>>>>>> 6eda02a206ebe1ef9bcb8339a759798ff674f108
                     <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
                     <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
                     <hr />
@@ -67,96 +81,27 @@ class Article extends React.Component {
                     <button id={likeButtonId} className="main_button" onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
                     <div className="divider"/>
                     <button id={editButtonId} className="main_button" onClick={ ()=>this.props.onEditClick(this.props.article.id, username)}>바꾸기</button>
+                    <button id={editButtonId} className="main_button" onClick={() => {if(user === username)this.setState({edit: true}); else alert('당신 글이 아니오!')}}>바꾸기</button>
                     <div className="divider"/>
                     <button id={deleteButtonId} className="main_button" onClick={() => this.props.onDeleteClick(this.props.article.id)}>지우기</button>
                     <br />
                     붙임글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    <button id={detailButtonId} className="detail_button" onClick={() =>this.props.onDetailClick(this.props.article)}>자세히</button>
+                    {depth === 0 ? <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article.id)}>자세히</button> : null}
                     <div className="divider"/>
-                    <button id={replyButtonId} className="main_button" onClick={() =>this.props.onReplyClick(this.props.article)}>붙이기</button>
+                    {depth === 1 ? <button id={replyButtonId} onClick={() => this.setState({addReply: !this.state.addReply})}>붙이기</button> : null}
+                    {this.state.addReply ? <div><AddReply parent_id={this.props.article} /><button onClick={() => this.setState({addReply:false})}>취소</button></div> : null}
                     <br />
                     </div>
                 </div>
-		</div>
-        )
-        }
-        else if(depth===1){
-        return (
-		<div>
-		<div className="Article_padding" />
-                <div id={componentId} className="ArticleArticle">
-                    <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
-                    <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
-                    <hr />
-                    {this.props.article.youtube_video !== 'None' ?
-                        <iframe id={videoId} width="560" height="315" src={this.props.article.youtube_video} frameBorder="0" allowFullScreen></iframe> : null
-                    }
-                    <div id={imgId}>
-                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img} alt="" /></span>)} ) : null}
+            )
+        else
+            return (
+                    <div className={css}>
+                    <EditArticle thisArticle={this.props.article} />
+                    <button onClick={() => this.setState({edit: false})}>취소</button>
                     </div>
-
-                    <div id={textId} className="article_text">
-                    {articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}
-                    </div>
-
-                    <hr />
-                    <p id={createdId}>쓴날: {created_date[0]}년 {created_date[1]}월 {created_date[2]}일 {created_time[0]}시 {created_time[1]}분 {created_time[2].split('.')[0]}초</p>
-                    <p id={updatedId}>바꾼날: {updated_date[0]}년 {updated_date[1]}월 {updated_date[2]}일 {updated_time[0]}시 {updated_time[1]}분 {updated_time[2].split('.')[0]}초</p>
-                    <div className="Tags">
-                    좋소: <span id={likeNumId}>{likeNum}</span>
-                    <div className="divider"/>
-                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
-                    <div className="divider"/>
-                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id, username)}>바꾸기</button>
-                    <div className="divider"/>
-                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>지우기</button>
-                    <br />
-                    붙임글:<span id={replyNumId}>{replyNum}</span>
-                    <div className="divider"/>
-                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>붙이기</button>
-                    <br />
-                    </div>
-                </div>
-		</div>
-        )
-        }
-        else{
-        return (
-		<div>
-		<div className="Article_padding" />
-                <div id={componentId} className="ArticleArticleArticle">
-                    <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
-                    <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
-                    <hr />
-                    {this.props.article.youtube_video !== 'None' ?
-                        <iframe id={videoId} width="560" height="315" src={this.props.article.youtube_video} frameBorder="0" allowFullScreen></iframe> : null
-                    }
-                    <div id={imgId}>
-                    {images !== null ? images.map( (img) => {return (<span key={"img_"+imgId}><img src={img} alt="" /></span>)} ) : null}
-                    </div>
-
-                    <div id={textId} className="article_text">
-                    {articleText.split('\n').map( (line,textId) => {return (<span key={'line'+textId}>{line}<br/></span>)} )}
-                    </div>
-
-                    <hr />
-                    <p id={createdId}>쓴날: {created_date[0]}년 {created_date[1]}월 {created_date[2]}일 {created_time[0]}시 {created_time[1]}분 {created_time[2].split('.')[0]}초</p>
-                    <p id={updatedId}>바꾼날: {updated_date[0]}년 {updated_date[1]}월 {updated_date[2]}일 {updated_time[0]}시 {updated_time[1]}분 {updated_time[2].split('.')[0]}초</p>
-                    <div className="Tags">
-                    좋소: <span id={likeNumId}>{likeNum}</span>
-                    <div className="divider"/>
-                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
-                    <div className="divider"/>
-                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id, username)}>바꾸기</button>
-                    <div className="divider"/>
-                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>지우기</button>
-                    <br />
-                    </div>
-                </div>
-		</div>
-        )
-        }
+                   )
     }
 }
 

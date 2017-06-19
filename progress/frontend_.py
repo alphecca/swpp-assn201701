@@ -429,8 +429,8 @@ def chatRoomVerification(driver, link, uname, upwd):
         driver.find_element_by_id("input_room_name_field").send_keys(roomName)
         driver.find_element_by_id('post_room_button_field').click()
         sleep(delayTime*2)
-   
-    print("2-4.check # of people in the room & room name") 
+
+    print("2-4.check # of people in the room & room name")
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     sleep(delayTime)
     for t in range(1,4):
@@ -499,7 +499,7 @@ def sendTextVerification(driver, link, uname, upwd, roomId):
     check(driver, 'post_text_button_field')
     driver.find_element_by_id("post_text_button_field").click()
     sleep(delayTime)
-    alert(driver, "제대로 된 입력을 주시오.") 
+    alert(driver, "제대로 된 입력을 주시오.")
     sleep(delayTime)
     print("4-1. send messages")
     check(driver, 'input_text_field')
@@ -508,7 +508,7 @@ def sendTextVerification(driver, link, uname, upwd, roomId):
     driver.find_element_by_id("post_text_button_field").click()
     sleep(delayTime)
     try:
-        res = requests.get(link+"chatroom/"+roomId+"/text/", auth=(uname, upwd)) 
+        res = requests.get(link+"chatroom/"+roomId+"/text/", auth=(uname, upwd))
         if res.status_code != 200:
             print("ERROR: Cannot get {0} : {1}, id = {2}, pwd = {3}".format(link+"chatroom/"+roomId+"/text/", res.status_code, uname, upwd))
             exit(1)
@@ -534,7 +534,7 @@ def signOutVerification(driver):
 def B_chatRoomVerification(driver, roomId):
     # in the ~/main/
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    sleep(delayTime) 
+    sleep(delayTime)
     check(driver, "chat_button_field")
     driver.find_element_by_id('chat_button_field').click()
     sleep(delayTime)
@@ -547,10 +547,10 @@ def B_chatRoomVerification(driver, roomId):
     driver.find_element_by_id("input_text_field").send_keys("this text cannot be sent")
     driver.find_element_by_id('post_text_button_field').click()
     sleep(delayTime)
-    alert(driver, "함께하고 얘기하시오.") 
+    alert(driver, "함께하고 얘기하시오.")
     sleep(delayTime*2)
     print("2-1. join the room")
-    # at room list 
+    # at room list
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     sleep(delayTime)
     check(driver, "room"+roomId+"_join_field")
@@ -562,7 +562,7 @@ def B_chatRoomVerification(driver, roomId):
         exit(1)
     check(driver, "room"+roomId+"_chat_field")
     driver.find_element_by_id('room'+roomId+'_chat_field').click()
-   
+
 def B_sendTextVerification(driver, link, uname, upwd, roomId ):
     print("get messages")
     try:
@@ -589,7 +589,7 @@ def B_sendTextVerification(driver, link, uname, upwd, roomId ):
     driver.find_element_by_id("post_text_button_field").click()
     sleep(delayTime)
     try:
-        res = requests.get(link+"chatroom/"+roomId+"/text/", auth=(uname, upwd)) 
+        res = requests.get(link+"chatroom/"+roomId+"/text/", auth=(uname, upwd))
         if res.status_code != 200:
             print("ERROR: Cannot get {0} : {1}, id = {2}, pwd = {3}".format(link, res.status_code, uname, upwd))
             exit(1)
@@ -666,7 +666,7 @@ def changePW_T(driver,uname, oldpw, newpw):
     driver.find_element_by_id("sign_in").click()
     sleep(delayTime)
     check(driver, "sign_out")
-    
+
 def changePW_F(driver):
     check(driver, "change_pw_button_field")
     driver.find_element_by_id("change_pw_button_field").click()
@@ -694,5 +694,43 @@ def escapeBook_F(driver):
     sleep(delayTime)
     alert(driver, "탈Book할거면 너나해ㅡㅡ")
     sleep(delayTime)
-   
+
+def Sasang(driver, status, text):
+    check(driver, status)
+    if driver.find_element_by_id(status).text != text:
+        print(status+" does not match with "+text)
+        exit(1)
+    sleep(delayTime)
+
+def mySasang(driver, statusnum, username, num):
+    sleep(delayTime)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    sleep(delayTime)
+    check(driver, 'sasang_status_'+statusnum)
+    if driver.find_element_by_id('sasang_status_'+statusnum).text != '지금까지 '+username+'와 총사상검증 횟수는 '+num+'번이오!':
+        print("my sasang_status does not correct")
+        exit(1)
+    sleep(delayTime)
+
+def yourSasang(driver,num):
+    sleep(delayTime)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    sleep(delayTime)
+    check(driver, 'sasang_status')
+    if driver.find_element_by_id('sasang_status').text != '지금까지 총사상검증 횟수는 '+num+'번이오!':
+        print("sasang_status does not correct")
+        exit(1)
+    sleep(delayTime)
+
+def get_with_zoom(driver, url, zoom):
+    driver.get(url)
+    driver.execute_script("document.body.style.zoom=\'"+zoom+"%\'")
+    sleep(delayTime)
+
+def click_with_zoom(driver, com_id, zoom):
+    driver.execute_script("document.body.style.zoom=\'"+zoom+"%\'")
+    check(driver, com_id)
+    element=driver.find_element_by_id(com_id).click()
+    driver.execute_script("arguments[0].click();", element)
+    sleep(delayTime)
 
