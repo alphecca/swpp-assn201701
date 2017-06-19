@@ -43,12 +43,12 @@ export default function *saga() {
                 case 'article':
                     yield spawn(articleDetailPageSaga);
                     break;
-                case 'write':
+                /*case 'write':
                     yield spawn(writePageSaga);
                     break;
                 case 'edit':
                     yield spawn(editPageSaga, url[2]);
-                    break;
+                    break;*/
                 case 'room':
                     yield spawn(roomPageSaga);
                     break;
@@ -123,6 +123,7 @@ function *mainPageSaga() {
     yield spawn(watchChattingRoom);
     yield spawn(watchToProfile);
     yield spawn(watchPostArticle);
+    yield spawn(watchPutArticle);
 }
 
 function *articleDetailPageSaga() {
@@ -137,8 +138,9 @@ function *articleDetailPageSaga() {
     yield spawn(watchDelete);
     yield spawn(watchToProfile);
     yield spawn(watchPostArticle);
+    yield spawn(watchPutArticle);
 }
-
+/*
 function *writePageSaga() {
     console.log("Write Page")
     yield spawn(watchLoginState);
@@ -148,13 +150,10 @@ function *writePageSaga() {
 }
 
 function *editPageSaga(id){
-    console.log("Edit Page: "+id);
-    yield spawn(watchLoginState);
-    yield spawn(watchSignOut);
-    yield spawn(watchPutArticle, id);
-    yield spawn(watchGoToMain);
+//    yield spawn(watchPutArticle, id);
+//    yield spawn(watchGoToMain);
 }
-
+*/
 function *roomPageSaga(){
     console.log("Chatting Room Page")
     yield spawn(watchLoginState);
@@ -966,13 +965,12 @@ function *watchEdit(){
 
 
 // watchPutArticle: 글 수정 페이지에서 EDIT 버튼 클릭 관찰
-function *watchPutArticle(id){
+function *watchPutArticle(){
     while(true){
         console.log("in watchPutArticle...");
         const data = yield take('PUT_ARTICLE');
         console.log("text: "+data.text);
-//	console.log("$id: "+data.id); 왜지?!?!?!?!?!
-        yield call(putArticle, id, data.text, data.removeImg, data.images, data.removeUrl, data.url);
+        yield call(putArticle, data.id, data.text, data.removeImg, data.images, data.removeUrl, data.url);
     }
 }
 
@@ -1364,7 +1362,7 @@ function *putArticle(id, text, removeImg, images, removeUrl, url){
             body: form
         });
         console.log("edit article succeed");
-        yield put(actions.changeUrl('/'+path));
+        yield put(actions.changeUrl(window.location.pathname));
     } catch(error){
         console.log(error);
         if(error.statusCode === 403){
