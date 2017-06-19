@@ -8,21 +8,21 @@ class SignOut extends React.Component {
         if (!this.props.loading) {
             return (
                 <div className="ToolBar" >
-                   <div className="Notif">
                    <button id="to_main_page_field" className="TOMAIN" onClick={this.props.onBackClick}/>
-                   <span id="user_data_field">불러오는 중...</span>
+                   <div className="Notif">
+                     <span id="user_data_field">불러오는 중...</span>
                    </div>
                 </div>
                     )
         }
         return (
                 <div className="ToolBar" >
-                   <div className="Notif">
                    <button id="to_main_page_field" className="TOMAIN" onClick={this.props.onBackClick}/>
+                   <div className="Notif">
                    <span id="user_data_field"><a id="to_my_profile" className="Link" onClick={ () => this.props.onToProfile(this.props.username) }><u>{this.props.username}</u></a> 동무 어서오시오!</span>
-                   <button id="sign_out" className="SIGNOUT" onClick={this.props.onLogOut}>나오기</button>
-                   <button id="to_my_wall" className="WALLBUTTON" onClick={() => this.props.onToWall(this.props.username)}>담벼락</button>
-                    <button id="chat_button_field" onClick={this.props.onChatClick}>대화방</button>
+                   <button id="sign_out" className="Notif_button" onClick={this.props.onLogOut}>나오기</button>
+                   <button id="to_my_wall" className="Notif_button" onClick={() => this.props.onToWall(this.props.username)}>담벼락</button>
+                    <button id="chat_button_field" className="Notif_button" onClick={this.props.onChatClick}>대화방</button>
                    <audio controls loop>
                      <source id='janggunnim' src='http://wlxyzlw.iptime.org:8000/media/default/defaultBGM.mp3' type='audio/mpeg' />
                    </audio>

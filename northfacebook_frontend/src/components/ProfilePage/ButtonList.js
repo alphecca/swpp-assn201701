@@ -141,9 +141,6 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return{
-//        onClick1: () => dispatch(toChangePW()),
-//        onClick2: () => dispatch(toChangeIntro()),
-//        onClick3: () => dispatch(toEscape()),
         onClick4: (profuser) => dispatch(gotoFriend(profuser)),
         onClick5: (profuser) => dispatch(addFriend(profuser)),
         onClick6: (profuser) => dispatch(gotoWall(profuser)),
