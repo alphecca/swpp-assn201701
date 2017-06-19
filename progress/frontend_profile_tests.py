@@ -104,7 +104,7 @@ driver.find_element_by_id("a"+str(data[0]["id"])+"_writer_field").click()
 sleep(delayTime)
 changePW_F(driver)
 
-print("3. Change url to frined")
+print("3. Change url to friened")
 sleep(delayTime)
 driver.find_element_by_id("to_my_profile").click()
 sleep(delayTime)
