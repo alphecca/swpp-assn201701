@@ -158,7 +158,7 @@ def user_nonchat(request,username):
             room = Chat.objects.get(id=room_id)
             if not ChatUser.objects.filter(chatroom=room.id).exists():
                 room.delete()
-            else:
+            elif not room.secret:
                 chat.append(room)
         serializer = ChatRoomSerializer(chat, many=True)
         return Response(serializer.data)
@@ -303,7 +303,7 @@ def chatroom_list(request):
                 return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'DELETE'])
+@api_view(['GET'])
 def chatroom_detail(request,pk):
     try:
         chatroom = Chat.objects.get(pk=pk)
@@ -317,9 +317,11 @@ def chatroom_detail(request,pk):
     if request.method == 'GET':
         serializer = ChatRoomSerializer(chatroom)
         return Response(serializer.data)
+    """
     elif request.method == 'DELETE':
         chatroom.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    """
 
 @api_view(['GET'])
 def chatuser_list(request):
@@ -339,9 +341,14 @@ def chatuser(request,pk):
     return Response(status= status.HTTP_403_FORBIDDEN)
   chatuser = ChatUser.objects.filter(chatroom=chatroom.id)
   if request.method == 'GET':
-    serializer = ChatUserSerializer(chatuser, many=True)
-    return Response(serializer.data)
+    for t in chatuser:
+      if t.chatuser == request.user:
+        serializer = ChatUserSerializer(chatuser, many=True)
+        return Response(serializer.data)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
   elif request.method == 'POST':
+    if chatroom.secret:
+      return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
     for t in chatuser:
       if t.chatuser == request.user:
          return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -351,14 +358,17 @@ def chatuser(request,pk):
       return Response(status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_400_BAD_REQUEST)
   elif request.method == 'DELETE':
-    exituser = ChatUser.objects.filter(chatroom=chatroom.id, chatuser=request.user)
-    if exituser.exists():
-      exituser.delete()
-      if not ChatUser.objects.filter(chatroom=chatroom.id).exists():
-        chatroom.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-      return Response(ChatUserSerializer(chatuser, many=True).data)
-    return Response(ChatUserSerializer(chatuser, many=True).data)
+    for t in chatuser:
+      if t.chatuser == request.user:
+        exituser = ChatUser.objects.filter(chatroom=chatroom.id, chatuser=request.user)
+        if exituser.exists():
+          exituser.delete()
+          if not ChatUser.objects.filter(chatroom=chatroom.id).exists():
+            chatroom.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+          return Response(ChatUserSerializer(chatuser, many=True).data)
+        return Response(ChatUserSerializer(chatuser, many=True).data)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @api_view(['GET'])
