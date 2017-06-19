@@ -1,8 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {addArticle} from '../../actions'
+import PropTypes from 'prop-types'
 
-class AddArticle extends React.Component{
+class AddReply extends React.Component{
   render(){
     let text = "글을 입력하시라우";
     let files = null;
@@ -22,7 +23,7 @@ class AddArticle extends React.Component{
                 url = 'https://www.youtube.com/embed/'+pattern[2];
             }
         }
-        this.props.onClick(this.props.id, text, files, url);
+        this.props.onClick(this.props.parent_id, text, files, url);
     }
     const handleChange = (e) => {
         text = e.target.value;
@@ -41,12 +42,15 @@ class AddArticle extends React.Component{
   }
 }
 
+AddReply.propTypes = {
+    parent_id: PropTypes.object.isRequired
+}
+
 let mapStateToProps = (state) => {
     console.log(window.location.pathname)
   return {
-     id: state.parent_article,
-     textId: "post_text_field",
-     buttonId: "post_button_field"
+     textId: "post_reply_text_field",
+     buttonId: "post_reply_button_field"
   }
 } 
 
@@ -58,6 +62,6 @@ let mapDispatchToProps = (dispatch) => {
    }
 }
 
-AddArticle = connect(mapStateToProps, mapDispatchToProps)(AddArticle)
+AddReply = connect(mapStateToProps, mapDispatchToProps)(AddReply)
 
-export default AddArticle
+export default AddReply
