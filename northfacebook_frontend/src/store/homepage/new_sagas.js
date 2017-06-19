@@ -830,6 +830,7 @@ function *watchLoginState() {
         }
     }
     console.log(yield select());
+    console.log(localStorage['parent']);
 }
 
 // watchSignIn: 로그인 버튼 클릭 관찰
@@ -1239,6 +1240,10 @@ function *postArticle(id, text, images, url) {
 
 // deleteArticle: 자신이 쓴 글을 지우는 함수
 function *deleteArticle(id){
+    let changeurl = window.location.pathname;
+    if(id.toString() === localStorage['parent']) {
+        changeurl = '/main/';
+    }
     const path = 'article/'+id+'/';
     try{
         yield call(xhr.send, fixed_url+path,{
@@ -1250,18 +1255,17 @@ function *deleteArticle(id){
             responseType:'json'
         });
     console.log("delete article succeed!!!");
-    yield put(actions.changeUrl('/main/'));
-    //TODO parent article여부 확인해서 main 또는 detailpage로
-    }catch(error){
+    yield put(actions.changeUrl(changeurl));
+    } catch(error){
         console.log(error);
         if(error.statusCode === 204){
             console.log("delete article succeedd!!");
-            yield put(actions.changeUrl('/main/'));
+            yield put(actions.changeUrl(changeurl));
         }
         else if(error.statusCode === 403){
             alert("당신의 글이 아니오.");
         }
-        else yield put(actions.changeUrl('/main/'));
+        else yield put(actions.changeUrl(changeurl));
     }
 }
 
