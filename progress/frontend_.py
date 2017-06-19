@@ -82,22 +82,22 @@ def signUpAlertVerification(driver, username, password):
     # no username
     driver.find_element_by_id('sign_up').click()
     sleep(delayTime)
-    alert(driver, "Enter the username")
+    alert(driver, "아이디를 입력하시오!")
     # no password
     driver.find_element_by_id('username_field').send_keys('test')
     driver.find_element_by_id('sign_up').click()
     sleep(delayTime)
-    alert(driver, "Enter the password")
+    alert(driver, "비밀번호를 입력하시오!")
     # no pwd verification
     driver.find_element_by_id('password_field').send_keys('testpasswd')
     driver.find_element_by_id('sign_up').click()
     sleep(delayTime)
-    alert(driver, "Enter the password verification")
+    alert(driver, "비밀번호를 확인하시오!")
     # password not matching
     driver.find_element_by_id('pwdverification_field').send_keys('testpasswd_diff')
     driver.find_element_by_id('sign_up').click()
     sleep(delayTime)
-    alert(driver, "Password does not match")
+    alert(driver, "비밀번호가 일치하지 않소!")
 
 def signUpVerification(driver, testNum):
     signUpPageVerification(driver)
@@ -141,15 +141,15 @@ def articleVerification(driver, article, depth):
     if depth < 2:
         check(driver, replyId)
     check(driver, likeButtonId)
-    if depth < 2:
+    if depth == 1:
         check(driver, replyButtonId)
     if depth == 0:
         check(driver, detailId) # component check finished
     #Contents checking
-    if driver.find_element_by_id(writerId).text != "id: "+article["owner"]:
+    if driver.find_element_by_id(writerId).text != article["owner"]:
         print("Owner not match on article %d" % article["id"])
         exit(1)
-    elif driver.find_element_by_id(textId).text != article["text"]:
+    elif driver.find_element_by_id(textId).text != article["text"].replace('\r', ''):
         print("Text not match on article %d" % article["id"])
         print(driver.find_element_by_id(textId).text)
         print(article["text"])
@@ -171,11 +171,11 @@ def likeVerification(driver, article_id, isClicked):
         alert(driver, "동무는 이 글을 더이상 좋아할 수 없소.")
 
 def replyVerification(driver, article_id, text):
-    replyId = "a"+str(article_id)+"_reply_button_field"
-    check(driver, replyId)
-    driver.find_element_by_id(replyId).click()
+    detailId = "a"+str(article_id)+"_detail_button_field"
+    check(driver, detailId)
+    driver.find_element_by_id(detailId).click()
     sleep(delayTime)
-    writePageVerification(driver, text)
+    writeVerification(driver, text)
 
 def editVerification(driver, article_id, text):
     editId = "a"+str(article_id)+"_edit_button_field"
@@ -205,7 +205,7 @@ def editErrorVerification(driver, article_id):
     check(driver, editId)
     driver.find_element_by_id(editId).click()
     sleep(delayTime)
-    alert(driver, "당신의 글이 아니오.")
+    alert(driver, "당신 글이 아니오!")
 
 def deleteErrorVerification(driver, article_id):
     deleteId = "a"+str(article_id)+"_delete_button_field"
@@ -218,20 +218,26 @@ def deleteErrorVerification(driver, article_id):
 def mainPageVerification(driver, articles):
     sleep(delayTime)
     check(driver, "article_list_field")
-    check(driver, "write_button_field")
     check(driver, "to_my_wall")
+    check(driver, 'chat_button_field')
     for article in articles:
         articleVerification(driver, article, 0)
 
 #####WRITE PAGE#####
 # write page verification (article, not reply)
-def writePageVerification(driver, text):
-    sleep(delayTime)
+def writeVerification(driver, text):
     check(driver, "add_article_field")
     check(driver, "post_text_field")
     check(driver, "post_button_field") # check rendering
     driver.find_element_by_id("post_text_field").send_keys(text)
     driver.find_element_by_id("post_button_field").click()
+"""def writePageVerification(driver, text):
+    sleep(delayTime)
+    check(driver, "add_article_field")
+    check(driver, "post_text_field")
+    check(driver, "post_button_field") # check rendering
+    driver.find_element_by_id("post_text_field").send_keys(text)
+    driver.find_element_by_id("post_button_field").click()"""
 
 #####DETAIL PAGE#####
 def detailPageVerification(driver, article, replies):
@@ -297,7 +303,39 @@ def wallPageVerification(driver, articles, username):
             print(username+label)
             print(driver.find_element_by_id(labelId).text)
             exit(1)
-        articleVerification(driver, article, article["depth"])
+        #articleVerification(driver, article, article["depth"])
+
+def wallArticleVerification(driver, article):
+    articleId = "a"+str(article["id"])+"_field"
+    writerId = "a"+str(article["id"])+"_writer_field"
+    textId = "a"+str(article["id"])+"_text_field"
+    createdId = "a"+str(article["id"])+"_created_field"
+    updatedId = "a"+str(article["id"])+"_updated_field"
+    detailId = "a"+str(article["id"])+"_detail_button_field"
+    likeId = "a"+str(article["id"])+"_like_field"
+    replyId = "a"+str(article["id"])+"_reply_field"
+    check(driver, articleId)
+    check(driver, writerId)
+    check(driver, textId)
+    check(driver, createdId)
+    check(driver, updatedId)
+    check(driver, likeId)
+    check(driver, detailId) # component check finished
+    #Contents checking
+    if driver.find_element_by_id(writerId).text != article["owner"]:
+        print("Owner not match on article %d" % article["id"])
+        exit(1)
+    elif driver.find_element_by_id(textId).text != article["text"].replace('\r', ''):
+        print("Text not match on article %d" % article["id"])
+        print(driver.find_element_by_id(textId).text)
+        print(article["text"])
+        exit(1)
+    elif driver.find_element_by_id(likeId).text != str(article["like_num"]):
+        print("Like num not match on article %d" % article["id"])
+        exit(1)
+    elif depth < 2 and driver.find_element_by_id(replyId).text != str(article["children_num"]):
+        print("Reply num not match on article %d" % article["id"])
+        exit(1)
 
 #####FRIEND PAGE#####
 def toMyProfile(driver):
@@ -526,10 +564,6 @@ def sendTextVerification(driver, link, uname, upwd, roomId):
     elif driver.find_element_by_id("t"+str(textId)+"_writer_field").text != uname:
         print("Text writer isn't match!")
         exit(1)
-"""
-def signOutVerification(driver):
-    check(driver, "sign_out")
-    driver.find_element_by_id("sign_out").click()"""
 
 def B_chatRoomVerification(driver, roomId):
     # in the ~/main/

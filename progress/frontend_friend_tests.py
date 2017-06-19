@@ -12,6 +12,7 @@ from frontend_ import *
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.chrome.options import Options
 
 delayTime = 1 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫자를 늘려보자
 
@@ -46,7 +47,15 @@ for i in range(1,userN):
     post_or_error_anon(user_link, body)
 print("Frontend initializer ran successfully!")
 ##########################FRONTEND TEST START##############################
-driver = webdriver.Chrome('/usr/local/bin/chromedriver') #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
+chrome_options = Options()
+chrome_options.add_experimental_option('prefs', {
+    'credentials_enable_serice': False,
+    'profile': {
+        'password_manager_enabled': False
+        }
+    })
+
+driver = webdriver.Chrome('/usr/local/bin/chromedriver', chrome_options=chrome_options) #TODO 제대로 작동하지 않을 경우 크롬의 설치경로를 확인해볼 것
 driver.get(frontend_link)
 driver.maximize_window()
 
@@ -105,6 +114,7 @@ check(driver, "mr_"+user_list[1][0]+"_field")
 check(driver, "mr_"+user_list[1][0]+"_name_field")
 driver.find_element_by_id("mr_"+user_list[1][0]+"_name_field").click()
 profileURLVerification(driver, frontend_link, user_list[1][0])
+sleep(delayTime)
 signOutVerification(driver, user_list[0][0])
 
 print("4. send addfriend request with another user.")
