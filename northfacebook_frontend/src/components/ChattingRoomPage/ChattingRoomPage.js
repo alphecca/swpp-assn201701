@@ -18,14 +18,13 @@ class ChattingRoomPage extends React.Component {
                 <div >
                 <SignOut />
                 <div className="ChattingRoom">
-                <div className="divider" />
                 <button id="new_room_button_field" onClick={this.props.onNewRoomClick}>새로운 방</button>
                 <br />
                 <br />
-                참여한 방 목록
+                <h2>참여한 방 목록</h2>
                 <NowChatRoomList />
                 <br />
-                참여하지 않은 방 목록
+                <h2>참여하지 않은 방 목록</h2>
                 <NonChatRoomList />
                 </div>
                 </div>

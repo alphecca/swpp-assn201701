@@ -16,7 +16,7 @@ class WallPage extends React.Component {
                 <div>
                     <SignOut />
                     <div className="TimeLine">
-                        <span id="wall_info">{this.props.profile_user}의 담벼락</span>
+                        <h1 id="wall_info" >{this.props.profile_user}의 담벼락</h1>
                         <WallArticleList />
                     </div>
                 </div>

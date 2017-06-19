@@ -28,17 +28,14 @@ class AddArticle extends React.Component{
         text = e.target.value;
     }
     return(
-      <div id="add_article_field" className="AddArticle">
+      <div id="add_article_field"  className="AddArticle">
         <textarea id={this.props.textId} cols="50" rows="10" placeholder={text} onChange={handleChange}/>
         <br />
-        <input id="upload_img0" className="sub_button" type="file" accept=".png, .jpg, .jpeg, .gif" onChange={(e) => {files = e.target.files;}}/>
+        <div className="label">
+        <input id="upload_img0" font color="white"  className="sub_button" type="file" accept=".png, .jpg, .jpeg, .gif" onChange={(e) => {files = e.target.files;}}/>
         영상넣기: <input id='add_youtube_link' onChange={(e) => {url=e.target.value;}}/>
-<<<<<<< HEAD
-        <button id={this.props.buttonId} className="main_button" onClick={onPostClick}>POST</button>
-=======
-        <br />
-        <button id={this.props.buttonId} onClick={onPostClick}>글쓰기</button>
->>>>>>> 6eda02a206ebe1ef9bcb8339a759798ff674f108
+        <button id={this.props.buttonId} className="main_button" onClick={onPostClick}>글쓰기</button>
+      </div>
       </div>
     );
   }

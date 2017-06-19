@@ -10,7 +10,7 @@ class SignOut extends React.Component {
                 <div className="ToolBar" >
                    <button id="to_main_page_field" className="TOMAIN" onClick={this.props.onBackClick}/>
                    <div className="Notif">
-                     <span id="user_data_field">불러오는 중...</span>
+                   <span id="user_data_field">불러오는 중...</span>
                    </div>
                 </div>
                     )

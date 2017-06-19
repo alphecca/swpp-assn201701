@@ -46,18 +46,14 @@ class Article extends React.Component {
         const onPostClick = ()=>{
             this.props.onPostClick(username);
         }
-        var depth=this.props.article.depth;
-        if(depth===0){
-        return (
-		<div>
-                <div id={componentId} className="Article">
         const depth = this.props.article.depth;
         const css = depth === 0 ? 'Article' : depth === 1 ? 'ArticleArticle' : 'ArticleArticleArticle';
         const user = this.props.authorization.split(':')[0];
         if(!this.state.edit)
             return (
+		<div>
+		<div className="Article_padding" />
                 <div id={componentId} className={css}>
->>>>>>> 6eda02a206ebe1ef9bcb8339a759798ff674f108
                     <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
                     <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
                     <hr />
@@ -80,20 +76,20 @@ class Article extends React.Component {
                     <div className="divider"/>
                     <button id={likeButtonId} className="main_button" onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
                     <div className="divider"/>
-                    <button id={editButtonId} className="main_button" onClick={ ()=>this.props.onEditClick(this.props.article.id, username)}>바꾸기</button>
-                    <button id={editButtonId} className="main_button" onClick={() => {if(user === username)this.setState({edit: true}); else alert('당신 글이 아니오!')}}>바꾸기</button>
+                    <button id={editButtonId} className="main_button"onClick={() => {if(user === username)this.setState({edit: true}); else alert('당신 글이 아니오!')}}>바꾸기</button>
                     <div className="divider"/>
-                    <button id={deleteButtonId} className="main_button" onClick={() => this.props.onDeleteClick(this.props.article.id)}>지우기</button>
+                    <button id={deleteButtonId} className="main_button"onClick={() => this.props.onDeleteClick(this.props.article.id)}>지우기</button>
                     <br />
                     붙임글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    {depth === 0 ? <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article.id)}>자세히</button> : null}
+                    {depth === 0 ? <button id={detailButtonId} className="main_button" onClick={() =>this.props.onDetailClick(this.props.article.id)}>자세히</button> : null}
                     <div className="divider"/>
-                    {depth === 1 ? <button id={replyButtonId} onClick={() => this.setState({addReply: !this.state.addReply})}>붙이기</button> : null}
-                    {this.state.addReply ? <div><AddReply parent_id={this.props.article} /><button onClick={() => this.setState({addReply:false})}>취소</button></div> : null}
+                    {depth === 1 ? <button id={replyButtonId} className="main_button"  onClick={() => this.setState({addReply: !this.state.addReply})}>붙이기</button> : null}
+                    {this.state.addReply ? <div><AddReply parent_id={this.props.article} /><button className="main_button" onClick={() => this.setState({addReply:false})}>취소</button></div> : null}
                     <br />
                     </div>
                 </div>
+		</div>
             )
         else
             return (
@@ -123,8 +119,6 @@ let mapDispatchToProps = (dispatch) => {
         onLikeClick: (id, auth) => dispatch(postLike(id, auth)),
         onDetailClick: (id) => dispatch(articleDetail(id)),
         onPostClick: (profuser) =>dispatch(toProfile(profuser)),
-
-
     }
 }
 

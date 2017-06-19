@@ -17,7 +17,7 @@ class ChangeIntroPage extends React.Component{
             else this.props.onClick(this.props.profile_user,this.myname.value, this.mybelong.value, this.myintro.value, this.state.removeImg, this.state.changeImg, img);
         }
         return(
-            <div className="TimeLine">
+            <div className="Change">
                 <span>{this.props.profile_user}동무는 누구인가?</span>
                 <br />
                 이름<input type="myname" placeholder={this.props.myname}  ref={node=>{this.myname = node;} } id="myname" className="field" />

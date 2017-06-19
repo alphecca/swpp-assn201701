@@ -1,11 +1,19 @@
+#mypage{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+}
+html{
+  font-family: 궁서;
+}
 .ToolBar{
-  width: 2048px;
+  width: 100%; 
   height: 100px;
   background: url("login_logo.png");
   background-repeat: no-repeat;
   background-size: 6em 3em;
   position: fixed;
-  font-family: 궁서;
   font-size: 32px;
   font-style: bold;
   background-color: rgb(237,30,39);
@@ -23,11 +31,10 @@
   border: none;
   float: left;
   width: 200px;
-  height: 100px;
+  height: 80px;
   position: fixed;
   top: 8px;
   font-size: 25px;
-  font-family: 궁서;
   background: url('login_logo.png');
   background-repeat: no-repeat;
   background-size: 8em 5em;
@@ -40,20 +47,24 @@
   top: 20px;
   left: 30em;
   font-size: 25px;
-  font-family: 궁서;
   background-color: rgb(237,30,39);
+  color: black;
 }
 .Link{
   cursor: pointer;
+}
+.Change{
+  
+  background-color: rgba(237,237,128,0.5);
 }
 .AddArticle{
   top: 50em;
   left: 30em;
   font-size: 20px;
+  padding-top: 50px;
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 50px;
-  font-family: 궁서;
 }
 /*
 .EditArticle{
@@ -67,24 +78,25 @@
 }
 **/
 button{
-  font-family: 궁서;
   text-align: center;
   font-size: 20px;
   cursor: pointer;
   background-color: rgba(237,30,39,0.7);
+  color: white;
+  font-family: 궁서;
 }
 .detail_button{ 
   width:9em;
   height: 2em;
-  color: white;
 }
 .main_button{
   width: 4em;
   height: 2em;
-  color: white;
+  margin-left: 20px;
 }
 button#post_button_field{
   margin-left: 70px;
+  font-family: 궁서;
 }
 /*
 #write_button_field{
@@ -93,41 +105,47 @@ button#post_button_field{
   height: 2em;
   left: 30%;
   font-size: 25px;
-  font-family: 궁서;
 }*/
 .TimeLine{
   text-align: center;
   position: absolute;
   top: 150px;
   left: 23em;
-  font-family: 궁서;
+  right:20em;
+  padding-bottom: 50px;
 }
 .Article_padding{
   padding-bottom: 20px;
 }
 .Article{
-  font-family: 궁서;
+  text-align: center;
   background-color: rgba(237,156,156,0.5);
   font-size: 18px;
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 20px;
+  overflow: auto;
+  word-break: break-all;
 }
 .ArticleArticle{
-  font-family: 궁서;
+  text-align: center;
   background-color: rgba(237,156,237,0.5);
   font-size: 18px;
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 5px;
+  overflow: auto;
+  word-break: break-all;
 }
 .ArticleArticleArticle{
-  font-family: 궁서;
+  text-align : center;
   background-color: rgba(237,237,237,0.5);
   font-size: 18px;
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 5px;
+  overflow: auto;
+  word-break: break-all;
 }
 .article_text{
   font-weight: bold;
@@ -145,43 +163,58 @@ button#post_button_field{
   position: absolute;
   top: 100px;
   left:23em;
+  overflow: auto;
+  word-break: break-all;
 }
 .Tags{
   text-align: justify;
 }
+.label{
+  background-color: rgba(237,156,156,0.5);
+}
 /* TODO ChattingPage 및 ChattingRoomPage, CreateRoomPage css는 여기에 추가할 것 */
 .ChattingRoom{
+  text-align: center;
   position: absolute;
-  top: 120px;
-  left:2em;
+  top: 150px;
+  left:23em;
+  right:23em;
+  font-color: white;
 }
-
+.chattingBox{
+  text-align: center;
+  padding: 5px 5px 5px 5px;
+  overflow: auto;
+  word-break: break-all;
+}
 .Chatting{
   position: absolute;
-  top: 120px;
-  left:2em;
+  top: 150px;
+  left:23em;
+  right:23em;
 }
 
 .CreateRoom{
   position: absolute;
-  top: 120px;
-  left:2em;
+  top: 150px;
+  left:23em;
 }
 
 .FriendPage{
   position: absolute;
-  top: 120px;
-  left:2em;
+  top: 150px;
+  left:23em;
 }
-
+.FriendList{
+  font-size: 12px;
+}
 .AddFriendPage{
   position: absolute;
-  top: 120px;
-  left:2em;
+  top: 150px;
+  left:23em;
 }
 
 .Room{
-  font-family: 궁서;
   text-align: left;
   background-color: rgba(64,127,237,0.5);
   font-size: 20px;
@@ -192,7 +225,6 @@ button#post_button_field{
 }
 
 .SecretRoom{
-  font-family: 궁서;
   text-align: left;
   background-color: rgba(237,64,127,0.5);
   font-size: 20px;
@@ -203,7 +235,6 @@ button#post_button_field{
 }
 
 .ChattingUser{
-  font-family: 궁서;
   text-align: left;
   background-color: rgba(128,237,237,0.5);
   font-size: 18px;
@@ -214,7 +245,7 @@ button#post_button_field{
 }
 
 .Text{
-  font-family: 궁서;
+  width : 800px;
   text-align: left;
   background-color: rgba(237,237,237,0.5);
   font-size: 18px;
@@ -225,7 +256,6 @@ button#post_button_field{
 }
 
 .Friend{
-  font-family: 궁서;
   text-align: left;
   background-color: rgba(237,128,237,0.5);
   font-size: 20px;
@@ -236,7 +266,6 @@ button#post_button_field{
 }
 
 .FriendRequest{
-  font-family: 궁서;
   text-align: left;
   background-color: rgba(237,237,128,0.5);
   font-size: 20px;
@@ -247,7 +276,6 @@ button#post_button_field{
 }
 
 .MyRequest{
-  font-family: 궁서;
   text-align: left;
   background-color: rgba(128,237,128,0.5);
   font-size: 20px;
@@ -258,7 +286,6 @@ button#post_button_field{
 }
 
 .FriendRequestButtons{
-  font-family: 궁서;
   text-align: right;
   padding-left: 20px;
   padding-right: 5px;
@@ -267,7 +294,6 @@ button#post_button_field{
 }
 
 .MyRequestButtons{
-  font-family: 궁서;
   text-align: right;
   padding-left: 20px;
   padding-right: 5px;
@@ -292,7 +318,6 @@ button#post_button_field{
 }
 .Text-Field{
   font-size: 2em;
-  font-family: 궁서;
   color: white;
   font-style: bold;
   margin: 10px;
@@ -301,7 +326,6 @@ button#post_button_field{
 .Button-Field{
   font-size: 2em;
   color: white;
-  font-family: 궁서;
 }
 #sign_in{
   width: 10em;
@@ -310,7 +334,6 @@ button#post_button_field{
   font-size: 30px;
   background-color:rgb(237,30,39);
   font-size: 20px;
-  font-family: 궁서;
   width: 120px;
   height: 40px;
 }
@@ -321,7 +344,6 @@ button#post_button_field{
   font-size: 30px;
   background-color:rgb(237,30,39);
   font-size: 20px;
-  font-family: 궁서;
   width: 200px;
   height: 40px;
 }
@@ -330,7 +352,6 @@ button#post_button_field{
   width: 10em;
   height: 1.5em;
   font-weight: bold;
-  font-family: 궁서;
   color: white;
   font-size: 30px;
   background-color:rgb(237,30,39);
@@ -340,7 +361,6 @@ button#post_button_field{
     text-align: center;
     font-size: 2em;
     font-weight: bold;
-    font-family: 궁서;
 }
 #to_main{
     border: none;
@@ -360,18 +380,24 @@ button#post_button_field{
 #p_img{
     width: 200px;
 }
-
+/*사상*/
+.Sasang{
+  background-color: rgba(237,237,128,0.5);
+}
 /* 일반적인 버튼 및 textarea등 태그에 대한 css */
 textarea{
   font-size: 20px;
+  font-family: 궁서;
 }
 hr{
   color: rgb(237,30,39);
+  font-family: 궁서;
 }
 input{
    width: 130px;
    height: 30px;
    font-size: 18px;
+  font-family: 궁서;
 }
 body{
   background-attachment: fixed;
@@ -380,6 +406,7 @@ body{
   -webkit-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  font-family: 궁서;
 }
 img{
   width: 700px;
