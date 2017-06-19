@@ -131,6 +131,13 @@ export const joinRoom = (id) => {
     }
 }
 
+export const quitRoom = (id) => {
+    return {
+	type: 'QUIT_ROOM',
+	id: id
+    }
+}
+
 export const showChatting = (id) => {
     return {
 	type: 'SHOW_CHATTING',
@@ -152,10 +159,14 @@ export const postText = (room_id, text) => {
     }
 }
 
-export const postRoom = (room_name) => {
+export const postRoom = (room_name, secret, invite) => {
+    console.log("secret in actions.js")
+    console.log(secret)
     return {
 	type: 'POST_ROOM',
-	room_name: room_name
+	room_name: room_name,
+    secret: secret,
+    invite: invite
     }
 }
 
