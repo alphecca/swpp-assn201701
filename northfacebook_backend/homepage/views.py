@@ -297,9 +297,30 @@ def chatroom_list(request):
         serializer = ChatRoomSerializer(data=request.data)
         if serializer.is_valid():
             chatroom = serializer.save()
-            serializer = ChatUserSerializer(data=request.data)
+            serializer = ChatUserSerializer(data={})
             if serializer.is_valid():
                 serializer.save(chatroom=chatroom, chatuser=request.user)
+# 다른 유저를 초대하려면 POST시 request.data에 다음과 같이 추가하세요.
+# "invite": ["swpp", "asdf"]
+
+# 초대 유저 목록 중 없는 유저가 있으면 아무도 초대되지 않고,
+# 자신이 초대 목록에 포함되어 있다고 중복 참여되지는 않습니다.
+# invite 속성은 request.data에 포함되지 않아도 무방합니다.
+                try:
+                    invite = []
+                    for other in rd['invite']:
+                        user = User.objects.get(username=other)
+                        if user != request.user:
+                            invite.append(User.objects.get(username=other))
+                except:
+                    return Response(status=status.HTTP_201_CREATED)
+                try:
+                    for other in invite:
+                        serializer = ChatUserSerializer(data={})
+                        if serializer.is_valid():
+                            serializer.save(chatroom=chatroom, chatuser=other)
+                except:
+                    pass
                 return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -317,11 +338,6 @@ def chatroom_detail(request,pk):
     if request.method == 'GET':
         serializer = ChatRoomSerializer(chatroom)
         return Response(serializer.data)
-    """
-    elif request.method == 'DELETE':
-        chatroom.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    """
 
 @api_view(['GET'])
 def chatuser_list(request):
@@ -366,6 +382,7 @@ def chatuser(request,pk):
           if not ChatUser.objects.filter(chatroom=chatroom.id).exists():
             chatroom.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+          chatuser = ChatUser.objects.filter(chatroom=chatroom.id)
           return Response(ChatUserSerializer(chatuser, many=True).data)
         return Response(ChatUserSerializer(chatuser, many=True).data)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
