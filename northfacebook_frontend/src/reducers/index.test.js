@@ -7,7 +7,8 @@ const initState = {
     authorization: "",
     articles: [],
     parent_article: null,
-    rooms: [],
+    nowchat_rooms: [],
+    nonchat_rooms: [],
     texts: [],
     chatting_users: [],
     profile_user: null,
@@ -17,6 +18,7 @@ const initState = {
     my_requests: [],
     load: 0,
     loading: false,
+    sasangs: [],
 }
 
 
@@ -30,7 +32,8 @@ describe('homepage reducer', () => {
             authorization: auth,
             articles: [],
             parent_article: null,
-            rooms: [],
+            nowchat_rooms: [],
+            nonchat_rooms: [],
             texts: [],
             chatting_users: [],
             profile_user: null,
@@ -40,6 +43,7 @@ describe('homepage reducer', () => {
             my_requests: [],
             load: 0,
             loading: false,
+            sasangs: [],
         })
     })
     it('should return the signout state', () => {
@@ -60,7 +64,7 @@ describe('homepage reducer', () => {
             "images": []
         }]
         const parent_article = null
-        const rooms = [], texts=[], chatting_users = []
+        const nowchat_rooms = [], nonchat_rooms = [], texts=[], chatting_users = []
         const room_id=0
         const profile_user = null
 
@@ -68,7 +72,8 @@ describe('homepage reducer', () => {
             authorization: auth,
             articles: articles,
             parent_article: parent_article,
-            rooms: rooms,
+            nowchat_rooms: nowchat_rooms,
+            nonchat_rooms: nonchat_rooms,
             room_id: room_id,
             texts: texts,
             chatting_users: chatting_users,
@@ -78,6 +83,7 @@ describe('homepage reducer', () => {
             my_requests: [],
             load: 0,
             loading: false,
+            sasangs: [],
         }
 
         expect(homepageApp(undefined, actions.setState(state))).toEqual(state)

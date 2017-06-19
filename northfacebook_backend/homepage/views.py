@@ -128,15 +128,11 @@ def like(request,pk):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def user_nowchat(request,username):
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+def user_nowchat(request):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
-        serializer = NowChatSerializer(user)
+        serializer = NowChatSerializer(request.user)
         chat = []
         for room_id in serializer.data:
             chat.append(Chat.objects.get(id=room_id))
@@ -144,21 +140,17 @@ def user_nowchat(request,username):
         return Response(serializer.data)
 
 @api_view(['GET'])
-def user_nonchat(request,username):
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+def user_nonchat(request):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
-        serializer = NonChatSerializer(user)
+        serializer = NonChatSerializer(request.user)
         chat = []
         for room_id in serializer.data:
             room = Chat.objects.get(id=room_id)
             if not ChatUser.objects.filter(chatroom=room.id).exists():
                 room.delete()
-            else:
+            elif not room.secret:
                 chat.append(room)
         serializer = ChatRoomSerializer(chat, many=True)
         return Response(serializer.data)
@@ -297,13 +289,34 @@ def chatroom_list(request):
         serializer = ChatRoomSerializer(data=request.data)
         if serializer.is_valid():
             chatroom = serializer.save()
-            serializer = ChatUserSerializer(data=request.data)
+            serializer = ChatUserSerializer(data={})
             if serializer.is_valid():
                 serializer.save(chatroom=chatroom, chatuser=request.user)
+# 다른 유저를 초대하려면 POST시 request.data에 다음과 같이 추가하세요.
+# "invite": ["swpp", "asdf"]
+
+# 초대 유저 목록 중 없는 유저가 있으면 아무도 초대되지 않고,
+# 자신이 초대 목록에 포함되어 있다고 중복 참여되지는 않습니다.
+# invite 속성은 request.data에 포함되지 않아도 무방합니다.
+                try:
+                    invite = []
+                    for other in rd['invite']:
+                        user = User.objects.get(username=other)
+                        if user != request.user:
+                            invite.append(User.objects.get(username=other))
+                except:
+                    return Response(status=status.HTTP_201_CREATED)
+                try:
+                    for other in invite:
+                        serializer = ChatUserSerializer(data={})
+                        if serializer.is_valid():
+                            serializer.save(chatroom=chatroom, chatuser=other)
+                except:
+                    pass
                 return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'DELETE'])
+@api_view(['GET'])
 def chatroom_detail(request,pk):
     try:
         chatroom = Chat.objects.get(pk=pk)
@@ -317,9 +330,6 @@ def chatroom_detail(request,pk):
     if request.method == 'GET':
         serializer = ChatRoomSerializer(chatroom)
         return Response(serializer.data)
-    elif request.method == 'DELETE':
-        chatroom.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
 def chatuser_list(request):
@@ -339,9 +349,17 @@ def chatuser(request,pk):
     return Response(status= status.HTTP_403_FORBIDDEN)
   chatuser = ChatUser.objects.filter(chatroom=chatroom.id)
   if request.method == 'GET':
+    if chatroom.secret:
+        for t in chatuser:
+          if t.chatuser == request.user:
+            serializer = ChatUserSerializer(chatuser, many=True)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
     serializer = ChatUserSerializer(chatuser, many=True)
     return Response(serializer.data)
   elif request.method == 'POST':
+    if chatroom.secret:
+      return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
     for t in chatuser:
       if t.chatuser == request.user:
          return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -351,14 +369,18 @@ def chatuser(request,pk):
       return Response(status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_400_BAD_REQUEST)
   elif request.method == 'DELETE':
-    exituser = ChatUser.objects.filter(chatroom=chatroom.id, chatuser=request.user)
-    if exituser.exists():
-      exituser.delete()
-      if not ChatUser.objects.filter(chatroom=chatroom.id).exists():
-        chatroom.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-      return Response(ChatUserSerializer(chatuser, many=True).data)
-    return Response(ChatUserSerializer(chatuser, many=True).data)
+    for t in chatuser:
+      if t.chatuser == request.user:
+        exituser = ChatUser.objects.filter(chatroom=chatroom.id, chatuser=request.user)
+        if exituser.exists():
+          exituser.delete()
+          if not ChatUser.objects.filter(chatroom=chatroom.id).exists():
+            chatroom.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+          chatuser = ChatUser.objects.filter(chatroom=chatroom.id)
+          return Response(ChatUserSerializer(chatuser, many=True).data)
+        return Response(ChatUserSerializer(chatuser, many=True).data)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @api_view(['GET'])

@@ -36,7 +36,7 @@ class AddReply extends React.Component{
         <br />
         영상넣기: <input id='add_reply_youtube_link' onChange={(e) => {url=e.target.value;}}/>
         <br />
-        <button id={this.props.buttonId} onClick={onPostClick}>글쓰기</button>
+        <button className="main_button" id={this.props.buttonId} onClick={onPostClick}>글쓰기</button>
       </div>
     );
   }

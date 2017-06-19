@@ -20,7 +20,7 @@ class ChangePWPage extends React.Component {
         } 
         return (
                 <div>
-                    <div className="TimeLine">
+                    <div className="Change">
                         <span>{this.props.profile_user}동무는 비밀번호를 바꾸는가?</span>
                         <br />
                         현재 비밀번호<input type="password" ref={ node=>{this.currpw = node;} } id="curr_pw" className="field" />

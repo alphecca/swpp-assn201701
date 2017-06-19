@@ -36,25 +36,33 @@ class WallArticle extends React.Component {
         const typeLabel = () => {
             if(this.props.article.owner !== current)
                 return (
-                        <div>
+                        <div className="typeLabel">
                             <p id={labelId}>{current}가 좋아요한 글입니다.</p>
                         </div>
                        )
             else if(this.props.article.depth !== 0)
                 return (
-                        <div>
-                            <p id={labelId}>{current}가 작성한 댓글입니다.</p>
+			<div>
+		        <div className="Article_padding" />
+                        <div className="typeLabel">
+                            <h3 id={labelId}>{current}가 작성한 댓글입니다.</h3>
                         </div>
+			</div>
                        )
             else
                 return (
-                        <div>
+			<div>
+		        <div className="Article_padding" />
+                        <div className="typeLabel">
                             <p id={labelId}>{current}가 작성한 글입니다.</p>
                         </div>
+			</div>
                        )
         }
         const css = this.props.article.depth === 0 ? 'Article' : this.props.article.depth === 1 ? 'ArticleArticle' : 'ArticleArticleArticle';
         return (
+		<div>
+		<div className="Article_padding" />
                 <div id={componentId} className={css}>
                     {typeLabel()}
                     <img src={this.props.article.owner_img} alt='' id={profileId} className='PROFILEIMG' />
@@ -73,14 +81,15 @@ class WallArticle extends React.Component {
                      <div className="Tags">
                     좋소: <span id={likeNumId}>{likeNum}</span>
                     <div className="divider"/>
-                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
+                    <button id={likeButtonId} className="main_button" onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
                     <br />
                     댓글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article.depth === 0 ? this.props.article.id : this.props.article.root)}>자세히</button>
+                    <button id={detailButtonId} className="main_button" onClick={() =>this.props.onDetailClick(this.props.article.depth === 0 ? this.props.article.id : this.props.article.root)}>자세히</button>
                     <br />
                     </div>
                 </div>
+		</div>
                )
     }
 }

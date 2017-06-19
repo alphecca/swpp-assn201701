@@ -24,7 +24,7 @@ class ButtonList extends React.Component{
                alert("남의 려권 입니다.");
             else{
         //        this.props.onClick1();
-                if(this.state.showComponent1) this.setState({showComponent1 : false,});
+                if(this.state.showComponent1) this.setState({showComponent1 : false,showComponent2:false, showComponent3: false});
                 else this.setState({showComponent1 : true, showComponent2: false, showComponent3: false});
             }
         }
@@ -33,7 +33,7 @@ class ButtonList extends React.Component{
                  alert("남의 려권 입니다.");
              else{
           //       this.props.onClick2()
-                 if(this.state.showComponent2) this.setState({showComponent2 : false,});
+                 if(this.state.showComponent2) this.setState({showComponent1: false, showComponent2 : false, showComponent3: false});
                  else this.setState({showComponent2 : true, showComponent1:false, showComponent3:false});
              }
         }
@@ -104,23 +104,28 @@ class ButtonList extends React.Component{
                <div id="change_pw_field">
                    <button id="change_pw_button_field" onClick={onPostClick1}>암호 바꾸기!</button>
                    {this.state.showComponent1 ? <ChangePWPage />: null }
-               </div>
-               <div id="change_detail_field">
+                </div>
+		<br />
+                <div id="change_detail_field">
                    <button id="change_detail_button_field" onClick={onPostClick2}>프로필 바꾸기!</button>
                    {this.state.showComponent2 ? <ChangeIntroPage />: null }
                </div>
+		<br />
                <div id="escape_account_field">
                    <button id="escape_account_button_field" onClick={onPostClick3}>이곳을 나가겠소!</button>
                    {this.state.showComponent3 ? <EscapePage /> : null }
                </div>
+		<br />
                <div id="friend_list_field">
                    <button id="friend_list_button_field" onClick={onPostClick4}>★나의 동무들★</button>
                    <button id="friend_add_button_field" onClick={onPostClick5}>동무 추가 요청</button>
                </div>
+		<br />
                <div id="goto_wall_field">
                    <button id="goto_wall_button_field" onClick={onPostClick6}>담벼락 보기</button>
                </div>
-               <div id="test">
+		<br />
+               <div id="test" className="Sasang">
                   {ss}
                </div>
             </div>
@@ -138,9 +143,6 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return{
-//        onClick1: () => dispatch(toChangePW()),
-//        onClick2: () => dispatch(toChangeIntro()),
-//        onClick3: () => dispatch(toEscape()),
         onClick4: (profuser) => dispatch(gotoFriend(profuser)),
         onClick5: (profuser) => dispatch(addFriend(profuser)),
         onClick6: (profuser) => dispatch(gotoWall(profuser)),

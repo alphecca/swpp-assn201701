@@ -7,7 +7,7 @@ class EscapePage extends React.Component{
             this.props.onClick(this.props.profile_user);
         }
         return(
-            <div>
+            <div className="Change">
                 <h3>정말로 탈BOOK 하시겠습니까?</h3>
                 <button type="submit" id="escape_book" onClick={onChangeSubmit}>탈BOOK!</button>
             </div>

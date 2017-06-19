@@ -7,7 +7,7 @@ class ArticleList extends React.Component {
         return (
                 <div id="article_list_field" className="ArticleList">
                 {list.map(article => <Article key={article.id} {...article}/>)}
-                </div>
+		</div>
                )
     }
 }
