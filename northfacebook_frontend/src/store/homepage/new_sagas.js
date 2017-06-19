@@ -6,6 +6,7 @@ var xhr = require('xhr-promise-redux');
 
 //TODO 개인적으로 테스트할 때는 포트번호를 바꾸자. 풀리퀘를 날릴 때는 URL을 확인할 것
 const fixed_url = /*"http://localhost:8000/";*/"http://wlxyzlw.iptime.org:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
+//const fixed_url = 'http://wlxyzlw.iptime.org:7777/';
 const auth_check_url = fixed_url+'auth/';
 
 // 이제 backend에서 사용하는 url은 모두 'path_name/'의 형식을 따르고, frontend에서 사용하는 url은 모두 '/path_name/'의 형식을 따릅니다.
@@ -936,7 +937,7 @@ function *watchGoToMain() {
 function *watchPostArticle() {
     while(true) {
         const data = yield take('ADD_ARTICLE');
-        yield call(postArticle, data.text, data.images, data.url);
+        yield call(postArticle, data.id, data.text, data.images, data.url);
     }
 }
 
@@ -1239,8 +1240,7 @@ function *postLike(id) {
 
 // postArticle: 새로운 글/댓글을 쓰는 함수
 // TODO 임시로 메인페이지로 돌아가게 만들었는데 이거 나중에 로컬스토리지에 어트리뷰트 하나 추가해서 구현하심 될 듯
-function *postArticle(text, images, url) {
-    console.log(images);
+function *postArticle(id, text, images, url) {
     let form = new FormData();
     form.append('text', text);
     if(url === null || url === '')
@@ -1250,7 +1250,8 @@ function *postArticle(text, images, url) {
         console.log("No image")
     else
         form.append('image0', images[0]); //TODO 이후에는 여러개 처리 가능하도록
-    const path = localStorage['parent'] === null || localStorage['parent'] === undefined ? 'mainpage/' : 'article/'+localStorage['parent']+'/article/';
+    const path = id === null ? 'mainpage/' : 'article/'+id.id+'/article/';
+    //const path = localStorage['parent'] === null || localStorage['parent'] === undefined ? 'mainpage/' : 'article/'+localStorage['parent']+'/article/';
     try {
         yield call(xhr.post, fixed_url + path, {
             headers: {
@@ -1265,13 +1266,13 @@ function *postArticle(text, images, url) {
         });
         console.log("post article succeed 1");
         //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
-        yield put(actions.changeUrl('/main/'));
+        yield put(actions.changeUrl(window.location.pathname));
     }
     catch(error) {
         if(error.statusCode === 201) {
             console.log("post article succeed 2");
             //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
-            yield put(actions.changeUrl('/main/'));
+            yield put(actions.changeUrl(window.location.pathname));
         }
         else if(error.statusCode === 0) {
             alert("나라에 사정이 생겼소");
@@ -1284,7 +1285,7 @@ function *postArticle(text, images, url) {
         else if(Object.keys(error).length === 0) {
             console.log("post article succeed 3");
             //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
-            yield put(actions.changeUrl('/main/'));
+            yield put(actions.changeUrl(window.location.pathname));
         }
         else {
             alert("1조를 찾아주시오");

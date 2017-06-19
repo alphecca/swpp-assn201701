@@ -2,9 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { toProfile, editArticle, deleteArticle, writeArticle, postLike, articleDetail } from '../../actions'
-//import AddArticle from '../AddArticlePage/AddArticle.js';
+import AddReply from './AddReply.js'
 
 class Article extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            addReply: false
+        }
+    }
     render() {
         const writerId = "a"+this.props.article.id+"_writer_field"
         const username = this.props.article.owner
@@ -71,8 +77,6 @@ class Article extends React.Component {
                     붙임글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
                     <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>자세히</button>
-                    <div className="divider"/>
-                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>붙이기</button>
                     <br />
                     </div>
                 </div>
@@ -109,7 +113,8 @@ class Article extends React.Component {
                     <br />
                     붙임글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>붙이기</button>
+                    <button id={replyButtonId} onClick={() => this.setState({addReply: !this.state.addReply})}>붙이기</button>
+                    {this.state.addReply ? <AddReply parent_id={this.props.article} /> : null}
                     <br />
                     </div>
                 </div>

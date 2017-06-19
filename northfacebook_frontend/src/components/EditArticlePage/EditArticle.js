@@ -15,6 +15,7 @@ class EditArticle extends React.Component{
     let files = null;
     let url = null;
     const editClick = () => {
+        // eslint-disable-next-line
         const tmp = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/(watch\?v=|embed\/)|\.be\/)([\w\-\_]*)(&(amp;)?[\w\?=]*)?/g;
         if(url === null || url === '')
             console.log('no url');
