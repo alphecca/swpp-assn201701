@@ -19,6 +19,8 @@ const store = createStore(
 sagaMiddleware.run(saga)
 
 render(
-    <App store={store} />,
+    <div id="mypage">
+    <App store={store} />
+    </div>,
     document.getElementById('root')
 );
