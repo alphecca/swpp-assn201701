@@ -82,9 +82,8 @@ class Article extends React.Component {
                     <div className="divider"/>
                     {depth === 0 ? <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article.id)}>자세히</button> : null}
                     <div className="divider"/>
-                    {depth === 1 ? <button id={replyButtonId} onClick={() => this.setState({addReply: !this.state.addReply})}>붙이기</button> : null}
-                    {this.state.addReply ? <div><AddReply parent_id={this.props.article} /><button onClick={() => this.setState({addReply:false})}>취소</button></div> : null}
-                    <br />
+                    {depth === 1 ? <button id={replyButtonId} onClick={() => this.setState({addReply: !this.state.addReply})}>{this.state.addReply ? "붙이기 취소" : "붙이기"}</button> : null}
+                    {this.state.addReply ? <AddReply parent_id={this.props.article} />: null}
                     </div>
                 </div>
             )
@@ -92,7 +91,6 @@ class Article extends React.Component {
             return (
                     <div className={css}>
                     <EditArticle thisArticle={this.props.article} />
-                    <button onClick={() => this.setState({edit: false})}>취소</button>
                     </div>
                    )
     }
