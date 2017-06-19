@@ -308,7 +308,7 @@ function *watchLoginState() {
                     room_id: 0,
                     loading: true,
                     sasangs:[],
-                    //load : 0
+                    load : 0
                     //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                 }));
             }
@@ -503,6 +503,7 @@ function *watchLoginState() {
                         room_id: 0,
                         profile_user: profile_data.body,
                         loading: true,
+                        load: 0,
                         //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                     }));
                 }

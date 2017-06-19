@@ -13,7 +13,7 @@ class ArticleList extends React.Component {
 }
 
 let mapStateToProps = (state) => {
-  return {
+    return {
         articles: Object.assign(state.articles).slice(0,state.load+5).map(article => JSON.parse(JSON.stringify(
                           {
                               article: article,
