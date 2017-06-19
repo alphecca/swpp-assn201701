@@ -39,19 +39,19 @@ class WallArticle extends React.Component {
         const typeLabel = () => {
             if(this.props.article.owner !== current)
                 return (
-                        <div>
-                            <p id={labelId}>{current}가 좋아요한 글입니다.</p>
+                        <div className="typeLabel">
+                            <p  id={labelId}>{current}가 좋아요한 글입니다.</p>
                         </div>
                        )
             else if(this.props.article.depth !== 0)
                 return (
-                        <div>
+                        <div className="typeLabel">
                             <p id={labelId}>{current}가 작성한 댓글입니다.</p>
                         </div>
                        )
             else
                 return (
-                        <div>
+                        <div className="typeLabel">
                             <p id={labelId}>{current}가 작성한 글입니다.</p>
                         </div>
                        )
@@ -76,17 +76,17 @@ class WallArticle extends React.Component {
                      <div className="Tags">
                     좋소: <span id={likeNumId}>{likeNum}</span>
                     <div className="divider"/>
-                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
+                    <button id={likeButtonId} className="main_button" onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
                     <div className="divider"/>
-                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id,this.props.article.text)}>수정</button>
+                    <button id={editButtonId} className="main_button" onClick={ ()=>this.props.onEditClick(this.props.article.id,this.props.article.text)}>수정</button>
                     <div className="divider"/>
-                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>삭제</button>
+                    <button id={deleteButtonId} className="main_button" onClick={() => this.props.onDeleteClick(this.props.article.id)}>삭제</button>
                     <br />
                     댓글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    {this.props.article.depth === 0 ? <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>자세히 보기</button> : null}
+                    {this.props.article.depth === 0 ? <button id={detailButtonId} className="detail_button" onClick={() =>this.props.onDetailClick(this.props.article)}>자세히 보기</button> : null}
                     <div className="divider"/>
-                    {this.props.article.depth < 2 ? <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>댓글</button> : null}
+                    {this.props.article.depth < 2 ? <button id={replyButtonId} className="main_button" onClick={() =>this.props.onReplyClick(this.props.article)}>댓글</button> : null}
                     <br />
                     </div>
                 </div>

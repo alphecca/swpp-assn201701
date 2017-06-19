@@ -41,6 +41,8 @@ class Article extends React.Component {
         var depth=this.props.article.depth;
         if(depth===0){
         return (
+		<div>
+                <div className="Article_padding"/>
                 <div id={componentId} className="Article">
                     <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
                     <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
@@ -62,25 +64,28 @@ class Article extends React.Component {
                     <div className="Tags">
                     좋소: <span id={likeNumId}>{likeNum}</span>
                     <div className="divider"/>
-                    <button id={likeButtonId} onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
+                    <button id={likeButtonId} className="main_button" onClick={() => this.props.onLikeClick(this.props.article.id, this.props.authorization)}>좋소</button>
                     <div className="divider"/>
-                    <button id={editButtonId} onClick={ ()=>this.props.onEditClick(this.props.article.id, username)}>바꾸기</button>
+                    <button id={editButtonId} className="main_button" onClick={ ()=>this.props.onEditClick(this.props.article.id, username)}>바꾸기</button>
                     <div className="divider"/>
-                    <button id={deleteButtonId} onClick={() => this.props.onDeleteClick(this.props.article.id)}>지우기</button>
+                    <button id={deleteButtonId} className="main_button" onClick={() => this.props.onDeleteClick(this.props.article.id)}>지우기</button>
                     <br />
                     붙임글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>자세히</button>
+                    <button id={detailButtonId} className="detail_button" onClick={() =>this.props.onDetailClick(this.props.article)}>자세히</button>
                     <div className="divider"/>
-                    <button id={replyButtonId} onClick={() =>this.props.onReplyClick(this.props.article)}>붙이기</button>
+                    <button id={replyButtonId} className="main_button" onClick={() =>this.props.onReplyClick(this.props.article)}>붙이기</button>
                     <br />
                     </div>
                 </div>
+		</div>
         )
         }
         else if(depth===1){
         return (
-              <div id={componentId} className="ArticleArticle">
+		<div>
+		<div className="Article_padding" />
+                <div id={componentId} className="ArticleArticle">
                     <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
                     <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
                     <hr />
@@ -113,10 +118,13 @@ class Article extends React.Component {
                     <br />
                     </div>
                 </div>
+		</div>
         )
         }
         else{
         return (
+		<div>
+		<div className="Article_padding" />
                 <div id={componentId} className="ArticleArticleArticle">
                     <img src={this.props.article.owner_img} id={profileId} className='PROFILEIMG' alt='' />
                     <a className='Link' id={writerId} onClick={onPostClick}><u>{username}</u></a>
@@ -146,6 +154,7 @@ class Article extends React.Component {
                     <br />
                     </div>
                 </div>
+		</div>
         )
         }
     }

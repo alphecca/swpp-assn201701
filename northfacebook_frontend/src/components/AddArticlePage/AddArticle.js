@@ -30,11 +30,9 @@ class AddArticle extends React.Component{
       <div id="add_article_field" className="AddArticle">
         <textarea id={this.props.textId} cols="50" rows="10" placeholder={text} onChange={handleChange}/>
         <br />
-        <input id="upload_img0" type="file" accept=".png, .jpg, .jpeg, .gif" onChange={(e) => {files = e.target.files;}}/>
-        <br />
+        <input id="upload_img0" className="sub_button" type="file" accept=".png, .jpg, .jpeg, .gif" onChange={(e) => {files = e.target.files;}}/>
         영상넣기: <input id='add_youtube_link' onChange={(e) => {url=e.target.value;}}/>
-        <br />
-        <button id={this.props.buttonId} onClick={onPostClick}>POST</button>
+        <button id={this.props.buttonId} className="main_button" onClick={onPostClick}>POST</button>
       </div>
     );
   }
