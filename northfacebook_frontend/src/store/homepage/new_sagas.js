@@ -138,6 +138,7 @@ function *roomPageSaga(){
     yield spawn(watchGoToMain);
     yield spawn(watchCreateRoom);
     yield spawn(watchJoinRoom);
+    yield spawn(watchQuitRoom);
     yield spawn(watchChatting);
 }
 
@@ -276,7 +277,8 @@ function *watchLoginState() {
                     authorization: window.atob(localStorage['auth']),
                     articles: data.body,
                     parent_article: null,
-                    rooms: [],
+                    nowchat_rooms: [],
+                    nonchat_rooms: [],
                     texts: [],
                     chatting_users: [],
                     room_id: 0,
@@ -286,10 +288,10 @@ function *watchLoginState() {
                     //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                 }));
             }
-            else if (path === '/room/' || path === '/create_room/') { // 여기도 하드코딩된 부분이지
+            else if (path === '/room/') { // 여기도 하드코딩된 부분이지
                 localStorage.removeItem('parent');
                 try {
-                    data = yield call(xhr.get, fixed_url+'chatroom/', {
+                    data = yield call(xhr.get, fixed_url+'nowchat/', {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': 'Basic '+ localStorage['auth'],
@@ -306,7 +308,53 @@ function *watchLoginState() {
                         data = error;
                     }
                     else if(error.statusCode === 403) {
-                        alert("수다방에 가려면 려권을 보여주게나.");
+                        alert("대화방에 가려면 려권을 보여주게나.");
+                        console.log('permission denied');
+                        localStorage.removeItem('auth');
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
+                    }
+                    else if (error.statusCode === 404) {
+                        alert("없는 장소");
+                        if(localStorage.getItem("auth") === null) {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
+                        } else {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/main/'));
+                        }
+                    }
+                    else if(error.statusCode === 0) {
+                        alert("나라에 사정이 있소.");
+                        console.log("Temporary Server Error");
+                        return;
+                    }
+                    else {
+                        alert("1조원들을 찾아주게나.");
+                        console.log("Unknown error occurred");
+                        return;
+                    }
+                }
+                let data2;
+                try {
+                    data2 = yield call(xhr.get, fixed_url+'nonchat/', {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Basic '+ localStorage['auth'],
+                            Accept: 'application/json'
+                        },
+                        responseType: 'json'
+                    })
+                    console.log('Get data without exception');
+                }
+                catch(error) {
+                    console.log(error);
+                    if(error.statusCode === 200) {
+                        console.log('Succeed to get data');
+                        data2 = error;
+                    }
+                    else if(error.statusCode === 403) {
+                        alert("대화방에 가려면 려권을 보여주게나.");
                         console.log('permission denied');
                         localStorage.removeItem('auth');
                         localStorage.removeItem('parent');
@@ -337,14 +385,71 @@ function *watchLoginState() {
                     authorization: window.atob(localStorage['auth']),
                     articles: [],
                     parent_article: null,
-                    rooms: data.body,
+                    nowchat_rooms: data.body,
+                    nonchat_rooms: data2.body,
                     texts: [],
                     chatting_users: [],
                     room_id: 0,
                     profile_user: null,
                     loading: true,
-                    sasangs:[]
-                    // load: 0,
+                    sasangs:[],
+                    load: 0,
+                    // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
+                }));
+            }
+            else if (path === '/create_room/') { // 여기도 하드코딩된 부분이지
+		let username = window.atob(localStorage['auth']).split(':')[0];
+                console.log("username: "+username);
+                localStorage.removeItem('parent');
+                try{
+                    data = yield call(xhr.get, fixed_url+'users/'+username+'/friends/',{
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Basic '+localStorage['auth'],
+                        Accept: 'application/json'
+                        },
+                        responseType: 'json'
+                     });
+                     console.log('Get data without exception');
+                } catch(error) {
+                    console.log(error);
+                    //TODO error case
+                    if (error.statusCode === 403) {
+                        alert("자격이 없소.");
+                    } else if(error.statusCode === 404) {
+                        alert("없는 장소");
+                        console.log("안단티노가 안심하래");
+                        if(localStorage.getItem("auth") === null) {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
+                        } else {
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/main/'));
+                        }
+                        return;
+                    } else if(error.statusCode === 0) {
+                        alert("나라에 잠시 일이 생겼소.");
+                        console.log("Temporary Server error. Try reloading");
+                        return;
+                    } else {
+                        alert("1조원들을 찾아주게나.");
+                        return;
+                    }
+                }
+                yield put(actions.setState({
+                    authorization: window.atob(localStorage['auth']),
+                    articles: [],
+                    parent_article: null,
+                    nowchat_rooms: [],
+                    nonchat_rooms: [],
+                    friends: data.body,
+                    texts: [],
+                    chatting_users: [],
+                    room_id: 0,
+                    profile_user: null,
+                    loading: true,
+                    sasangs:[],
+                    load: 0,
                     // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
                 }));
             }
@@ -471,7 +576,8 @@ function *watchLoginState() {
                         authorization: window.atob(localStorage['auth']),
                         articles: data.body,
                         parent_article: null,
-                        rooms: [],
+                        nowchat_rooms: [],
+                        nonchat_rooms: [],
                         texts: [],
                         chatting_users: [],
                         room_id: 0,
@@ -531,12 +637,14 @@ function *watchLoginState() {
                         authorization: window.atob(localStorage['auth']),
                         parent_article: null,
                         articles: [],
-                        rooms: [],
+                        nowchat_rooms: [],
+                        nonchat_rooms: [],
                         texts: [],
                         chatting_users: [],
                         room_id: 0,
                         profile_user: profile_data.body,
                         loading: true,
+                        load: 0,
                         sasangs:sasangs.body
                     }));
                 }
@@ -582,7 +690,8 @@ function *watchLoginState() {
                         authorization: window.atob(localStorage['auth']),
                         parent_article: null,
                         articles: [],
-                        rooms: [],
+                        nowchat_rooms: [],
+                        nonchat_rooms: [],
                         texts: [],
                         chatting_users: [],
                         room_id: 0,
@@ -591,6 +700,7 @@ function *watchLoginState() {
                         friend_requests: [],
                         my_requests: [],
                         loading: true,
+                        load: 0,
                                         }));
                 }
                 else if(path.split("/")[1] === 'addfriend'){
@@ -709,7 +819,8 @@ function *watchLoginState() {
                         authorization: window.atob(localStorage['auth']),
                         parent_article: null,
                         articles: [],
-                        rooms: [],
+                        nowchat_rooms: [],
+                        nonchat_rooms: [],
                         texts: [],
                         chatting_users: [],
                         room_id: 0,
@@ -718,6 +829,7 @@ function *watchLoginState() {
                         friend_requests: data.body,
                         my_requests: my_data.body,
                         loading: true,
+                        load: 0,
                                         }));
                 }
                 else {
@@ -803,7 +915,7 @@ function *watchLoginState() {
                         }
                         else if(error.statusCode === 0) {
                             console.log("Backend is not accessible");
-                            alert("나라에 문제가 생겻소.");
+                            alert("나라에 문제가 생겼소.");
                             return;
                         }
                         else {
@@ -817,12 +929,14 @@ function *watchLoginState() {
                         authorization: window.atob(localStorage['auth']),
                         articles: data.body,
                         parent_article: parent_data !== null ? parent_data.body : null,
-                        rooms: [],
+                        nowchat_rooms: [],
+                        nonchat_rooms: [],
                         texts: [],
                         chatting_users: [],
                         room_id: 0,
                         profile_user: profile_data !== null ? profile_data.body : null,
                         loading: true,
+                        load: 0,
                         //TODO 이후 state 추가 시 여기에 스테이트 업데이트 추가
                     }));
                 }
@@ -936,6 +1050,14 @@ function *watchJoinRoom(){
     }
 }
 
+// watchQuitRoom: 채팅방 목록 페이지에서 참가하기 버튼 클릭 관찰
+function *watchQuitRoom(){
+    while(true){
+        const data = yield take('QUIT_ROOM');
+        yield call(quitRoom, data.id);
+    }
+}
+
 // watchChatting: 채팅방 목록 페이지에서 대화하기 버튼 클릭 관찰
 function *watchChatting(){
     while(true){
@@ -965,7 +1087,7 @@ function *watchSendText(){
 function *watchPostRoom(){
     while(true){
         const data = yield take('POST_ROOM');
-        yield call(postRoom, data.room_name); // TODO 채팅방 관련 추가구현 시 방 정보(방 공개 여부 등)에 관한 사항을 여기에 추가해야 함.
+        yield call(postRoom, data.room_name, data.secret, data.invite); // TODO 채팅방 관련 추가구현 시 방 정보(방 공개 여부 등)에 관한 사항을 여기에 추가해야 함.
     }
 }
 
@@ -1354,11 +1476,59 @@ function *joinRoom(id) {
             console.log("the room has removed");
         }
         else if(error.statusCode === 405) {
-            alert("당신은 이미 함께하였소.");
+            alert("당신은 이미 참여하였소.");
             console.log("you can join in this room once");
         }
         else if(Object.keys(error).length === 0) {
             console.log("join room succeed 3.");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else {
+            alert("1조를 찾아주시오.");
+            console.log(error);
+        }
+    }
+}
+
+// quitRoom: 선택한 채팅방(참가한 채팅방)에서 나가는 함수
+function *quitRoom(id) {
+    const path = 'chatroom/'+id+'/user/';
+    try{
+        yield call(xhr.send, fixed_url+path,{
+            method: 'DELETE',
+            headers:{
+                'Authorization': 'Basic '+localStorage['auth'],
+                "Content-Type": 'application/json',
+                Accept: 'application/json'
+            },
+            contentType:'json'
+        });
+        console.log("quit room succeed.");
+        yield put(actions.changeUrl(window.location.pathname));
+    }catch(error){
+        if(error.statusCode === 200 || error.statusCode === 204){
+            console.log("quit room succeed 2.");
+            yield put(actions.changeUrl(window.location.pathname));
+        }
+        else if(error.statusCode === 0) {
+            alert("나라에 사정이...");
+            console.log("Check backend server");
+        }
+        else if(error.statusCode === 403) {
+            alert("려권!");
+            console.log("permission denied");
+            yield put(actions.changeUrl('/'));
+        }
+        else if(error.statusCode === 404) {
+            alert("방이 존재하지 않소.");
+            console.log("the room has removed");
+        }
+        else if(error.statusCode === 405) {
+            alert("당신은 이 방에 참여하지 않았소.");
+            console.log("you cannot quit this room");
+        }
+        else if(Object.keys(error).length === 0) {
+            console.log("quit room succeed 3.");
             yield put(actions.changeUrl(window.location.pathname));
         }
         else {
@@ -1408,7 +1578,7 @@ function *postText(room_id, text) {
             console.log("the room has removed");
         }
         else if(error.statusCode === 405) {
-            alert("함께하고 얘기하시오.");
+            alert("참여하고 얘기하시오.");
             console.log("The user isn't a chatting member");
             yield put(actions.changeUrl('/room/'));
         }
@@ -1425,7 +1595,7 @@ function *postText(room_id, text) {
 }
 
 // postRoom: 새 채팅방을 생성하는 함수 // TODO 채팅방 관련 추가구현 시 수정바람.
-function *postRoom(room_name) {
+function *postRoom(room_name, secret, invite) {
     const path = 'chatroom/';
     try{
         yield call(xhr.post, fixed_url+path, {
@@ -1435,7 +1605,7 @@ function *postRoom(room_name) {
                 Accept: 'application/json'
             },
             contentType: 'json',
-            body: JSON.stringify({"room_name": room_name})
+            body: JSON.stringify({"room_name": room_name, "secret": secret, "invite": invite})
         });
         console.log("post room succeed.");
     }catch(error){
@@ -1491,7 +1661,7 @@ function *updateChatting(room_id) {
             userRes = error;
         }
         else if(error.statusCode === 403) {
-            alert("려권을 보여주고 수다를 떠시오.");
+            alert("려권을 보여주고 대화를 하시오.");
             console.log('permission denied');
             localStorage.removeItem('auth');
             localStorage.removeItem('parent');
@@ -1537,7 +1707,7 @@ function *updateChatting(room_id) {
             textRes = error;
         }
         else if(error.statusCode === 403) {
-            alert("수다방에 들어가려면 려권!");
+            alert("대화방에 들어가려면 려권!");
             console.log('permission denied');
             localStorage.removeItem('auth');
             localStorage.removeItem('parent');
@@ -1569,16 +1739,20 @@ function *updateChatting(room_id) {
     }
     let getArticles = yield select((state) => state.articles);
     let getParentArticle = yield select((state) => state.parent_article);
-    let getRooms = yield select((state) => state.rooms);
+    let getNowChatRooms = yield select((state) => state.nowchat_rooms);
+    let getNonChatRooms = yield select((state) => state.nonchat_rooms);
+    let getLoad = yield select((state) => state.load);
     yield put(actions.setState({
         authorization: window.atob(localStorage['auth']),
         articles: getArticles,
         parent_article: getParentArticle,
-        rooms: getRooms,
+        nowchat_rooms: getNowChatRooms,
+        nonchat_rooms: getNonChatRooms,
         texts: textRes.body,
         chatting_users: userRes.body,
         room_id: room_id,
         loading: true,
+        load: getLoad,
         // TODO 이후 state에 항목 추가 시 여기에도 추가바람.
     }));
     const path = window.location.pathname;

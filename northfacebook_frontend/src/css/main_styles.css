@@ -167,6 +167,28 @@
   left:2em;
 }
 
+.Room{
+  font-family: 궁서;
+  text-align: left;
+  background-color: rgba(64,127,237,0.5);
+  font-size: 20px;
+  padding-left: 5px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+.SecretRoom{
+  font-family: 궁서;
+  text-align: left;
+  background-color: rgba(237,64,127,0.5);
+  font-size: 20px;
+  padding-left: 5px;
+  padding-right: 20px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
 .ChattingUser{
   font-family: 궁서;
   text-align: left;
