@@ -19,7 +19,7 @@ class SignOut extends React.Component {
                 <div className="ToolBar" >
                    <div className="Notif">
                    <button id="to_main_page_field" className="TOMAIN" onClick={this.props.onBackClick}/>
-                   <span id="user_data_field"><a id="to_my_profile" className="Link" onClick={ () => this.props.onToProfile(this.props.username) }><u>{this.props.username}</u></a> 동무 어서오시오!</span>
+                   <span id="user_data_field"><a id="to_my_profile" className="Link" onClick={ () => this.props.onToProfile(this.props.username) }><u id="to_my_profile">{this.props.username}</u></a> 동무 어서오시오!</span>
                    <button id="sign_out" className="SIGNOUT" onClick={this.props.onLogOut}>나오기</button>
                    <button id="to_my_wall" className="WALLBUTTON" onClick={() => this.props.onToWall(this.props.username)}>담벼락</button>
                     <button id="chat_button_field" onClick={this.props.onChatClick}>수다방</button>
