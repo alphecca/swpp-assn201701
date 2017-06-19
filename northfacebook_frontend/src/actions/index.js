@@ -65,14 +65,15 @@ export const editArticle = (id, username) => {
         username: username
     }
 }
-export const putArticle = (text, removeImg, images, removeUrl, url) =>{
+export const putArticle = (id, text, removeImg, images, removeUrl, url) =>{
     return {
         type: 'PUT_ARTICLE',
         text: text,
         removeImg: removeImg,
         images: images,
         removeUrl: removeUrl,
-        url: url
+        url: url,
+        id: id
     }
 }
 export const deleteArticle = (id) => {

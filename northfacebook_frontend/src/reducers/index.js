@@ -45,7 +45,7 @@ const homepage = (state = homepageInitialState, action) => {
             return homepageInitialState //go back to initial state when sign out
         }
         case 'CHANGE_URL': {
-            window.location = action.path
+            window.location.pathname = action.path
             return state
         }
         case 'SET_STATE': {

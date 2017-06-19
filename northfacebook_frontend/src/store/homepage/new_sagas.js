@@ -6,6 +6,7 @@ var xhr = require('xhr-promise-redux');
 
 //TODO 개인적으로 테스트할 때는 포트번호를 바꾸자. 풀리퀘를 날릴 때는 URL을 확인할 것
 const fixed_url = /*"http://localhost:8000/";*/"http://wlxyzlw.iptime.org:8000/"; //포오오오트으으으버어어어언호오오오 확이이이인
+//const fixed_url = 'http://wlxyzlw.iptime.org:7777/';
 const auth_check_url = fixed_url+'auth/';
 
 // 이제 backend에서 사용하는 url은 모두 'path_name/'의 형식을 따르고, frontend에서 사용하는 url은 모두 '/path_name/'의 형식을 따릅니다.
@@ -41,12 +42,6 @@ export default function *saga() {
             switch(url[1]) {
                 case 'article':
                     yield spawn(articleDetailPageSaga);
-                    break;
-                case 'write':
-                    yield spawn(writePageSaga);
-                    break;
-                case 'edit':
-                    yield spawn(editPageSaga, url[2]);
                     break;
                 case 'room':
                     yield spawn(roomPageSaga);
@@ -112,46 +107,28 @@ function *signUpPageSaga() {
 function *mainPageSaga() {
     console.log("Main Page");
     yield spawn(watchLoginState);
-    yield spawn(watchWrite);
     yield spawn(watchDetail);
     yield spawn(watchLike);
     yield spawn(watchSignOut);
     yield spawn(watchGoToMain);
-    yield spawn(watchEdit);
     yield spawn(watchDelete);
     yield spawn(watchChattingRoom);
     yield spawn(watchToProfile);
     yield spawn(watchPostArticle);
+    yield spawn(watchPutArticle);
 }
 
 function *articleDetailPageSaga() {
     console.log("Article Detail Page");
     yield spawn(watchLoginState);
-    yield spawn(watchWrite);
     yield spawn(watchDetail);
     yield spawn(watchLike);
     yield spawn(watchGoToMain);
     yield spawn(watchSignOut);
-    yield spawn(watchEdit);
     yield spawn(watchDelete);
     yield spawn(watchToProfile);
     yield spawn(watchPostArticle);
-}
-
-function *writePageSaga() {
-    console.log("Write Page")
-    yield spawn(watchLoginState);
-    yield spawn(watchSignOut);
-    yield spawn(watchPostArticle);
-    yield spawn(watchGoToMain);
-}
-
-function *editPageSaga(id){
-    console.log("Edit Page: "+id);
-    yield spawn(watchLoginState);
-    yield spawn(watchSignOut);
-    yield spawn(watchPutArticle, id);
-    yield spawn(watchGoToMain);
+    yield spawn(watchPutArticle);
 }
 
 function *roomPageSaga(){
@@ -185,13 +162,10 @@ function *createRoomPageSaga(){
 
 function *wallPageSaga() {
     yield spawn(watchLoginState);
-    yield spawn(watchWrite);
     yield spawn(watchDetail);
     yield spawn(watchLike);
     yield spawn(watchSignOut);
     yield spawn(watchGoToMain);
-    yield spawn(watchEdit);
-    yield spawn(watchDelete);
     yield spawn(watchToProfile);
 }
 
@@ -252,7 +226,7 @@ function *watchLoginState() {
         else {
             const path = window.location.pathname;
             let data, parent_data;
-            if(path === '/main/' || path === '/write/') { // 여기가 바로 하드코딩된 부분입니다 여러분!
+            if(path === '/main/') { // 여기가 바로 하드코딩된 부분입니다 여러분!
                 localStorage.removeItem('parent');
                 try {
                     data = yield call(xhr.get, fixed_url+'mainpage/', {
@@ -970,6 +944,7 @@ function *watchLoginState() {
         }
     }
     console.log(yield select());
+    console.log(localStorage['parent']);
 }
 
 // watchSignIn: 로그인 버튼 클릭 관찰
@@ -1007,24 +982,11 @@ function *watchPostSignUp() {
     }
 }
 
-// watchWrite: 글쓰기/답글쓰기 버튼 클릭 관찰 및 리다이렉트
-function *watchWrite() {
-    while(true) {
-        const data = yield take('WRITE_ARTICLE');
-        if(data.id === null)
-            yield put(actions.changeUrl('/write/'));
-        else {
-            yield put(actions.changeUrl('/write/'+data.id.id+'/'));
-        }
-    }
-
-}
-
 // watchDetail: 디테일 버튼 클릭 관찰 및 리다이렉트
 function *watchDetail() {
     while(true) {
         const data = yield take('ARTICLE_DETAIL');
-        yield put(actions.changeUrl('/article/'+data.id.id+'/'));
+        yield put(actions.changeUrl('/article/'+data.id +'/'));
     }
 }
 
@@ -1050,7 +1012,7 @@ function *watchGoToMain() {
 function *watchPostArticle() {
     while(true) {
         const data = yield take('ADD_ARTICLE');
-        yield call(postArticle, data.text, data.images, data.url);
+        yield call(postArticle, data.id, data.text, data.images, data.url);
     }
 }
 
@@ -1062,30 +1024,13 @@ function *watchDelete() {
     }
 }
 
-// watchEdit: 메인페이지 또는 세부페이지에서 수정 버튼 클릭 관찰
-function *watchEdit(){
-    while(true){
-        console.log("in edit article");
-        const data = yield take('EDIT_ARTICLE');
-        //TODO user data GET해서 forbidden or not
-        if(data.username !== window.atob(localStorage['auth']).split(':')[0]) {
-            alert("당신의 글이 아니오.");
-            continue;
-        }
-//	console.log("사가에서 data.id= "+data.id);
-        yield put(actions.changeUrl('/edit/'+data.id+'/'));
-    }
-}
-
-
 // watchPutArticle: 글 수정 페이지에서 EDIT 버튼 클릭 관찰
-function *watchPutArticle(id){
+function *watchPutArticle(){
     while(true){
         console.log("in watchPutArticle...");
         const data = yield take('PUT_ARTICLE');
         console.log("text: "+data.text);
-//	console.log("$id: "+data.id); 왜지?!?!?!?!?!
-        yield call(putArticle, id, data.text, data.removeImg, data.images, data.removeUrl, data.url);
+        yield call(putArticle, data.id, data.text, data.removeImg, data.images, data.removeUrl, data.url);
     }
 }
 
@@ -1361,8 +1306,7 @@ function *postLike(id) {
 
 // postArticle: 새로운 글/댓글을 쓰는 함수
 // TODO 임시로 메인페이지로 돌아가게 만들었는데 이거 나중에 로컬스토리지에 어트리뷰트 하나 추가해서 구현하심 될 듯
-function *postArticle(text, images, url) {
-    console.log(images);
+function *postArticle(id, text, images, url) {
     let form = new FormData();
     form.append('text', text);
     if(url === null || url === '')
@@ -1372,7 +1316,8 @@ function *postArticle(text, images, url) {
         console.log("No image")
     else
         form.append('image0', images[0]); //TODO 이후에는 여러개 처리 가능하도록
-    const path = localStorage['parent'] === null || localStorage['parent'] === undefined ? 'mainpage/' : 'article/'+localStorage['parent']+'/article/';
+    const path = id === null ? 'mainpage/' : 'article/'+id.id+'/article/';
+    //const path = localStorage['parent'] === null || localStorage['parent'] === undefined ? 'mainpage/' : 'article/'+localStorage['parent']+'/article/';
     try {
         yield call(xhr.post, fixed_url + path, {
             headers: {
@@ -1387,13 +1332,13 @@ function *postArticle(text, images, url) {
         });
         console.log("post article succeed 1");
         //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
-        yield put(actions.changeUrl('/main/'));
+        yield put(actions.changeUrl(window.location.pathname));
     }
     catch(error) {
         if(error.statusCode === 201) {
             console.log("post article succeed 2");
             //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
-            yield put(actions.changeUrl('/main/'));
+            yield put(actions.changeUrl(window.location.pathname));
         }
         else if(error.statusCode === 0) {
             alert("나라에 사정이 생겼소");
@@ -1406,7 +1351,7 @@ function *postArticle(text, images, url) {
         else if(Object.keys(error).length === 0) {
             console.log("post article succeed 3");
             //yield put(actions.changeUrl(path === 'mainpage/' ? '/main/' : '/article/'+localStorage['parent']+'/'));
-            yield put(actions.changeUrl('/main/'));
+            yield put(actions.changeUrl(window.location.pathname));
         }
         else {
             alert("1조를 찾아주시오");
@@ -1417,6 +1362,10 @@ function *postArticle(text, images, url) {
 
 // deleteArticle: 자신이 쓴 글을 지우는 함수
 function *deleteArticle(id){
+    let changeurl = window.location.pathname;
+    if(id.toString() === localStorage['parent']) {
+        changeurl = '/main/';
+    }
     const path = 'article/'+id+'/';
     try{
         yield call(xhr.send, fixed_url+path,{
@@ -1428,18 +1377,17 @@ function *deleteArticle(id){
             responseType:'json'
         });
     console.log("delete article succeed!!!");
-    yield put(actions.changeUrl('/main/'));
-    //TODO parent article여부 확인해서 main 또는 detailpage로
-    }catch(error){
+    yield put(actions.changeUrl(changeurl));
+    } catch(error){
         console.log(error);
         if(error.statusCode === 204){
             console.log("delete article succeedd!!");
-            yield put(actions.changeUrl('/main/'));
+            yield put(actions.changeUrl(changeurl));
         }
         else if(error.statusCode === 403){
             alert("당신의 글이 아니오.");
         }
-        else yield put(actions.changeUrl('/main/'));
+        else yield put(actions.changeUrl(changeurl));
     }
 }
 
@@ -1462,7 +1410,6 @@ function *putArticle(id, text, removeImg, images, removeUrl, url){
 
     if(removeUrl === true) {
         if(url === null || url === '' || url === 'null') {
-            alert(url);
             form.append('youtube_video', 'None');
         }
         else
@@ -1486,7 +1433,7 @@ function *putArticle(id, text, removeImg, images, removeUrl, url){
             body: form
         });
         console.log("edit article succeed");
-        yield put(actions.changeUrl('/'+path));
+        yield put(actions.changeUrl(window.location.pathname));
     } catch(error){
         console.log(error);
         if(error.statusCode === 403){
