@@ -41,6 +41,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     depth = serializers.SerializerMethodField()
     like_num = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
+    root = serializers.SerializerMethodField()
     def get_images(self, obj):
         imgs = []
         if obj.image0 == None: #TODO 이후 최대 이미지 3장까지 올릴 수 있도록 + 프론트에서 이미지 불러오는 식으로 하고 싶은데 그거 삽질 한 이후에 수정하기
@@ -68,6 +69,16 @@ class ArticleSerializer(serializers.ModelSerializer):
                 return 1
         except:
             return 0
+    def get_root(serlf, obj):
+        try:
+            o = Article.objects.get(pk=obj.parent.id)
+            try:
+                oo = Article.objects.get(pk=o.parent.id)
+                return oo.id
+            except:
+                return o.id
+        except:
+            return 0
     def get_owner_img(self, obj):
         profile = Profile.objects.get(user=obj.owner)
         return 'http://'+self.context['domain']+profile.myimage.url
@@ -75,7 +86,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         model = Article
         fields = ('id','parent','owner',
         'like_num','depth','text','children_num',
-        'created_time','updated_time', 'images', 'image0', 'owner_img', 'youtube_video')
+        'created_time','updated_time', 'images', 'image0', 'owner_img', 'youtube_video', 'root')
 
 # for CHATTING
 class ChatRoomSerializer(serializers.ModelSerializer):

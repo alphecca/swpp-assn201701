@@ -1,20 +1,22 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {putArticle} from '../../actions'
+import PropTypes from 'prop-types'
 
 class EditArticle extends React.Component{
   constructor(props) {
       super(props);
       this.state = {
           removeImg: false,
-          removeUrl: false
+          removeUrl: false,
+          text: null
       }
   }
   render(){
-	let text = this.props.content;
     let files = null;
     let url = null;
     const editClick = () => {
+        // eslint-disable-next-line
         const tmp = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/(watch\?v=|embed\/)|\.be\/)([\w\-\_]*)(&(amp;)?[\w\?=]*)?/g;
         if(url === null || url === '')
             console.log('no url');
@@ -27,11 +29,16 @@ class EditArticle extends React.Component{
             else
                 url = 'https://www.youtube.com/embed/'+urls[2];
         }
-        this.props.onEditClick(text, this.state.removeImg, files, this.state.removeUrl, url)
+        if(this.state.text === null || this.state.text === '') {
+            this.props.onEditClick(this.props.thisArticle.id, this.props.thisArticle.text, this.state.removeImg, files, this.state.removeUrl, url);
+        }
+        else
+            this.props.onEditClick(this.props.thisArticle.id, this.state.text, this.state.removeImg, files, this.state.removeUrl, url);
     }
     return(
-      <div id="edit_article_field" className="EditArticle">
-        <textarea id={this.props.textId} cols="50" rows="10" placeholder={text} onChange={ (e)=>{text=e.target.value} }/>
+      <div id="edit_article_field">
+        <textarea id={this.props.textId} cols="50" rows="10" placeholder={this.props.thisArticle.text} onChange={ (e)=>
+            this.setState({text: e.target.value})} />
         <br />
         { this.props.thisArticle !== null && this.state.removeImg === false && this.props.thisArticle.image0 !== null? 
             <button onClick={() => {if(this.state.removeImg === false) this.setState({removeImg:true}); console.log(this.state.removeImg);}}>{"기존 사진을 삭제하겠소?"}</button> : null
@@ -56,13 +63,16 @@ let mapStateToProps = (state) => {
   return {
      textId: "edit_text_field",
      buttonId: "edit_button_field",
-     thisArticle: state.parent_article
   }
-} 
+}
+
+EditArticle.propTypes = {
+    thisArticle: PropTypes.object.isRequired
+}
 
 let mapDispatchToProps = (dispatch) => {
    return {
-      onEditClick: (text, removeImg, files, removeUrl, url) => dispatch(putArticle(text, removeImg, files, removeUrl, url)),
+      onEditClick: (id, text, removeImg, files, removeUrl, url) => dispatch(putArticle(id, text, removeImg, files, removeUrl, url)),
    }
 }
 
