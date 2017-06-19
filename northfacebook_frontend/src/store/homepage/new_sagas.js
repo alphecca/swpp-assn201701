@@ -871,7 +871,7 @@ function *watchPostSignUp() {
 function *watchDetail() {
     while(true) {
         const data = yield take('ARTICLE_DETAIL');
-        yield put(actions.changeUrl('/article/'+data.id.id+'/'));
+        yield put(actions.changeUrl('/article/'+data.id +'/'));
     }
 }
 

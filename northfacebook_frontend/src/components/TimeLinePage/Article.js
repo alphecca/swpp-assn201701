@@ -80,7 +80,7 @@ class Article extends React.Component {
                     <br />
                     붙임글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    {depth === 0 ? <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>자세히</button> : null}
+                    {depth === 0 ? <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article.id)}>자세히</button> : null}
                     <div className="divider"/>
                     {depth === 1 ? <button id={replyButtonId} onClick={() => this.setState({addReply: !this.state.addReply})}>붙이기</button> : null}
                     {this.state.addReply ? <div><AddReply parent_id={this.props.article} /><button onClick={() => this.setState({addReply:false})}>취소</button></div> : null}

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {toProfile, editArticle, deleteArticle, changeUrl, postLike, articleDetail} from '../../actions'
+import {toProfile, changeUrl, postLike, articleDetail} from '../../actions'
 
 class WallArticle extends React.Component {
     render() {
@@ -14,7 +14,6 @@ class WallArticle extends React.Component {
         const likeButtonId = "a"+this.props.article.id+"_like_button_field"
         const replyNum = this.props.article.children_num
         const replyNumId = "a"+this.props.article.id+"_reply_field"
-        const toRootId = "a"+this.props.article.id+"_to_root_id"
         const detailButtonId = "a"+this.props.article.id+"_detail_button_field"
         const componentId = "a"+this.props.article.id+"_field"
         const createdId = "a"+this.props.article.id+"_created_field"
@@ -23,7 +22,7 @@ class WallArticle extends React.Component {
         const created_ = this.props.article.created_time.split('T');
         const created_date = created_[0].split('-');
         const created_time = created_[1].split(':');
-        const updated_ = this.props.article.created_time.split('T');
+        const updated_ = this.props.article.updated_time.split('T');
         const updated_date = updated_[0].split('-');
         const updated_time = updated_[1].split(':');
 
@@ -78,8 +77,7 @@ class WallArticle extends React.Component {
                     <br />
                     댓글:<span id={replyNumId}>{replyNum}</span>
                     <div className="divider"/>
-                    {this.props.article.depth === 0 ? <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article)}>자세히 보기</button> : null}
-                    {this.props.article.depth > 0 ? <button id={toRootId} onClick={() =>this.props.onReplyClick(this.props.article.root)}>자세히 보기</button> : null}
+                    <button id={detailButtonId} onClick={() =>this.props.onDetailClick(this.props.article.depth === 0 ? this.props.article.id : this.props.article.root)}>자세히</button>
                     <br />
                     </div>
                 </div>
@@ -100,8 +98,6 @@ WallArticle.propTypes = {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        onDeleteClick: (id) => dispatch(deleteArticle(id)), 
-        onEditClick: (id,text,time) => dispatch(editArticle(id,text)), 
         onReplyClick: (id) => dispatch(changeUrl('article/'+id+'/')),
         onLikeClick: (id, auth) => dispatch(postLike(id, auth)),
         onDetailClick: (id) => dispatch(articleDetail(id)),
