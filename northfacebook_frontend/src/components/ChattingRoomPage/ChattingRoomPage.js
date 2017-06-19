@@ -1,5 +1,6 @@
 import React from 'react'
-import RoomList from './RoomList.js'
+import NowChatRoomList from './NowChatRoomList.js'
+import NonChatRoomList from './NonChatRoomList.js'
 import SignOut from '../TimeLinePage/SignOut.js'
 import { postBack, showCreateRoom } from '../../actions'
 import { connect } from 'react-redux'
@@ -19,7 +20,13 @@ class ChattingRoomPage extends React.Component {
                 <div className="ChattingRoom">
                 <div className="divider" />
                 <button id="new_room_button_field" onClick={this.props.onNewRoomClick}>새로운 방</button>
-                <RoomList />
+                <br />
+                <br />
+                참여한 방 목록
+                <NowChatRoomList />
+                <br />
+                참여하지 않은 방 목록
+                <NonChatRoomList />
                 </div>
                 </div>
         )

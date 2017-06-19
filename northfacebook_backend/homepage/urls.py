@@ -9,8 +9,6 @@ urlpatterns = [
     url(r'^auth/$', views.AuthList.as_view()),
     url(r'^users/$', views.user_list),
     url(r'^users/(?P<username>\w+)/$', views.user_detail),
-    url(r'^users/(?P<username>\w+)/nowchat/$', views.user_nowchat),
-    url(r'^users/(?P<username>\w+)/nonchat/$', views.user_nonchat),
     url(r'^users/(?P<username>\w+)/wall/$', views.wall),
     url(r'^profile/$',views.profile_list),
     url(r'^users/(?P<username>\w+)/profile/$',views.profile),
@@ -34,6 +32,8 @@ urlpatterns = [
     url(r'^chatroom/(?P<pk>[0-9]+)/user/$',views.chatuser),
     url(r'^text/$', views.text_list),
     url(r'^chatroom/(?P<pk>[0-9]+)/text/$',views.text),
+    url(r'^nowchat/$', views.user_nowchat),
+    url(r'^nonchat/$', views.user_nonchat),
     ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -130,6 +130,13 @@ export const joinRoom = (id) => {
     }
 }
 
+export const quitRoom = (id) => {
+    return {
+	type: 'QUIT_ROOM',
+	id: id
+    }
+}
+
 export const showChatting = (id) => {
     return {
 	type: 'SHOW_CHATTING',

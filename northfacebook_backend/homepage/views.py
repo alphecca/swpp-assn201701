@@ -128,15 +128,11 @@ def like(request,pk):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def user_nowchat(request,username):
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+def user_nowchat(request):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
-        serializer = NowChatSerializer(user)
+        serializer = NowChatSerializer(request.user)
         chat = []
         for room_id in serializer.data:
             chat.append(Chat.objects.get(id=room_id))
@@ -144,15 +140,11 @@ def user_nowchat(request,username):
         return Response(serializer.data)
 
 @api_view(['GET'])
-def user_nonchat(request,username):
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+def user_nonchat(request):
     if request.user.id == None:
         return Response(status=status.HTTP_403_FORBIDDEN)
     if request.method == 'GET':
-        serializer = NonChatSerializer(user)
+        serializer = NonChatSerializer(request.user)
         chat = []
         for room_id in serializer.data:
             room = Chat.objects.get(id=room_id)
@@ -357,11 +349,14 @@ def chatuser(request,pk):
     return Response(status= status.HTTP_403_FORBIDDEN)
   chatuser = ChatUser.objects.filter(chatroom=chatroom.id)
   if request.method == 'GET':
-    for t in chatuser:
-      if t.chatuser == request.user:
-        serializer = ChatUserSerializer(chatuser, many=True)
-        return Response(serializer.data)
-    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    if chatroom.secret:
+        for t in chatuser:
+          if t.chatuser == request.user:
+            serializer = ChatUserSerializer(chatuser, many=True)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    serializer = ChatUserSerializer(chatuser, many=True)
+    return Response(serializer.data)
   elif request.method == 'POST':
     if chatroom.secret:
       return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

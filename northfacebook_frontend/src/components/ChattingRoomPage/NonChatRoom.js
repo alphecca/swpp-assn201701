@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { joinRoom, showChatting } from '../../actions'
 
-class Room extends React.Component {
+class NonChatRoom extends React.Component {
     render() {
         const userNum = this.props.room.user_num;
         const userNumId = "room"+this.props.room.id+"_user_num_field";
@@ -19,15 +19,15 @@ class Room extends React.Component {
                     <div className="divider"/>
                     <span id={roomNameId}>{roomName}</span>
                     <div className="divider"/>
-                    <button id={joinButtonId} onClick={() => this.props.onJoinClick(this.props.room.id)}>함께하기</button>
+                    <button id={joinButtonId} onClick={() => this.props.onJoinClick(this.props.room.id)}>참여하기</button>
                     <div className="divider"/>
-                    <button id={chatButtonId} onClick={() => this.props.onChatClick(this.props.room.id)}>끼어들기</button>
+                    <button id={chatButtonId} onClick={() => this.props.onChatClick(this.props.room.id)}>도청하기</button>
                 </div>
         )
     }
 }
 
-Room.propTypes = {
+NonChatRoom.propTypes = {
     room: PropTypes.object,
 }
 
@@ -38,6 +38,6 @@ let mapDispatchToProps = (dispatch) => {
     }
 }
 
-Room = connect(undefined, mapDispatchToProps)(Room)
+NonChatRoom = connect(undefined, mapDispatchToProps)(NonChatRoom)
 
-export default Room
+export default NonChatRoom
