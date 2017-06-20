@@ -13,7 +13,7 @@ from selenium.webdriver.common.alert import Alert
 
 from backend_ import *
 
-delayTime = 1.5
+delayTime = 2
 # 특정 id를 가진 컴퍼넌트가 존재하는지 확인
 def check(driver, name):
     try:
@@ -68,7 +68,7 @@ def signOutVerification(driver, username):
         print("username does not match!")
         exit(1)
     driver.find_element_by_id("sign_out").click()
-    sleep(delayTime)
+    sleep(delayTime*2)
     signInPageVerification(driver)
 
 #####SIGN UP CHECK#####

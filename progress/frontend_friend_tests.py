@@ -14,7 +14,7 @@ from selenium.common.exceptions import NoSuchElementException, NoAlertPresentExc
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.chrome.options import Options
 
-delayTime = 1 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫자를 늘려보자
+delayTime = 1.5 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫자를 늘려보자
 
 if len(sys.argv) != 3:
     print("frontend_friend_tests.py <backend_url> <frontend_url>")
@@ -95,6 +95,7 @@ addFriendToDecline(driver, user_list[1][0])
 addFriendToOk(driver, user_list[1][0])
 addFriendToBack(driver, user_list[1][0])
 toMyProfile(driver)
+sleep(delayTime)
 profileToFriend(driver)
 friendNoListVerification(driver)
 friendToAddFriend(driver)

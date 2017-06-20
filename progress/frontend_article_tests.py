@@ -13,7 +13,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
 
-delayTime = 1 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫자를 늘려보자
+delayTime = 1.5 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫자를 늘려보자
 
 if len(sys.argv) != 3:
     print("frontend_article_tests.py <backend_url> <frontend_url>")
