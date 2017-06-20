@@ -69,9 +69,8 @@ sleep(delayTime)
 mainPageVerification(driver2, data[0:5]) # 만일을 대비한 메인페이지 테스트
 
 #test1이 좋아요 / 댓글 쓸 글 만들기
-driver2.find_element_by_id("write_button_field").click()
 sleep(delayTime)
-writePageVerification(driver2, "test0")
+writeVerification(driver2, "test0")
 sleep(delayTime)
 driver2.quit()
 
@@ -90,13 +89,9 @@ driver.find_element_by_id("to_main_page_field").click()
 
 # wall에 들어갈 작성글
 sleep(delayTime)
-driver.find_element_by_id("write_button_field").click()
+writeVerification(driver, "test1")
 sleep(delayTime)
-writePageVerification(driver, "test1")
-sleep(delayTime)
-driver.find_element_by_id("write_button_field").click()
-sleep(delayTime)
-writePageVerification(driver, "test2")
+writeVerification(driver, "test2")
 
 print("3. Wall Verification")
 sleep(delayTime)
