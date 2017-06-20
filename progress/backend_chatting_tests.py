@@ -102,9 +102,10 @@ if temp["room_name"] != "test room1":
     exit(1)
 get_json_or_error(link, test2, test2pw)
 
-forbidden_or_error_anon("DELETE", link)
-delete_or_error(link, test1, test1pw)
-not_found_or_error(link, test2, test2pw)
+method_not_allowed_or_error_anon_data("DELETE", link, {})
+method_not_allowed_or_error_data("DELETE", link, {}, test1, test1pw)
+#delete_or_error(link, test1, test1pw)
+#not_found_or_error(link, test2, test2pw)
 
 link = sys.argv[1] + "chatroom/" + str(chatroom2id) + "/"
 temp = get_json_or_error(link, test1, test1pw)
@@ -207,14 +208,10 @@ else:
     not_found_or_error(link, test1, test1pw)
 
 link = chatroom_list_link + str(chatroom2id) + "/"
-print("13. check if chatuser and text are deleted together after the room is deleted.")
-delete_or_error(link, test1, test1pw)
-not_found_or_error(link+"user/", test1, test1pw)
-not_found_or_error(link+"text/", test1, test1pw)
 
 # Andantino: I think that /text/ page is useless and redundant. I want to remove /text/ page in backend.
 link = sys.argv[1] + "text/"
-print("14. GET text list.")
+print("13. GET text list.")
 forbidden_or_error_anon("GET", link)
 temp = get_json_or_error(link, test1, test1pw)
 
