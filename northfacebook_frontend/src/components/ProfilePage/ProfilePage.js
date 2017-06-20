@@ -18,11 +18,13 @@ class ProfilePage extends React.Component {
                     <div className="TimeLine">
                         <img id='p_img' src={this.props.profile_myimage} alt='' />
                         <br />
+			<div className="Change">
                         <span>{this.props.profile_user}의 프로필</span>
                         <br />
                         <h2 id="p_name">이름:{this.props.profile_myname}</h2>
                         <h2 id="p_belong">소속:{this.props.profile_mybelong}</h2>
                         <h2 id="p_intro">소개말:{this.props.profile_myintro}</h2>
+			</div>
                     <div>
                         <ButtonList/>
                     </div>
