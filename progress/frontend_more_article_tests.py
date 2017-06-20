@@ -13,11 +13,11 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.alert import Alert
 
-delayTime = 1 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫자를 늘려보자
+delayTime = 1.5 #TODO DELAYTIME으로 인해 테스트에 에러가 날 경우 숫자를 늘려보자
 
 if len(sys.argv) != 3:
-    print("frontend_article_tests.py <backend_url> <frontend_url>")
-    print("Example: frontend_article_tests.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/") #TODO change port num
+    print("frontend_more_article_tests.py <backend_url> <frontend_url>")
+    print("Example: frontend_more_article_tests.py http://wlxyzlw.iptime.org:8000/ http://wlxyzlw.iptime.org:3000/") #TODO change port num
     exit(1)
 # 백엔드 주소
 backend_link = sys.argv[1]

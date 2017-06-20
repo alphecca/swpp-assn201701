@@ -13,7 +13,7 @@ from selenium.webdriver.common.alert import Alert
 
 from backend_ import *
 
-delayTime = 1.5
+delayTime = 2
 # 특정 id를 가진 컴퍼넌트가 존재하는지 확인
 def check(driver, name):
     try:
@@ -68,7 +68,7 @@ def signOutVerification(driver, username):
         print("username does not match!")
         exit(1)
     driver.find_element_by_id("sign_out").click()
-    sleep(delayTime)
+    sleep(delayTime*2)
     signInPageVerification(driver)
 
 #####SIGN UP CHECK#####
@@ -457,6 +457,7 @@ def chatRoomVerification(driver, link, uname, upwd):
     sleep(delayTime)
     alert(driver, "제대로 입력하시오.")
     driver.find_element_by_id('cancel_button_field').click()
+    sleep(delayTime)
     print("2-3. make three new room")
     for t in range(1,4):
         check(driver, "new_room_button_field")
@@ -502,11 +503,11 @@ def chatRoomVerification(driver, link, uname, upwd):
             print("ERROR: Cannot get {0}".format(link))
         roomId = "room"+str(res.json()[t-4]['id'])
 
-        check(driver, roomId+"_join_field")
+        check(driver, roomId+"_quit_field")
         check(driver, roomId+"_chat_field")
-        driver.find_element_by_id(roomId+"_join_field").click()
+        if t != 3:
+            driver.find_element_by_id(roomId+"_quit_field").click()
         sleep(delayTime)
-        alert(driver,"당신은 이미 함께하였소.")
     sleep(delayTime)
     driver.find_element_by_id(roomId+"_chat_field").click()
     sleep(delayTime)
@@ -581,7 +582,7 @@ def B_chatRoomVerification(driver, roomId):
     driver.find_element_by_id("input_text_field").send_keys("this text cannot be sent")
     driver.find_element_by_id('post_text_button_field').click()
     sleep(delayTime)
-    alert(driver, "함께하고 얘기하시오.")
+    alert(driver, "참여하고 얘기하시오.")
     sleep(delayTime*2)
     print("2-1. join the room")
     # at room list
