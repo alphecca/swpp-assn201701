@@ -265,6 +265,9 @@ function *watchLoginState() {
                     else if(error.statusCode === 0) {
                         console.log("Backend is not accessible");
                         alert("나라에 사정이 있소");
+                        localStorage.removeItem('auth');
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
                         return;
                     }
                     else {
@@ -327,6 +330,9 @@ function *watchLoginState() {
                     else if(error.statusCode === 0) {
                         alert("나라에 사정이 있소.");
                         console.log("Temporary Server Error");
+                        localStorage.removeItem('auth');
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
                         return;
                     }
                     else {
@@ -373,6 +379,9 @@ function *watchLoginState() {
                     else if(error.statusCode === 0) {
                         alert("나라에 사정이 있소.");
                         console.log("Temporary Server Error");
+                        localStorage.removeItem('auth');
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
                         return;
                     }
                     else {
@@ -430,6 +439,9 @@ function *watchLoginState() {
                     } else if(error.statusCode === 0) {
                         alert("나라에 잠시 일이 생겼소.");
                         console.log("Temporary Server error. Try reloading");
+                        localStorage.removeItem('auth');
+                        localStorage.removeItem('parent');
+                        yield put(actions.changeUrl('/'));
                         return;
                     } else {
                         alert("1조원들을 찾아주게나.");
@@ -518,6 +530,9 @@ function *watchLoginState() {
                         else if(error.statusCode === 0) {
                             console.log("Backend is not accessible");
                             alert("나라에 잠시 사정이 생겼소! 다시 오게나.");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         }
                         else {
@@ -563,6 +578,9 @@ function *watchLoginState() {
                         else if(error.statusCode === 0) {
                             console.log("Backend is not accessible");
                             alert("나라에 잠시 사정이 생겼소!");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         }
                         else {
@@ -613,6 +631,9 @@ function *watchLoginState() {
                         //TODO error case
                         if(error.statusCode === 403){
                             alert("당신은 려권을 볼 자격이 없소!");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                         }else if(error.statusCode === 404){
                             alert("없는 장소");
                             console.log("뉴스프링이 안심하래");
@@ -627,6 +648,9 @@ function *watchLoginState() {
                         }else if(error.statusCode === 0){
                             console.log("Backend server is not accessible");
                             alert("나라에 잠시 사정이 생겼소.");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         }else{
                             alert("1조원들을 찾아주시오.");
@@ -666,6 +690,9 @@ function *watchLoginState() {
                         //TODO error case
                         if (error.statusCode === 403) {
                             alert("자격이 없소.");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                         } else if(error.statusCode === 404) {
                             alert("없는 장소");
                             console.log("안단티노가 안심하래");
@@ -680,6 +707,9 @@ function *watchLoginState() {
                         } else if(error.statusCode === 0) {
                             alert("나라에 잠시 일이 생겼소.");
                             console.log("Temporary Server error. Try reloading");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         } else {
                             alert("1조원들을 찾아주게나.");
@@ -722,6 +752,9 @@ function *watchLoginState() {
                         if (error.statusCode === 403) {
                             console.log("Unauthorized user tried to access profile page. Please sign in first");
                             alert("당신은 자격이 없소.");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         } else if(error.statusCode === 404) {
                             alert("없는 장소");
@@ -737,6 +770,9 @@ function *watchLoginState() {
                         } else if(error.statusCode === 0) {
                             alert("나라에 사정이 생겼소.");
                             console.log("Temporary Server error. Try reloading");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         } else {
                             alert("1조를 찾아주시오.");
@@ -758,6 +794,9 @@ function *watchLoginState() {
                         //TODO error case
                         if (error.statusCode === 403) {
                             alert("려권을 볼 자격이 없소");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         } else if(error.statusCode === 404) {
                             alert("없는 장소");
@@ -773,6 +812,9 @@ function *watchLoginState() {
                         } else if(error.statusCode === 0) {
                             console.log("Backend server is not accessible");
                             alert("나라에 사정이 있소.");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         } else {
                             alert("1조를 찾아주시오.");
@@ -794,6 +836,9 @@ function *watchLoginState() {
                         //TODO error case
                         if (error.statusCode === 403) {
                             alert("려권을 볼 자격이 없소");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         } else if(error.statusCode === 404) {
                             alert("없는 장소");
@@ -809,6 +854,9 @@ function *watchLoginState() {
                         } else if(error.statusCode === 0) {
                             console.log("Backend server is not accessible");
                             alert("나라에 사정이 있소.");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         } else {
                             alert("1조를 찾아주시오.");
@@ -855,6 +903,7 @@ function *watchLoginState() {
                             console.log('whyyyyyyyy');
                             localStorage.removeItem('auth');
                             localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                         }
                         else if(error.statusCode === 404) {
                             alert("없는 장소");
@@ -871,6 +920,9 @@ function *watchLoginState() {
                         else if(error.statusCode === 0) {
                             alert("나라에 문제가...");
                             console.log("Temporary Server Error. Try reloading!");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         }
                         else {
@@ -898,8 +950,11 @@ function *watchLoginState() {
                             parent_data = error;
                         }
                         else if(error.statusCode === 403) {
-                          alert("1조를 찾아주시오");
-                          console.log('whyyyyyyyy');
+                            alert("1조를 찾아주시오");
+                            console.log('whyyyyyyyy');
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                         }
                         else if(error.statusCode === 404) {
                             alert("없는 장소");
@@ -916,6 +971,9 @@ function *watchLoginState() {
                         else if(error.statusCode === 0) {
                             console.log("Backend is not accessible");
                             alert("나라에 문제가 생겼소.");
+                            localStorage.removeItem('auth');
+                            localStorage.removeItem('parent');
+                            yield put(actions.changeUrl('/'));
                             return;
                         }
                         else {
@@ -1196,10 +1254,16 @@ function *signIn(data) {
         else if(error.statusCode === 403) {
             console.log("User not found");
             alert("그런 려권은 없는데?");
+            localStorage.removeItem('auth');
+            localStorage.removeItem('parent');
+            yield put(actions.changeUrl('/'));
         }
         else if(error.statusCode === 0) {
             console.log("Server not available");
             alert("나라에 문제가 생겼소.");
+            localStorage.removeItem('auth');
+            localStorage.removeItem('parent');
+            yield put(actions.changeUrl('/'));
         }
         else {
             console.log(error);
@@ -1237,10 +1301,6 @@ function *signUp(data) {
         else if(error.statusCode === 400){
             alert("성명이나 암호가 려권에 맞지 않소.");
             console.log("Put correct username & password");
-        }
-        else if(error.statusCode === 404) {
-            alert("윗글이 사라져서 길을 잃은 모양이오.");
-            console.log("parent article removed");
         }
         else if(error.statusCode === 405) {
            alert("이미 같은 성명이 있소.");
@@ -1683,6 +1743,9 @@ function *updateChatting(room_id) {
         else if(error.statusCode === 0) {
             console.log("Backend is not available");
             //alert("Temporary Server Error");
+            localStorage.removeItem('auth');
+            localStorage.removeItem('parent');
+            yield put(actions.changeUrl('/'));
             return;
         }
         else {
@@ -1729,6 +1792,9 @@ function *updateChatting(room_id) {
         else if(error.statusCode === 0) {
             console.log("Backend is not available");
             //alert("Temporary Server Error");
+            localStorage.removeItem('auth');
+            localStorage.removeItem('parent');
+            yield put(actions.changeUrl('/'));
             return;
         }
         else {
@@ -1866,6 +1932,8 @@ function *escapeBook(profuser){
              yield put(actions.changeUrl('/main/'));
         }else if(error.statusCode === 403){
              alert("당신의 려권이 아니오");
+        }else if(error.statusCode === 0){
+            alert("나라에 문제가...");
         }else{
              console.log("delete account succeed!");
              localStorage.removeItem('parent');
