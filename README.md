@@ -1,29 +1,17 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+M1522.000100_001 Software Principle and Practice
 
 ### What is this repository for? ###
-SWPP 201701 Project Repository
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+SWPP 201701 Project Repository [mirror](https://bitbucket.org/Newspring97/swpp201701project)
 
-### How do I get set up? ###
+During the semester, my team made a private repo in Bitbucket for development for co-work.
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+I mirrored a repo in Bitbutcket because it is over.
 
-### Contribution guidelines ###
+### Contributor ###
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+* alphecca (DaYun Kim)
+* newspring (배새봄)
+* wlxyzlw (KaOn Eu)
+* salt26 (DanTae An)
