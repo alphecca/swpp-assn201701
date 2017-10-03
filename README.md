@@ -8,7 +8,8 @@ SWPP 201701 Project Repository [mirror](https://bitbucket.org/Newspring97/swpp20
 During the semester, my team made a private repo in Bitbucket for development for co-work.
 
 I mirrored a repo in Bitbutcket because it is over.
-
+- [ ] huihui
+- [ ] huihiuhiu
 ### Contributor ###
 
 * alphecca (DaYun Kim)
